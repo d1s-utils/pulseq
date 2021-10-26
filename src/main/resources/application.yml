@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: pulseq
+
+  data:
+    mongodb:
+      database: pulseq-data
+      auto-index-creation: on
+      host: localhost
+      port: 27017
+
+  config:
+    import: file:./pulseq.yml
