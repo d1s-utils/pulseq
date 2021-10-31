@@ -3,6 +3,7 @@ package uno.d1s.pulseq.service.impl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.domain.Device
 import uno.d1s.pulseq.event.DelayedBeatReceivedEvent
@@ -31,11 +32,13 @@ class BeatServiceImpl : BeatService {
     @Autowired
     private lateinit var eventPublisher: ApplicationEventPublisher
 
+    @Transactional(readOnly = true)
     override fun findBeatById(id: String): Beat =
         beatRepository.findById(id).orElseThrow {
             BeatNotFoundException("Could not find any beats with provided id.")
         }
 
+    @Transactional
     override fun registerNewBeatWithDeviceIdentify(identify: String): Beat {
         var device: Device by Delegates.notNull()
 
@@ -68,22 +71,27 @@ class BeatServiceImpl : BeatService {
         }
     }
 
-
+    @Transactional(readOnly = true)
     override fun findAllBeatsByDeviceId(deviceId: String): List<Beat> =
         beatRepository.findAllByDeviceIdEquals(deviceId)
 
+    @Transactional(readOnly = true)
     override fun findAllBeatsByDeviceName(deviceName: String): List<Beat> =
         beatRepository.findAllByDeviceNameEqualsIgnoreCase(deviceName)
 
+    @Transactional(readOnly = true)
     override fun findAllBeatsByDeviceIdentify(deviceIdentify: String): List<Beat> =
         deviceService.findDeviceByIdentify(deviceIdentify).beats ?: listOf() // maybe throw an exception here?
 
+    @Transactional(readOnly = true)
     override fun findAllBeats(): List<Beat> =
         beatRepository.findAll()
 
+    @Transactional(readOnly = true)
     override fun totalBeats(): Int =
         this.findAllBeats().size
 
+    @Transactional(readOnly = true)
     override fun findLastBeat(): Beat =
         this.findAllBeats().let { all ->
             all.firstOrNull { beat ->
