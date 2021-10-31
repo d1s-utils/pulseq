@@ -40,7 +40,6 @@ class InactivityStatusServiceImpl : InactivityStatusService {
     override fun getCurrentInactivityPretty(): String =
         this.getCurrentInactivity().pretty()
 
-    @Transactional(readOnly = true)
     override fun getCurrentInactivityRelevanceLevel(): InactivityRelevanceLevel =
         if (this.isLongInactivityDurationPointExceeded()) {
             InactivityRelevanceLevel.LONG
@@ -50,20 +49,16 @@ class InactivityStatusServiceImpl : InactivityStatusService {
             InactivityRelevanceLevel.COMMON
         }
 
-    @Transactional(readOnly = true)
     override fun isRelevanceLevelNotCommon(): Boolean =
         this.getCurrentInactivityRelevanceLevel() != InactivityRelevanceLevel.COMMON
 
-    @Transactional(readOnly = true)
-    private fun isLongInactivityDurationPointExceeded() =
+    fun isLongInactivityDurationPointExceeded() =
         this.isDurationPointExceeded(serverConfigurationProperties.inactivity)
 
-    @Transactional(readOnly = true)
-    private fun isWarningInactivityDurationPointExceeded() =
+    fun isWarningInactivityDurationPointExceeded() =
         this.isDurationPointExceeded(serverConfigurationProperties.warningInactivity)
 
-    @Transactional(readOnly = true)
-    private fun isDurationPointExceeded(inactivityDuration: InactivityDurationPointConfigurationModel) = try {
+    fun isDurationPointExceeded(inactivityDuration: InactivityDurationPointConfigurationModel) = try {
         this.getCurrentInactivity() > Duration.of(inactivityDuration.value, inactivityDuration.unit)
     } catch (_: NoBeatsReceivedException) {
         false
