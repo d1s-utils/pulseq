@@ -1,0 +1,22 @@
+version: '3'
+
+volumes:
+  db-data:
+    driver: local
+
+  mongo-config:
+    driver: local
+
+services:
+  pulseq-mongodb:
+    image: mongo:latest
+    restart: always
+    volumes:
+      - db-data:/data/db
+      - mongo-config:/data/configdb
+
+  pulseq:
+    image: pulseq:latest
+    restart: always
+    ports:
+      - "8080:8080"

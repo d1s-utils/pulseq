@@ -16,11 +16,15 @@ class LongestInactivityStatisticsCard : StatisticsCard {
         get() = "Longest Recorded Inactivity"
 
     override val description: String
-        get() = inactivityStatusService.getLongestInactivity().let { inactivity ->
-            if (inactivity == Duration.ZERO) {
-                "No inactivity information available."
-            } else {
-                inactivity.pretty()
+        get() = runCatching {
+            inactivityStatusService.getLongestInactivity().let { inactivity ->
+                if (inactivity == Duration.ZERO) {
+                    "No inactivity information available."
+                } else {
+                    inactivity.pretty()
+                }
             }
+        }.getOrElse {
+            it.message!!
         }
 }
