@@ -1,0 +1,97 @@
+package uno.d1s.pulseq.service.impl
+
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.ApplicationEventPublisher
+import org.springframework.stereotype.Service
+import uno.d1s.pulseq.domain.Beat
+import uno.d1s.pulseq.domain.Device
+import uno.d1s.pulseq.event.DelayedBeatReceivedEvent
+import uno.d1s.pulseq.exception.BeatNotFoundException
+import uno.d1s.pulseq.exception.NoBeatsReceivedException
+import uno.d1s.pulseq.repository.BeatRepository
+import uno.d1s.pulseq.service.BeatService
+import uno.d1s.pulseq.service.DeviceService
+import uno.d1s.pulseq.service.InactivityStatusService
+import uno.d1s.pulseq.util.findClosestInstantToCurrent
+import java.time.Duration
+import kotlin.properties.Delegates
+
+@Service("beatService")
+class BeatServiceImpl : BeatService {
+
+    @Autowired
+    private lateinit var beatRepository: BeatRepository
+
+    @Autowired
+    private lateinit var deviceService: DeviceService
+
+    @Autowired
+    private lateinit var inactivityService: InactivityStatusService
+
+    @Autowired
+    private lateinit var eventPublisher: ApplicationEventPublisher
+
+    override fun findBeatById(id: String): Beat =
+        beatRepository.findById(id).orElseThrow {
+            BeatNotFoundException("Could not find any beats with provided id.")
+        }
+
+    override fun registerNewBeatWithDeviceIdentify(identify: String): Beat {
+        var device: Device by Delegates.notNull()
+
+        runCatching {
+            device = deviceService.findDeviceByIdentify(identify)
+        }.onFailure {
+            device = deviceService.registerNewDevice(identify)
+        }
+
+        Beat(
+            device,
+            runCatching {
+                inactivityService.getCurrentInactivity()
+            }.getOrElse {
+                Duration.ZERO
+            }).let { unsavedBeat ->
+            if (inactivityService.isRelevanceLevelNotCommon()) {
+                beatRepository.save(unsavedBeat).let { savedBeat ->
+                    eventPublisher.publishEvent(
+                        DelayedBeatReceivedEvent(
+                            this,
+                            savedBeat
+                        )
+                    )
+                    return savedBeat
+                }
+            } else {
+                return beatRepository.save(unsavedBeat)
+            }
+        }
+    }
+
+
+    override fun findAllBeatsByDeviceId(deviceId: String): List<Beat> =
+        beatRepository.findAllByDeviceIdEquals(deviceId)
+
+    override fun findAllBeatsByDeviceName(deviceName: String): List<Beat> =
+        beatRepository.findAllByDeviceNameEqualsIgnoreCase(deviceName)
+
+    override fun findAllBeatsByDeviceIdentify(deviceIdentify: String): List<Beat> =
+        deviceService.findDeviceByIdentify(deviceIdentify).beats ?: listOf() // maybe throw an exception here?
+
+    override fun findAllBeats(): List<Beat> =
+        beatRepository.findAll()
+
+    override fun totalBeats(): Int =
+        this.findAllBeats().size
+
+    override fun findLastBeat(): Beat =
+        this.findAllBeats().let { all ->
+            all.firstOrNull { beat ->
+                all.map {
+                    it.beatTime
+                }.findClosestInstantToCurrent().orElseThrow {
+                    NoBeatsReceivedException
+                } == beat.beatTime
+            } ?: throw NoBeatsReceivedException
+        }
+}

@@ -10,4 +10,11 @@ spring:
       port: 27017
 
   config:
-    import: file:./pulseq.yml
+    import: file:../pulseq.yml
+
+pulseq:
+  version: "0.0.1-pre-alpha.1"
+  repository: "https://github.com/d1snin/pulseq"
+  security:
+    secured-paths:
+      - "T(BeatMappingConstants).BASE"
