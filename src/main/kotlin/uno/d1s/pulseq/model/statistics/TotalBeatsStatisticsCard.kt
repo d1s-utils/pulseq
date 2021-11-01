@@ -10,9 +10,14 @@ class TotalBeatsStatisticsCard : StatisticsCard {
     @Autowired
     private lateinit var beatService: BeatService
 
-    override val title: String
-        get() = "Total Beats"
+    override val title = "Total Beats"
 
-    override val description: String
-        get() = "${beatService.totalBeats()} beats was received for all time."
+    override val description
+        get() = beatService.totalBeats().let { total ->
+            if (total <= 0) {
+                "No beats received yet."
+            } else {
+                "${beatService.totalBeats()} beats was received for all time."
+            }
+        }
 }

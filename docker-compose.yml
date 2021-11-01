@@ -10,13 +10,29 @@ volumes:
 services:
   pulseq-mongodb:
     image: mongo:latest
+    container_name: pulseq-mongodb
     restart: always
+    networks:
+      - pulseq-net
+    ports:
+      - "27017:27017"
+    expose:
+      - 27017
     volumes:
       - db-data:/data/db
       - mongo-config:/data/configdb
 
   pulseq:
-    image: pulseq:latest
+    image: pulseq:0.0.1-pre-alpha.1
+    container_name: pulseq
     restart: always
+    networks:
+      - pulseq-net
     ports:
       - "8080:8080"
+    depends_on:
+      - pulseq-mongodb
+
+networks:
+  pulseq-net:
+    driver: bridge

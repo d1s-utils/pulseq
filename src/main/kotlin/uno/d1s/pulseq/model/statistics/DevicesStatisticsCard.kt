@@ -11,10 +11,9 @@ class DevicesStatisticsCard : StatisticsCard {
     @Autowired
     private lateinit var deviceService: DeviceService
 
-    override val title: String
-        get() = "Devices"
+    override val title = "Devices"
 
-    override val description: String
+    override val description
         get() = deviceService.findAllRegisteredDevices().let { devices ->
             if (devices.isEmpty()) "No devices registered yet." else
                 "The server receives beats from ${devices.size} device${grammar(devices.size)}: " +

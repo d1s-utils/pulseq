@@ -13,10 +13,9 @@ class LastBeatTimeStatisticsCard : StatisticsCard {
     @Autowired
     private lateinit var beatService: BeatService
 
-    override val title: String
-        get() = "Last Beat Time"
+    override val title = "Last Beat Time"
 
-    override val description: String
+    override val description
         get() = runCatching {
             "Last beat was received at ${
                 DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG)

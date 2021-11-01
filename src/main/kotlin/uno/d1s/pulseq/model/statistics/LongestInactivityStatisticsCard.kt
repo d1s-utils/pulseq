@@ -12,10 +12,9 @@ class LongestInactivityStatisticsCard : StatisticsCard {
     @Autowired
     private lateinit var inactivityStatusService: InactivityStatusService
 
-    override val title: String
-        get() = "Longest Recorded Inactivity"
+    override val title = "Longest Recorded Inactivity"
 
-    override val description: String
+    override val description
         get() = runCatching {
             inactivityStatusService.getLongestInactivity().let { inactivity ->
                 if (inactivity == Duration.ZERO) {

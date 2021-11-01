@@ -14,10 +14,9 @@ class LastBeatStatisticsCard : StatisticsCard {
     @Autowired
     private lateinit var inactivityStatusService: InactivityStatusService
 
-    override val title: String
-        get() = "Last Beat"
+    override val title = "Last Beat"
 
-    override val description: String
+    override val description
         get() = runCatching {
             val lastBeat = beatService.findLastBeat()
             "Last beat with id ${lastBeat.id} was received ${inactivityStatusService.getCurrentInactivityPretty()} ago from device ${lastBeat.device.name}."
