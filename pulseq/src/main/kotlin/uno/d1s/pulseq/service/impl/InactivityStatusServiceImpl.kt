@@ -34,7 +34,15 @@ class InactivityStatusServiceImpl : InactivityStatusService {
     override fun getLongestInactivity(): Duration =
         beatService.findAllBeats().map {
             it.inactivityBeforeBeat
-        }.maxOrNull() ?: throw NoBeatsReceivedException
+        }.maxOrNull()?.let { inactivity ->
+            val current = this.getCurrentInactivity()
+
+            if (inactivity > current) {
+                current
+            } else {
+                inactivity
+            }
+        } ?: throw NoBeatsReceivedException
 
     @Transactional(readOnly = true)
     override fun getCurrentInactivityPretty(): String =
