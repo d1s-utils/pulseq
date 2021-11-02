@@ -37,7 +37,7 @@ class InactivityStatusServiceImpl : InactivityStatusService {
         }.maxOrNull()?.let { inactivity ->
             val current = this.getCurrentInactivity()
 
-            if (inactivity > current) {
+            if (inactivity < current) {
                 current
             } else {
                 inactivity
