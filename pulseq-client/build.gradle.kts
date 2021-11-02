@@ -1,6 +1,7 @@
 version = project.version
 
 extra["jnativeHookVersion"] = "2.2-SNAPSHOT"
+extra["ktorVersion"] = "1.6.5"
 
 configurations {
     compileOnly {
@@ -14,4 +15,6 @@ repositories {
 
 dependencies {
     implementation("com.github.kwhat:jnativehook:${property("jnativeHookVersion")}")
+    implementation("io.ktor:ktor-client-core:${property("ktorVersion")}")
+    implementation("io.ktor:ktor-client-cio:${property("ktorVersion")}")
 }

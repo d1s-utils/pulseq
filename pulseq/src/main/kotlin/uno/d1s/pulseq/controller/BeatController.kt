@@ -2,7 +2,7 @@ package uno.d1s.pulseq.controller
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import uno.d1s.pulseq.constant.BeatMappingConstants
+import uno.d1s.pulseq.constant.mapping.BeatMappingConstants
 import uno.d1s.pulseq.dto.BeatDto
 import javax.servlet.http.HttpServletResponse
 
@@ -10,7 +10,7 @@ interface BeatController {
 
     @RequestMapping(BeatMappingConstants.BASE, method = [RequestMethod.POST, RequestMethod.GET])
     fun registerNewBeatWithDeviceIdentify(
-        @RequestParam(required = false) @RequestHeader("Device", required = false) device: String?,
+        @RequestParam(required = false) device: String?,
         response: HttpServletResponse
     ): ResponseEntity<BeatDto>?
 

@@ -1,0 +1,9 @@
+package uno.d1s.pulseq.client.configuration
+
+import org.springframework.boot.context.properties.EnableConfigurationProperties
+import org.springframework.context.annotation.Configuration
+import uno.d1s.pulseq.client.configuration.properties.ClientConfigurationProperties
+
+@Configuration
+@EnableConfigurationProperties(ClientConfigurationProperties::class)
+class ConfigurationPropertiesConfiguration

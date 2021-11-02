@@ -14,7 +14,7 @@ pulseq:
   repository: "https://github.com/d1snin/pulseq"
   security:
     secured-paths:
-      - "T(uno.d1s.pulseq.constant.BeatMappingConstants).BASE"
+      - "T(uno.d1s.pulseq.constant.mapping.BeatMappingConstants).BASE"
     secret: "changeit"
 
   notifications:

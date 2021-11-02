@@ -1,4 +1,4 @@
-package uno.d1s.pulseq.constant
+package uno.d1s.pulseq.constant.mapping
 
 object BadgeMappingConstants {
     private const val BASE = "${GlobalMappingConstants.API}/badge"

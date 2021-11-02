@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
 import uno.d1s.pulseq.service.DeviceService
 import uno.d1s.pulseq.util.grammar
+import uno.d1s.pulseq.util.toCommaDelimitedString
 
 @Component
 class DevicesStatistic : Statistic {
@@ -20,11 +21,9 @@ class DevicesStatistic : Statistic {
         get() = deviceService.findAllRegisteredDevices().let { devices ->
             if (devices.isEmpty()) "No devices registered yet." else
                 "The server receives beats from ${devices.size} device${grammar(devices.size)}: " +
-                        StringUtils.collectionToCommaDelimitedString(
-                            devices.map {
-                                it.name
-                            }
-                        )
+                        devices.map {
+                            it.name
+                        }.toCommaDelimitedString()
         }
 
     override val shortDescription

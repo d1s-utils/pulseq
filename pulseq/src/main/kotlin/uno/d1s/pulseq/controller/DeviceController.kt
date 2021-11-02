@@ -3,7 +3,7 @@ package uno.d1s.pulseq.controller
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
-import uno.d1s.pulseq.constant.DeviceMappingConstants
+import uno.d1s.pulseq.constant.mapping.DeviceMappingConstants
 import uno.d1s.pulseq.dto.DeviceDto
 
 interface DeviceController {
