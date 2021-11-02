@@ -19,16 +19,17 @@ class LastBeatTimeStatistic : Statistic {
 
     override val description
         get() = runCatching {
-            "Last beat was received at ${
-                DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG)
-                    .withZone(ZoneId.of("UTC")).format(beatService.findLastBeat().beatTime)
-            }"
+            "Last beat was received at ${formattedTime()}"
         }.getOrElse {
             it.message!!
         }
 
     override val shortDescription: String
-        get() = TODO("Not yet implemented")
+        get() = runCatching {
+            formattedTime()
+        }.getOrElse {
+            it.message!!
+        }
 
     private fun formattedTime() = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG)
         .withZone(ZoneId.of("UTC")).format(beatService.findLastBeat().beatTime)

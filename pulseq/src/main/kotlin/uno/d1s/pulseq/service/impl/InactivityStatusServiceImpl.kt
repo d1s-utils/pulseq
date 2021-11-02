@@ -3,7 +3,7 @@ package uno.d1s.pulseq.service.impl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import uno.d1s.pulseq.configuration.property.ServerConfigurationProperties
+import uno.d1s.pulseq.configuration.property.InactivityConfigurationProperties
 import uno.d1s.pulseq.configuration.property.model.InactivityDurationPointConfigurationModel
 import uno.d1s.pulseq.event.inactivity.InactivityRelevanceLevel
 import uno.d1s.pulseq.exception.NoBeatsReceivedException
@@ -20,7 +20,7 @@ class InactivityStatusServiceImpl : InactivityStatusService {
     private lateinit var beatService: BeatService
 
     @Autowired
-    private lateinit var serverConfigurationProperties: ServerConfigurationProperties
+    private lateinit var inactivityConfigurationProperties: InactivityConfigurationProperties
 
     @Transactional(readOnly = true)
     override fun getCurrentInactivity(): Duration = Instant.now().let { now ->
@@ -53,10 +53,10 @@ class InactivityStatusServiceImpl : InactivityStatusService {
         this.getCurrentInactivityRelevanceLevel() != InactivityRelevanceLevel.COMMON
 
     fun isLongInactivityDurationPointExceeded() =
-        this.isDurationPointExceeded(serverConfigurationProperties.inactivity)
+        this.isDurationPointExceeded(inactivityConfigurationProperties.common)
 
     fun isWarningInactivityDurationPointExceeded() =
-        this.isDurationPointExceeded(serverConfigurationProperties.warningInactivity)
+        this.isDurationPointExceeded(inactivityConfigurationProperties.warning)
 
     fun isDurationPointExceeded(inactivityDuration: InactivityDurationPointConfigurationModel) = try {
         this.getCurrentInactivity() > Duration.of(inactivityDuration.value, inactivityDuration.unit)

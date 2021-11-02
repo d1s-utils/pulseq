@@ -12,11 +12,11 @@ class GlobalConfigurationProperties(
     @PostConstruct
     private fun checkProperties() {
         version ?: throw InvalidConfigurationException(
-            "pulseq.version can not be null."
+            "pulseq.version"
         )
 
         repository ?: throw InvalidConfigurationException(
-            "pulseq.repository can not be null."
+            "pulseq.repository"
         )
     }
 }

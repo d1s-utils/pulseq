@@ -5,3 +5,4 @@ pluginManagement {
     }
 }
 rootProject.name = "pulseq"
+include("pulseq", "pulseq-client")

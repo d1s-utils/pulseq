@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 @ConfigurationPropertiesScan(
-    basePackages = ["uno.d1s.pulseq.configuration.property",
-        "uno.d1s.pulseq.configuration.property.notifications"]
+    basePackages = ["uno.d1s.pulseq.configuration.property"]
 )
 class ConfigurationPropertiesConfiguration

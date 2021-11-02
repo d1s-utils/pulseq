@@ -12,24 +12,25 @@ class LongestInactivityStatistic : Statistic {
     @Autowired
     private lateinit var inactivityStatusService: InactivityStatusService
 
-    override val identify: String
-        get() = TODO("Not yet implemented")
+    override val identify = "longest-inactivity"
 
-    override val title = "Longest Recorded Inactivity"
+    override val title = "Longest Inactivity"
 
     override val description
-        get() = runCatching {
-            inactivityStatusService.getLongestInactivity().let { inactivity ->
-                if (inactivity == Duration.ZERO) {
-                    "No inactivity information available."
-                } else {
-                    inactivity.pretty()
-                }
-            }
-        }.getOrElse {
-            it.message!!
-        }
+        get() = longestInactivity()
 
-    override val shortDescription: String
-        get() = TODO("Not yet implemented")
+    override val shortDescription
+        get() = longestInactivity()
+
+    private fun longestInactivity() = runCatching {
+        inactivityStatusService.getLongestInactivity().let { inactivity ->
+            if (inactivity == Duration.ZERO) {
+                "No inactivity information available."
+            } else {
+                inactivity.pretty()
+            }
+        }
+    }.getOrElse {
+        it.message!!
+    }
 }

@@ -7,14 +7,13 @@ import javax.annotation.PostConstruct
 @ConfigurationProperties("pulseq.security")
 class SecurityConfigurationProperties(
     var secret: String?,
-    var securedPaths: List<String>
+    var securedPaths: List<String> = listOf()
 ) {
     @PostConstruct
     private fun checkSecret() {
         secret ?: run {
             throw InvalidConfigurationException(
-                "pulseq.security.secret could not be null. " +
-                        "Please re-check your configuration."
+                "pulseq.security.secret"
             )
         }
     }

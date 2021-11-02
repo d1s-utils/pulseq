@@ -10,8 +10,7 @@ class TotalBeatsStatistic : Statistic {
     @Autowired
     private lateinit var beatService: BeatService
 
-    override val identify: String
-        get() = TODO("Not yet implemented")
+    override val identify = "total-beats"
 
     override val title = "Total Beats"
 
@@ -20,10 +19,16 @@ class TotalBeatsStatistic : Statistic {
             if (total <= 0) {
                 "No beats received yet."
             } else {
-                "${beatService.totalBeats()} beats was received for all time."
+                "$total beats was received for all time."
             }
         }
 
-    override val shortDescription: String
-        get() = TODO("Not yet implemented")
+    override val shortDescription
+        get() = beatService.totalBeats().let { total ->
+            if (total <= 0) {
+                "No beats received yet."
+            } else {
+                total.toString()
+            }
+        }
 }

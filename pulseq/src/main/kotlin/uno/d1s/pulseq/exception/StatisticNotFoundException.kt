@@ -1,4 +1,3 @@
 package uno.d1s.pulseq.exception
 
-class StatisticNotFoundException {
-}
+class StatisticNotFoundException(message: String) : RuntimeException(message)

@@ -6,13 +6,19 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import uno.d1s.pulseq.exception.BeatNotFoundException
 import uno.d1s.pulseq.exception.DeviceNotFoundException
 import uno.d1s.pulseq.exception.NoBeatsReceivedException
+import uno.d1s.pulseq.exception.StatisticNotFoundException
 import javax.servlet.http.HttpServletResponse
 
 @ControllerAdvice
 class ExceptionHandlerControllerAdvice {
 
-    @ExceptionHandler(BeatNotFoundException::class, DeviceNotFoundException::class, NoBeatsReceivedException::class)
+    @ExceptionHandler(
+        BeatNotFoundException::class,
+        DeviceNotFoundException::class,
+        NoBeatsReceivedException::class,
+        StatisticNotFoundException::class
+    )
     fun handleNotFound(exception: Exception, response: HttpServletResponse) {
-        response.sendError(HttpStatus.NOT_FOUND.value(), exception.message)
+        response.sendError(HttpStatus.BAD_REQUEST.value(), exception.message)
     }
 }

@@ -20,9 +20,13 @@ class DevicesStatistic : Statistic {
         get() = deviceService.findAllRegisteredDevices().let { devices ->
             if (devices.isEmpty()) "No devices registered yet." else
                 "The server receives beats from ${devices.size} device${grammar(devices.size)}: " +
-                        StringUtils.collectionToCommaDelimitedString(devices)
+                        StringUtils.collectionToCommaDelimitedString(
+                            devices.map {
+                                it.name
+                            }
+                        )
         }
 
-    override val shortDescription =
-        StringUtils.collectionToCommaDelimitedString(deviceService.findAllRegisteredDevices())
+    override val shortDescription
+        get() = StringUtils.collectionToCommaDelimitedString(deviceService.findAllRegisteredDevices())
 }
