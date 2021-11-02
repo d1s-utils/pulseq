@@ -60,13 +60,13 @@ class InactivityStatusServiceImpl : InactivityStatusService {
     override fun isRelevanceLevelNotCommon(): Boolean =
         this.getCurrentInactivityRelevanceLevel() != InactivityRelevanceLevel.COMMON
 
-    fun isLongInactivityDurationPointExceeded() =
+    private fun isLongInactivityDurationPointExceeded() =
         this.isDurationPointExceeded(inactivityConfigurationProperties.common)
 
-    fun isWarningInactivityDurationPointExceeded() =
+    private fun isWarningInactivityDurationPointExceeded() =
         this.isDurationPointExceeded(inactivityConfigurationProperties.warning)
 
-    fun isDurationPointExceeded(inactivityDuration: InactivityDurationPointConfigurationModel) = try {
+    private fun isDurationPointExceeded(inactivityDuration: InactivityDurationPointConfigurationModel) = try {
         this.getCurrentInactivity() > Duration.of(inactivityDuration.value, inactivityDuration.unit)
     } catch (_: NoBeatsReceivedException) {
         false
