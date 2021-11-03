@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: pulseq-client
+
+pulseq:
+  client:
+    serverUrl: "http://localhost:8080"
+    serverSecret: "changeit"
+    keyboard-listening-mode: count-down-latch
+
+logging:
+  level:
+    org:
+      springframework: debug

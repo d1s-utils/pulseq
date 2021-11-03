@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: pulseq
+
+  data:
+    mongodb:
+      database: pulseq-data
+      auto-index-creation: on
+      host: pulseq-mongodb
+      port: 27017
+
+pulseq:
+  version: "0.0.1-pre-alpha.1"
+  repository: "https://github.com/d1snin/pulseq"
+  security:
+    secured-paths:
+      - "/api/beat/"
+    secret: "changeit"

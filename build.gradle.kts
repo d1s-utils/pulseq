@@ -1,53 +1,61 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
-
 plugins {
-    id("org.springframework.boot") version "2.5.6"
-    id("io.spring.dependency-management") version "1.0.11.RELEASE"
-    kotlin("jvm") version "1.5.31"
-    kotlin("plugin.spring") version "1.5.31"
-    id("org.springframework.experimental.aot") version "0.10.4"
+    id("org.jetbrains.dokka") version "1.5.30" apply false
+    id("org.springframework.boot") version "2.5.6" apply false
+    id("io.spring.dependency-management") version "1.0.11.RELEASE" apply false
+    kotlin("jvm") version "1.5.31" apply false
+    kotlin("plugin.spring") version "1.5.31" apply false
 }
 
-group = "uno.d1s"
-version = "0.0.1"
-java.sourceCompatibility = JavaVersion.VERSION_11
-
-configurations {
-    compileOnly {
-        extendsFrom(configurations.annotationProcessor.get())
+subprojects {
+    apply {
+        plugin("org.jetbrains.dokka")
+        plugin("org.springframework.boot")
+        plugin("io.spring.dependency-management")
+        plugin("org.jetbrains.kotlin.jvm")
+        plugin("org.jetbrains.kotlin.plugin.spring")
     }
-}
 
-repositories {
-    maven {
-        url = uri("https://repo.spring.io/release")
+    extra["dokkaVersion"] = "1.5.30"
+
+    group = "uno.d1s"
+    version = "0.0.1-pre-alpha.1"
+
+    repositories {
+        maven {
+            url = uri("https://repo.spring.io/release")
+        }
+        mavenCentral()
     }
-    mavenCentral()
-}
 
-dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation(kotlin("reflect"))
-    implementation(kotlin("stdlib-jdk8"))
-    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-}
+    dependencies {
+        val dokkaHtmlPlugin by configurations
+        val implementation by configurations
+        val annotationProcessor by configurations
+        val testImplementation by configurations
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "11"
+        dokkaHtmlPlugin("org.jetbrains.dokka:kotlin-as-java-plugin:${property("dokkaVersion")}")
+        implementation("org.springframework.boot:spring-boot-starter")
+        implementation("org.jetbrains.kotlin:kotlin-reflect")
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+        annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+        testImplementation("org.springframework.boot:spring-boot-starter-test")
     }
-}
 
-tasks.withType<Test> {
-    useJUnitPlatform()
-}
+    tasks.withType<JavaCompile> {
+        sourceCompatibility = JavaVersion.VERSION_11.majorVersion
+    }
 
-tasks.withType<BootBuildImage> {
-    builder = "paketobuildpacks/builder:tiny"
-    environment = mapOf("BP_NATIVE_IMAGE" to "true")
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+        kotlinOptions {
+            freeCompilerArgs = listOf("-Xjsr305=strict")
+            jvmTarget = "11"
+        }
+    }
+
+    tasks.withType<Test> {
+        useJUnitPlatform()
+    }
+
+    tasks.register("wrapper") {}
+    tasks.register("prepareKotlinBuildScriptModel") {}
 }

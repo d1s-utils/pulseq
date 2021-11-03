@@ -1,0 +1,68 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Pulseq</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+            crossorigin="anonymous"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<div class="container">
+    <img src="https://media.discordapp.net/attachments/726559155548061757/904041640866508860/21_1.png?width=902&height=507"
+         alt="pulseq-logo" class="center-block"/>
+    <p class="fst-italic fw-bolder text-center text-break fs-6 info center-block text-white">
+        Hi, this web page shows when I was last online from all my devices (pressed the key, clicked on the phone
+        screen, etc.), one beat represents a successful request from the device to the server, here are some data that
+        may be interesting.
+    </p>
+    <p class="fw-bolder text-center center-block text-white">
+        Running on version <code th:text="${globalConfigurationProperties.version}">version</code> of <a
+            th:href="${globalConfigurationProperties.repository}">Pulseq</a>
+    </p>
+</div>
+<div class="container">
+    <div class="row justify-content-center">
+        <div th:each="card : ${@statisticService.getAllStatistics()}" class="col-sm-6">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${card.title}">Special title treatment</h5>
+                    <p class="card-text" th:text="${card.description}">With supporting text below as a natural lead-in
+                        to additional content.</p>
+                </div>
+            </div>
+        </div>
+        <form>
+            <button class="btn btn-lg btn-outline-success center-block mt-5" type="submit" th:formaction="@{'/'}">
+                Reload
+            </button>
+        </form>
+    </div>
+</div>
+</body>
+<style>
+    body {
+        background-color: #212121;
+    }
+
+    .card {
+        margin: 20px;
+    }
+
+    img {
+        width: 50%;
+    }
+
+    .center-block {
+        display: block;
+        margin-right: auto;
+        margin-left: auto;
+    }
+
+    .info {
+        width: 50%;
+    }
+</style>
+</html>
