@@ -2,10 +2,6 @@ spring:
   application:
     name: pulseq
 
-  # Used for YAML configurations.
-  config:
-    import: file:../pulseq.yml
-
   data:
     mongodb:
       database: ${PULSEQ_MONGODB_DATABASE:pulseq-data}
