@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
+import uno.d1s.pulseq.client.configuration.properties.KeyboardListeningModeConfigurationProperties
 import uno.d1s.pulseq.client.constant.KeyboardListeningModeConstants
 import uno.d1s.pulseq.client.event.KeyboardActivityDetectedEvent
 import uno.d1s.pulseq.client.service.BeatSenderService
@@ -20,11 +21,15 @@ class CountDownLatchKeyboardEventListener {
     @Autowired
     private lateinit var beatSenderService: BeatSenderService
 
+    @Autowired
+    private lateinit var keyboardListeningModeConfigurationProperties: KeyboardListeningModeConfigurationProperties
+
     private val logger = LogManager.getLogger()
 
-    // TODO: 11/3/21 make this configurable
-    private val total = 5
     private var count = reset()
+
+    private val total
+        get() = keyboardListeningModeConfigurationProperties.countDownLatch.countTrigger
 
     @EventListener
     fun handleKeyboardEvent(event: KeyboardActivityDetectedEvent) {
