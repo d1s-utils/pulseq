@@ -18,7 +18,7 @@ subprojects {
     extra["dokkaVersion"] = "1.5.30"
 
     group = "uno.d1s"
-    version = "0.0.1-pre-alpha.1"
+    version = "0.0.1-alpha.1"
 
     repositories {
         maven {
