@@ -12,6 +12,8 @@ pulseq:
     server-url: http://localhost:8080
     server-secret: change-this
     device-name: arch
+
     keyboard-listening-mode:
       count-down-latch:
         enabled: true
+        count-trigger: 5
