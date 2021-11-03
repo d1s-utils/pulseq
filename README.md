@@ -1,1 +1,2 @@
-![pulseq](https://media.discordapp.net/attachments/726559155548061757/902486153557602304/19.png?width=934&height=525)
+![pulseq](https://raw.githubusercontent.com/d1snin-dev/pulseq/master/img/pulseq.png?token=AQIC7VPKK6ZJDN4QN4PNPMTBQKU6W)\
+***Coming soon (tm)***
