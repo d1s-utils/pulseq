@@ -1,5 +1,6 @@
 package uno.d1s.pulseq.util
 
+import uno.d1s.pulseq.core.util.grammar
 import java.time.Duration
 
 fun Duration.pretty(): String = buildString {

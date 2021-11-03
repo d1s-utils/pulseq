@@ -1,8 +1,8 @@
-package uno.d1s.pulseq.failure.analyzer
+package uno.d1s.pulseq.core.failure.analyzer
 
 import org.springframework.boot.diagnostics.AbstractFailureAnalyzer
 import org.springframework.boot.diagnostics.FailureAnalysis
-import uno.d1s.pulseq.exception.InvalidConfigurationException
+import uno.d1s.pulseq.core.exception.InvalidConfigurationException
 
 class InvalidConfigurationPropertiesFailureAnalyzer : AbstractFailureAnalyzer<InvalidConfigurationException>() {
 

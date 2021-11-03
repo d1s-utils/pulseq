@@ -14,6 +14,7 @@ repositories {
 }
 
 dependencies {
+    implementation(project(":pulseq-core-starter"))
     implementation("com.github.kwhat:jnativehook:${property("jnativeHookVersion")}")
     implementation("io.ktor:ktor-client-core:${property("ktorVersion")}")
     implementation("io.ktor:ktor-client-cio:${property("ktorVersion")}")

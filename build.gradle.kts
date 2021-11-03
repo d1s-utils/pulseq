@@ -41,7 +41,7 @@ subprojects {
         testImplementation("org.springframework.boot:spring-boot-starter-test")
     }
 
-    tasks.withType<JavaCompile>() {
+    tasks.withType<JavaCompile> {
         sourceCompatibility = JavaVersion.VERSION_11.majorVersion
     }
 

@@ -1,4 +1,4 @@
-package uno.d1s.pulseq.exception
+package uno.d1s.pulseq.core.exception
 
 class InvalidConfigurationException(
     val property: String,

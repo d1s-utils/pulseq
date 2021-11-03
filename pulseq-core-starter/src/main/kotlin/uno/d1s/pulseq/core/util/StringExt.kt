@@ -1,4 +1,4 @@
-package uno.d1s.pulseq.util
+package uno.d1s.pulseq.core.util
 
 fun String.grammar(number: Number) =
     if (number != 1) "${this}s" else this

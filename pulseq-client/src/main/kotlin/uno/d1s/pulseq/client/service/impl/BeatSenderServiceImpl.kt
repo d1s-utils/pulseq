@@ -12,9 +12,16 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import uno.d1s.pulseq.client.configuration.properties.ClientConfigurationProperties
 import uno.d1s.pulseq.client.service.BeatSenderService
+import uno.d1s.pulseq.core.util.withSlash
+import java.nio.file.Paths
+import kotlin.io.path.div
 
 @Service
 class BeatSenderServiceImpl : BeatSenderService {
+
+    companion object {
+        private const val BEAT_PATH = "/api/beat/"
+    }
 
     private val logger = LogManager.getLogger()
 
@@ -28,13 +35,7 @@ class BeatSenderServiceImpl : BeatSenderService {
         CoroutineScope(Dispatchers.Default).launch {
             logger.info("Sending beat from device ${clientConfigurationProperties.deviceName} to ${clientConfigurationProperties.serverUrl!!}")
             httpClient.post<HttpResponse>(
-                clientConfigurationProperties.serverUrl!!.let {
-                    if (it.endsWith("/")) {
-                        it
-                    } else {
-                        "$it/"
-                    }
-                } + "api/beat/"
+                (Paths.get(clientConfigurationProperties.serverUrl!!.withSlash()) / BEAT_PATH).toString()
             ) {
                 parameter("device", clientConfigurationProperties.deviceName)
                 header("Authorization", clientConfigurationProperties.serverSecret)

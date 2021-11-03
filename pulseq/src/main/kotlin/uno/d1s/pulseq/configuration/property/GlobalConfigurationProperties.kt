@@ -1,7 +1,7 @@
 package uno.d1s.pulseq.configuration.property
 
 import org.springframework.boot.context.properties.ConfigurationProperties
-import uno.d1s.pulseq.exception.InvalidConfigurationException
+import uno.d1s.pulseq.core.exception.InvalidConfigurationException
 import javax.annotation.PostConstruct
 
 @ConfigurationProperties("pulseq")

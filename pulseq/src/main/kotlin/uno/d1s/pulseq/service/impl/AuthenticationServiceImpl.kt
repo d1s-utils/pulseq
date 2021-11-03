@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service
 import org.springframework.util.AntPathMatcher
 import uno.d1s.pulseq.configuration.property.SecurityConfigurationProperties
 import uno.d1s.pulseq.service.AuthenticationService
-import uno.d1s.pulseq.util.withSlash
+import uno.d1s.pulseq.core.util.withSlash
 
 @Service("authenticationService")
 class AuthenticationServiceImpl : AuthenticationService {
