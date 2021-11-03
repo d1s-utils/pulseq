@@ -2,17 +2,33 @@ spring:
   application:
     name: pulseq
 
+  # Used for YAML configurations.
+  config:
+    import: file:../pulseq.yml
+
   data:
     mongodb:
-      database: pulseq-data
+      database: ${PULSEQ_MONGODB_DATABASE:pulseq-data}
       auto-index-creation: on
-      host: pulseq-mongodb
-      port: 27017
+      host: ${PULSEQ_MONGODB_HOST:pulseq-mongodb}
+      port: ${PULSEQ_MONGODB_PORT:27017}
 
 pulseq:
-  version: "0.0.1-alpha.1"
-  repository: "https://github.com/d1snin/pulseq"
+  badge:
+    color: ${PULSEQ_BADGE_COLOR:ff7878}
+
+  version: ${PULSEQ_VERSION:0.0.2-alpha.1}
+  repository: ${PULSEQ_REPOSITORY:"https://github.com/d1snin/pulseq"}
+
+  inactivity:
+    common: ${PULSEQ_COMMON_INACTIVITY:18000000}
+    warning: ${PULSEQ_WARNING_INACTIVITY:86400000}
+
+  notifications:
+    discord:
+      enabled: true
+      webhooks: ${PULSEQ_DISCORD_WEBHOOKS:} # No default value, equivalent to empty string.
+
   security:
-    secured-paths:
-      - "/api/beat/"
-    secret: "changeit"
+    secured-paths: ${PULSEQ_SECURED_PATHS:${[ "/api/beat/" ]}}
+    secret: ${PULSEQ_SECRET:changeit}

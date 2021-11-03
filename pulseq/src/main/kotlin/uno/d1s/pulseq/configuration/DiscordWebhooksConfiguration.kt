@@ -18,7 +18,7 @@ class DiscordWebhooksConfiguration {
     @Bean
     fun webhookCluster(): WebhookCluster = WebhookCluster().apply {
         addWebhooks(
-            notificationsConfigurationProperties.discord.webhooks.map {
+            notificationsConfigurationProperties.discord.parsedWebhooks().map {
                 WebhookClient.withUrl(it)
             }
         )
