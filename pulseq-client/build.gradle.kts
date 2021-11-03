@@ -19,7 +19,3 @@ dependencies {
     implementation("io.ktor:ktor-client-core:${property("ktorVersion")}")
     implementation("io.ktor:ktor-client-cio:${property("ktorVersion")}")
 }
-
-tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootBuildImage> {
-    this.imageName = "ghcr.io/d1snin/pulseq"
-}
