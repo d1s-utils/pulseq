@@ -6,15 +6,14 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
 import uno.d1s.pulseq.client.configuration.properties.KeyboardListeningModeConfigurationProperties
-import uno.d1s.pulseq.client.constant.KeyboardListeningModeConstants
 import uno.d1s.pulseq.client.event.KeyboardActivityDetectedEvent
 import uno.d1s.pulseq.client.service.BeatSenderService
 
 @Component
 @ConditionalOnProperty(
-    prefix = "pulseq.client",
-    name = ["keyboard-listening-mode"],
-    havingValue = KeyboardListeningModeConstants.COUNT_DOWN_LATCH
+    prefix = "pulseq.client.keyboard-listening-mode.count-down-latch",
+    name = ["enabled"],
+    havingValue = "true"
 )
 class CountDownLatchKeyboardEventListener {
 
