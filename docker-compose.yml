@@ -23,7 +23,6 @@ services:
   pulseq:
     image: pulseq:0.0.1-pre-alpha.1
     container_name: pulseq
-    restart: always
     networks:
       - pulseq-net
     ports:
