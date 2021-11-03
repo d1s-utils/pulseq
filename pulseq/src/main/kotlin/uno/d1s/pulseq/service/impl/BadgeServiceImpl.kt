@@ -23,7 +23,7 @@ class BadgeServiceImpl : BadgeService {
     override fun createBadge(statisticId: String): ByteArray =
         statisticService.getStatisticByIdentify(statisticId).let { stat ->
             restTemplate.getForObject(
-                "https://raster.shields.io/badge/${stat.title}-${stat.shortDescription}-${badgeConfigurationProperties.defaultColor}",
+                "https://raster.shields.io/badge/${stat.title}-${stat.shortDescription}-${badgeConfigurationProperties.color}",
                 ByteArray::class
             )
         }
