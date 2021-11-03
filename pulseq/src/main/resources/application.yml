@@ -13,7 +13,7 @@ pulseq:
   badge:
     color: ${PULSEQ_BADGE_COLOR:ff7878}
 
-  version: ${PULSEQ_VERSION:0.0.2-alpha.2}
+  version: ${PULSEQ_VERSION:0.0.2-alpha.3}
   repository: ${PULSEQ_REPOSITORY:"https://github.com/d1snin/pulseq"}
 
   inactivity:
@@ -26,7 +26,7 @@ pulseq:
       webhooks: ${PULSEQ_DISCORD_WEBHOOKS:} # No default value, equivalent to empty string.
 
   security:
-    secured-paths: ${PULSEQ_SECURED_PATHS:${[ "/api/beat/" ]}}
+    secured-paths: ${PULSEQ_SECURED_PATHS:/api/beat/}
     secret: ${PULSEQ_SECRET:changeit}
 
 
