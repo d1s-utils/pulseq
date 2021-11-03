@@ -10,7 +10,7 @@ import java.time.Instant
 class Beat(
     @DBRef
     val device: Device,
-    val inactivityBeforeBeat: Duration,
+    val inactivityBeforeBeat: Duration?, // could be null if it is a first beat.
     val beatTime: Instant = Instant.now()
 ) {
     @Id

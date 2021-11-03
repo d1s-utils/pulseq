@@ -14,10 +14,5 @@ pulseq:
   repository: "https://github.com/d1snin/pulseq"
   security:
     secured-paths:
-      - "T(uno.d1s.pulseq.constant.mapping.BeatMappingConstants).BASE"
+      - "/api/beat/"
     secret: "changeit"
-
-  notifications:
-    discord:
-      webhooks:
-        - "https://canary.discord.com/api/webhooks/903729999578800128/AaUJpbR0Z2aE7pntlRs6NiMVtZs1hczFkb803h5cF_2AF1K-c27Cuj3DM8lJE338m4Ij"

@@ -14,7 +14,6 @@ import uno.d1s.pulseq.service.BeatService
 import uno.d1s.pulseq.service.DeviceService
 import uno.d1s.pulseq.service.InactivityStatusService
 import uno.d1s.pulseq.util.findClosestInstantToCurrent
-import java.time.Duration
 import kotlin.properties.Delegates
 
 @Service("beatService")
@@ -53,7 +52,7 @@ class BeatServiceImpl : BeatService {
             runCatching {
                 inactivityService.getCurrentInactivity()
             }.getOrElse {
-                Duration.ZERO
+                null
             }).let { unsavedBeat ->
             if (inactivityService.isRelevanceLevelNotCommon()) {
                 beatRepository.save(unsavedBeat).let { savedBeat ->
@@ -81,7 +80,7 @@ class BeatServiceImpl : BeatService {
 
     @Transactional(readOnly = true)
     override fun findAllBeatsByDeviceIdentify(deviceIdentify: String): List<Beat> =
-        deviceService.findDeviceByIdentify(deviceIdentify).beats ?: listOf() // maybe throw an exception here?
+        deviceService.findDeviceByIdentify(deviceIdentify).beats ?: listOf()
 
     @Transactional(readOnly = true)
     override fun findAllBeats(): List<Beat> =

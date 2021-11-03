@@ -14,8 +14,6 @@ services:
     restart: always
     networks:
       - pulseq-net
-    ports:
-      - "27017:27017"
     expose:
       - 27017
     volumes:

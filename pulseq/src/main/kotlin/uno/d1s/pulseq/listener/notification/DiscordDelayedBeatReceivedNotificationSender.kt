@@ -26,7 +26,9 @@ class DiscordDelayedBeatReceivedNotificationSender {
                 // see https://colorpicker.me/#b4ff77
                 setColor(0xb4ff77)
                 setDescription(
-                    "A beat with id `${event.beat.id}` was just received after `${event.beat.inactivityBeforeBeat.pretty()}` of inactivity!"
+                    event.beat.inactivityBeforeBeat.let {
+                        "A beat with id `${event.beat.id}` was just received" + if (it == null) "!" else " after `${it.pretty()}` of inactivity!"
+                    }
                 )
             }
         )

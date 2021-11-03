@@ -5,3 +5,10 @@ fun String.grammar(number: Number) =
 
 fun grammar(number: Number) =
     if (number != 1) "s" else ""
+
+fun String.withSlash() =
+    if (!this.endsWith("/")) {
+        "$this/"
+    } else {
+        this
+    }
