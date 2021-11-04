@@ -27,7 +27,7 @@ pulseq:
 
   security:
     secured-paths: ${PULSEQ_SECURED_PATHS:/api/beat/}
-    secret: ${PULSEQ_SECRET:changeit}
+    secret: ${PULSEQ_SECRET:change-this}
 
 
 server:
