@@ -6,7 +6,7 @@ spring:
     mongodb:
       database: ${PULSEQ_MONGODB_DATABASE:pulseq-data}
       auto-index-creation: on
-      host: ${PULSEQ_MONGODB_HOST:pulseq-mongodb}
+      host: ${PULSEQ_MONGODB_HOST:localhost}
       port: ${PULSEQ_MONGODB_PORT:27017}
 
 pulseq:
@@ -32,3 +32,7 @@ pulseq:
 
 server:
   port: ${PULSEQ_PORT:8080}
+
+  error:
+    whitelabel:
+      enabled: false

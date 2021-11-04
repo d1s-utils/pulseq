@@ -21,7 +21,7 @@ services:
       - mongo-config:/data/configdb
 
   pulseq:
-    image: pulseq:latest
+    image: pulseq:0.0.2-alpha.3
     container_name: pulseq
     networks:
       - pulseq-net
@@ -30,7 +30,7 @@ services:
     depends_on:
       - pulseq-mongodb
     environment:
-      - PULSEQ_PORT=8080 # Example
+      - PULSEQ_MONGODB_HOST=pulseq-mongodb
 
 networks:
   pulseq-net:
