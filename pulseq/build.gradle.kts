@@ -10,6 +10,7 @@ configurations {
 
 dependencies {
     implementation(project(":pulseq-core-starter"))
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
     implementation("club.minnced:discord-webhooks:${property("discordWebhooksVersion")}")
     implementation("org.springframework.boot:spring-boot-starter-web")
