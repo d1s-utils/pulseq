@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component
 import uno.d1s.pulseq.client.configuration.properties.KeyboardListeningModeConfigurationProperties
 import uno.d1s.pulseq.client.event.KeyboardActivityDetectedEvent
 import uno.d1s.pulseq.client.service.BeatSenderService
+import java.util.*
+import java.util.concurrent.ConcurrentLinkedDeque
 
 @Component
 @ConditionalOnProperty(
@@ -18,33 +20,29 @@ import uno.d1s.pulseq.client.service.BeatSenderService
 class CountDownLatchKeyboardEventListener {
 
     @Autowired
-    private lateinit var beatSenderService: BeatSenderService
+    private lateinit var beatSenderService: BeatSenderService //fffff
 
     @Autowired
     private lateinit var keyboardListeningModeConfigurationProperties: KeyboardListeningModeConfigurationProperties
 
     private val logger = LogManager.getLogger()
 
-    private var count = reset()
-
     private val total
         get() = keyboardListeningModeConfigurationProperties.countDownLatch.countTrigger
 
+    private var queue: Queue<Int> = ConcurrentLinkedDeque()
+
     @EventListener
     fun handleKeyboardEvent(event: KeyboardActivityDetectedEvent) {
-        if (count == 0) {
-            reset()
+        if (queue.isEmpty()) {
+            queue.addAll(1..total)
         }
 
-        count -= 1
-        logger.debug("Key typed: ${event.key}; Count: ${total - count}/$total")
+        queue.remove()
+        logger.debug("Key typed: ${event.key}; Count: ${queue.peek() ?: 0}/$total")
 
-        if (count == 0) {
+        queue.peek() ?: run {
             beatSenderService.sendBeat()
         }
-    }
-
-    private fun reset(): Int = total.also {
-        count = it
     }
 }
