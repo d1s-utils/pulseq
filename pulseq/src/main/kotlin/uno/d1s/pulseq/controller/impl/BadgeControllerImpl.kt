@@ -14,7 +14,7 @@ class BadgeControllerImpl : BadgeController {
     private lateinit var badgeService: BadgeService
 
     override fun getBadge(@PathVariable statisticId: String, response: HttpServletResponse) {
-        response.apply {
+        response.run {
             contentType = "image/svg+xml"
             writer.println(String(badgeService.createBadge(statisticId)))
         }
