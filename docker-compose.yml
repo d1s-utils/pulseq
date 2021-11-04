@@ -21,7 +21,7 @@ services:
       - mongo-config:/data/configdb
 
   pulseq:
-    image: docker.pkg.github.com/pulseq/pulseq:latest
+    image: docker.pkg.github.com/d1snin-dev/pulseq/pulseq:latest
     container_name: pulseq
     networks:
       - pulseq-net
