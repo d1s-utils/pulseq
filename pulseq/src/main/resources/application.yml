@@ -17,7 +17,7 @@ pulseq:
     color: ${PULSEQ_BADGE_COLOR:ff7878}
 
   version: ${PULSEQ_VERSION:0.0.2-alpha.3}
-  repository: ${PULSEQ_REPOSITORY:"https://github.com/d1snin/pulseq"}
+  repository: ${PULSEQ_REPOSITORY:https://github.com/d1snin/pulseq}
 
   inactivity:
     common: ${PULSEQ_COMMON_INACTIVITY:18000000}
