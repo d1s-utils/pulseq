@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: pulseq-client
+
+logging:
+  level:
+    org:
+      springframework: debug
+
+pulseq:
+  client:
+    server-url: localhost:80
+    server-secret: change-this
+    device-name: some-device
+
+    keyboard-listening-mode:
+      count-down-latch:
+        enabled: true
+        count-trigger: 5
