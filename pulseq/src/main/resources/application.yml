@@ -32,6 +32,9 @@ pulseq:
     secured-paths: ${PULSEQ_SECURED_PATHS:/api/beat/}
     secret: ${PULSEQ_SECRET:change-this}
 
+  view:
+    enabled: ${PULSEQ_VIEW_ENABLED:true}
+
 server:
   port: ${PULSEQ_PORT:8080}
 
