@@ -5,4 +5,4 @@ management:
         exclude: "*"
 
 server:
-  port: 80
+  port: 443
