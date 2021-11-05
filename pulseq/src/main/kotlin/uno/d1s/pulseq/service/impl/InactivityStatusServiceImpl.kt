@@ -67,8 +67,8 @@ class InactivityStatusServiceImpl : InactivityStatusService {
     private fun isWarningInactivityDurationPointExceeded() =
         this.isDurationPointExceeded(inactivityConfigurationProperties.warning)
 
-    private fun isDurationPointExceeded(millis: Long) = try {
-        this.getCurrentInactivity() > Duration.ofMillis(millis)
+    private fun isDurationPointExceeded(duration: Duration) = try {
+        this.getCurrentInactivity() > duration
     } catch (_: NoBeatsReceivedException) {
         false
     }
