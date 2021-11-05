@@ -30,8 +30,7 @@ services:
     depends_on:
       - pulseq-mongodb
     environment:
-      PULSEQ_MONGODB_HOST: pulseq-mongodb
-      PULSEQ_STATISTICS_EXCLUDE: last-beat,last-beat-time
+      SPRING_DATA_MONGODB_HOST: pulseq-mongodb
 
 networks:
   pulseq-net:

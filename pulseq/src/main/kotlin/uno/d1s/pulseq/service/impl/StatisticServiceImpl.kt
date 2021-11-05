@@ -27,7 +27,7 @@ class StatisticServiceImpl : StatisticService {
         } ?: throw StatisticNotFoundException("Provided identify is not valid or the statistic is disabled.")
 
     private fun notExcluded(identify: String) =
-        statisticsConfigurationProperties.parsedExcludes().none {
+        statisticsConfigurationProperties.exclude.none {
             it == identify
         }
 }
