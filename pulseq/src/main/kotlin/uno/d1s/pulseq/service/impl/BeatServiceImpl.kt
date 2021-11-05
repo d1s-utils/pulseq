@@ -1,6 +1,8 @@
 package uno.d1s.pulseq.service.impl
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.cache.annotation.CacheConfig
+import org.springframework.cache.annotation.CachePut
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
@@ -19,6 +21,7 @@ import uno.d1s.pulseq.util.findClosestInstantToCurrent
 import kotlin.properties.Delegates
 
 @Service("beatService")
+@CacheConfig(cacheNames = [CacheNameConstants.BEAT])
 class BeatServiceImpl : BeatService {
 
     @Autowired
@@ -33,12 +36,14 @@ class BeatServiceImpl : BeatService {
     @Autowired
     private lateinit var eventPublisher: ApplicationEventPublisher
 
+    @Cacheable
     @Transactional(readOnly = true)
     override fun findBeatById(id: String): Beat =
         beatRepository.findById(id).orElseThrow {
             BeatNotFoundException("Could not find any beats with provided id.")
         }
 
+    @CachePut
     @Transactional
     override fun registerNewBeatWithDeviceIdentify(identify: String): Beat {
         var device: Device by Delegates.notNull()
@@ -76,6 +81,7 @@ class BeatServiceImpl : BeatService {
     override fun findAllBeatsByDeviceId(deviceId: String): List<Beat> =
         beatRepository.findAllByDeviceIdEquals(deviceId)
 
+    @Cacheable
     @Transactional(readOnly = true)
     override fun findAllBeatsByDeviceName(deviceName: String): List<Beat> =
         beatRepository.findAllByDeviceNameEqualsIgnoreCase(deviceName)
@@ -84,8 +90,8 @@ class BeatServiceImpl : BeatService {
     override fun findAllBeatsByDeviceIdentify(deviceIdentify: String): List<Beat> =
         deviceService.findDeviceByIdentify(deviceIdentify).beats ?: listOf()
 
+    @Cacheable
     @Transactional(readOnly = true)
-    @Cacheable(cacheNames = [CacheNameConstants.BEAT])
     override fun findAllBeats(): List<Beat> =
         beatRepository.findAll()
 
