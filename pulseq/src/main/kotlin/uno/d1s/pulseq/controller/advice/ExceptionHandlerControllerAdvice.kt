@@ -7,10 +7,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
-import uno.d1s.pulseq.exception.BeatNotFoundException
-import uno.d1s.pulseq.exception.DeviceNotFoundException
-import uno.d1s.pulseq.exception.NoBeatsReceivedException
-import uno.d1s.pulseq.exception.StatisticNotFoundException
+import uno.d1s.pulseq.exception.*
+import java.net.MalformedURLException
 
 
 @ControllerAdvice
@@ -20,7 +18,9 @@ class ExceptionHandlerControllerAdvice : ResponseEntityExceptionHandler() {
         BeatNotFoundException::class,
         DeviceNotFoundException::class,
         NoBeatsReceivedException::class,
-        StatisticNotFoundException::class
+        StatisticNotFoundException::class,
+        MalformedURLException::class,
+        InvalidImageUrlException::class
     )
     protected fun handleConflict(ex: RuntimeException, request: WebRequest): ResponseEntity<Any> {
         return super.handleExceptionInternal(

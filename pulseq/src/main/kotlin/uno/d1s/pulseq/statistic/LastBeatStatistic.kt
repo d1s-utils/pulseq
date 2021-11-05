@@ -28,7 +28,7 @@ class LastBeatStatistic : Statistic {
 
     override val shortDescription
         get() = runCatching {
-            inactivityStatusService.getCurrentInactivityPretty()
+            "${inactivityStatusService.getCurrentInactivityPretty()} ago"
         }.getOrElse {
             it.message!!
         }
