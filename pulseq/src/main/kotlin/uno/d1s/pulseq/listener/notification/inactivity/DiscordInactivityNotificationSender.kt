@@ -11,7 +11,7 @@ import uno.d1s.pulseq.util.WebhookEmbedBuilderHelper
 import uno.d1s.pulseq.util.pretty
 
 @Component
-@ConditionalOnProperty("pulseq.notifications.discord.enabled")
+@ConditionalOnProperty(prefix = "pulseq.notifications.discord", name = ["enabled"])
 class DiscordInactivityNotificationSender {
 
     @Autowired

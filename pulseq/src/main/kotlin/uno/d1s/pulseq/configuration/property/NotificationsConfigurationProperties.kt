@@ -6,5 +6,5 @@ import uno.d1s.pulseq.configuration.property.model.notifications.DiscordWebhooks
 @ConfigurationProperties("pulseq.notifications")
 class NotificationsConfigurationProperties(
     var discord: DiscordWebhooksConfigurationModel
-    = DiscordWebhooksConfigurationModel(true, ""),
+    = DiscordWebhooksConfigurationModel(true, listOf()),
 )

@@ -7,39 +7,18 @@ spring:
 
   data:
     mongodb:
-      database: ${PULSEQ_MONGODB_DATABASE:pulseq-data}
+      database: pulseq-data
       auto-index-creation: on
       host: ${PULSEQ_MONGODB_HOST:localhost}
-      port: ${PULSEQ_MONGODB_PORT:27017}
+      port: 27017
 
 pulseq:
-  statistics:
-    exclude: ${PULSEQ_STATISTICS_EXCLUDE:}
-
-  badge:
-    color: ${PULSEQ_BADGE_COLOR:ff7878}
-
-  version: ${PULSEQ_VERSION:0.0.2-alpha.3}
-  repository: ${PULSEQ_REPOSITORY:https://github.com/d1snin/pulseq}
-
-  inactivity:
-    common: ${PULSEQ_COMMON_INACTIVITY:18000000}
-    warning: ${PULSEQ_WARNING_INACTIVITY:86400000}
-
-  notifications:
-    discord:
-      enabled: true
-      webhooks: ${PULSEQ_DISCORD_WEBHOOKS:} # No default value, equivalent to empty string.
+  version: 0.0.2-alpha.3
+  repository: https://github.com/d1snin/pulseq
 
   security:
-    secured-paths: ${PULSEQ_SECURED_PATHS:/api/beat/}
-    secret: ${PULSEQ_SECRET:change-this}
-
-  view:
-    enabled: ${PULSEQ_VIEW_ENABLED:true}
-
-server:
-  port: ${PULSEQ_PORT:8080}
+    secured-paths: /api/beat/
+    secret: change-this
 
   error:
     whitelabel:
