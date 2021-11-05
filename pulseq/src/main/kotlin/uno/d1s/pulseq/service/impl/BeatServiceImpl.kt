@@ -1,9 +1,11 @@
 package uno.d1s.pulseq.service.impl
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uno.d1s.pulseq.constant.cache.CacheNameConstants
 import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.domain.Device
 import uno.d1s.pulseq.event.DelayedBeatReceivedEvent
@@ -83,6 +85,7 @@ class BeatServiceImpl : BeatService {
         deviceService.findDeviceByIdentify(deviceIdentify).beats ?: listOf()
 
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = [CacheNameConstants.BEAT])
     override fun findAllBeats(): List<Beat> =
         beatRepository.findAll()
 
