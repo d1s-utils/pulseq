@@ -13,6 +13,9 @@ spring:
       port: ${PULSEQ_MONGODB_PORT:27017}
 
 pulseq:
+  statistics:
+    exclude: ${PULSEQ_STATISTICS_EXCLUDE:}
+
   badge:
     color: ${PULSEQ_BADGE_COLOR:ff7878}
 
