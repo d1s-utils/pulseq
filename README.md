@@ -6,8 +6,9 @@
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 [![total-lines](https://img.shields.io/tokei/lines/github/d1snin-dev/pulseq?color=orange)](https://github.com/d1snin-dev/pulseq)
 
-> *The main idea of pulseq is to provide statistics on your device usage and notify you if you haven't been online for too long.*\
 > Pulseq is inspired by [`technically-functional/heartbeat`](https://github.com/technically-functional/heartbeat), which is licensed under the [ISC license](https://github.com/technically-functional/heartbeat/blob/master/LICENSE.md).
+
+The main idea of pulseq is to provide statistics on your device usage and notify you if you haven't been online for too long.
 
 #### Try pulseq in action right now!
 ```shell
