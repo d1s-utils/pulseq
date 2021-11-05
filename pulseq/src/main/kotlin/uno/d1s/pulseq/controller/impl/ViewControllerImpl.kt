@@ -16,5 +16,5 @@ class ViewControllerImpl : ViewController {
 
     override fun getPage(): ModelAndView =
         // somehow I can't access this properties inside thymeleaf.
-        ModelAndView("index", mapOf("globalConfigurationProperties" to globalConfigurationProperties))
+        ModelAndView("main", mapOf("globalConfigurationProperties" to globalConfigurationProperties))
 }

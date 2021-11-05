@@ -9,8 +9,8 @@ logging:
 
 pulseq:
   client:
-    server-url: http://localhost:8080
-    server-secret: change-this
+    server-url: https://pq.d1s.uno
+    server-secret: sussy-baka
     device-name: arch
 
     keyboard-listening-mode:
