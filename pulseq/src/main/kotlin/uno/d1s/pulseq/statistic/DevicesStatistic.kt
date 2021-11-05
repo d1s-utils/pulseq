@@ -3,8 +3,8 @@ package uno.d1s.pulseq.statistic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
-import uno.d1s.pulseq.service.DeviceService
 import uno.d1s.pulseq.core.util.grammar
+import uno.d1s.pulseq.service.DeviceService
 import uno.d1s.pulseq.util.toCommaDelimitedString
 
 @Component
@@ -27,5 +27,9 @@ class DevicesStatistic : Statistic {
         }
 
     override val shortDescription
-        get() = StringUtils.collectionToCommaDelimitedString(deviceService.findAllRegisteredDevices())
+        get() = StringUtils.collectionToCommaDelimitedString(
+            deviceService.findAllRegisteredDevices().map {
+                it.name
+            }
+        )
 }
