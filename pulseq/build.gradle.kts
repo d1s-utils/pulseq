@@ -1,5 +1,6 @@
 extra["discordWebhooksVersion"] = "0.7.2"
 extra["commonsIOVersion"] = "2.11.0"
+extra["caffeineVersion"] = "3.0.4"
 
 version = project.version
 
@@ -18,4 +19,5 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("commons-io:commons-io:${property("commonsIOVersion")}")
+    implementation("com.github.ben-manes.caffeine:caffeine:${property("caffeineVersion")}")
 }
