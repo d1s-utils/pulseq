@@ -28,7 +28,9 @@ pulseq:
   repository: https://github.com/d1snin/pulseq
 
   security:
-    secured-paths: /api/beat/
+    secured-paths:
+      - "/api/beat/"
+      - "/api/device/new/"
     secret: change-this
 
   view:
