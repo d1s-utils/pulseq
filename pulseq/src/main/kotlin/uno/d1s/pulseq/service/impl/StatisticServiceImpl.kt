@@ -26,6 +26,11 @@ class StatisticServiceImpl : StatisticService {
             it.identify == identify && notExcluded(identify)
         } ?: throw StatisticNotFoundException("Provided identify is not valid or the statistic is disabled.")
 
+    override fun getStatisticsFormatted(): String =
+        this.getAllStatistics().joinToString("\n") {
+            "${it.title}: ${it.shortDescription}"
+        }
+
     private fun notExcluded(identify: String) =
         statisticsConfigurationProperties.exclude.none {
             it == identify
