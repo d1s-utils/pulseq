@@ -1,6 +1,5 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:with="desc=' Pulseq is a service for monitoring activity from all your devices.' +
- ${@statisticService.getStatisticsFormatted()}">
+<head th:with="desc=${@statisticService.getStatisticsFormatted()}">
 
     <title>Pulseq</title>
     <meta name="title" content=" Pulseq ">
@@ -19,6 +18,8 @@
     <meta property="twitter:description" th:content="${desc}">
     <meta property="twitter:image"
           content="/favicon.png">
+
+    <meta property="theme-color" th:content="${themeColor}">
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"

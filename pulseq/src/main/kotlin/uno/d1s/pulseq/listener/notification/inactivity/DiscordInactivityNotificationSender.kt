@@ -29,6 +29,7 @@ class DiscordInactivityNotificationSender {
             webhookCluster.broadcast(
                 embedBuilderHelper.embedDefault {
                     // see https://colorpicker.me/#ff4935, https://colorpicker.me/#ffce360
+                    // TODO: 11/6/21 Colors configurability 
                     setColor(if (event.inactivityRelevanceLevel == InactivityRelevanceLevel.WARNING) 0xff4935 else 0xffce360)
                     setDescription(
                         "**${event.inactivityRelevanceLevel.nameString} inactivity point was just exceeded.** Last beat was registered `${event.currentInactivity.pretty()}` ago " +

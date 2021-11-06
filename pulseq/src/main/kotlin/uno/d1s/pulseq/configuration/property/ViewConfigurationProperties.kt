@@ -1,9 +1,10 @@
 package uno.d1s.pulseq.configuration.property
 
 import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.context.annotation.Configuration
 
 @ConfigurationProperties("pulseq.view")
 class ViewConfigurationProperties(
-    var enabled: Boolean = true
+    var enabled: Boolean = true,
+    // see https://colorpicker.me/#ff7878
+    var metaThemeColor: String = "#ff7878"
 )

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller
 import org.springframework.web.servlet.ModelAndView
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import uno.d1s.pulseq.configuration.property.GlobalConfigurationProperties
+import uno.d1s.pulseq.configuration.property.ViewConfigurationProperties
 import uno.d1s.pulseq.controller.ViewController
 import javax.servlet.http.HttpServletRequest
 
@@ -16,6 +17,9 @@ class ViewControllerImpl : ViewController {
     @Autowired
     private lateinit var globalConfigurationProperties: GlobalConfigurationProperties
 
+    @Autowired
+    private lateinit var viewConfigurationProperties: ViewConfigurationProperties
+
     override fun getPage(request: HttpServletRequest): ModelAndView =
         // somehow I can't access this properties inside thymeleaf.
         ModelAndView(
@@ -25,7 +29,8 @@ class ViewControllerImpl : ViewController {
                 "baseUrl" to ServletUriComponentsBuilder.fromRequestUri(request)
                     .replacePath(null)
                     .build()
-                    .toUriString()
+                    .toUriString(),
+                "themeColor" to viewConfigurationProperties.metaThemeColor
             )
         )
 }
