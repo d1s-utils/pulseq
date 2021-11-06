@@ -31,4 +31,11 @@ class DeviceControllerImpl : DeviceController {
                 deviceService.findDeviceByIdentify(identify)
             )
         )
+
+    override fun registerNewDevice(deviceDto: DeviceDto): ResponseEntity<DeviceDto> =
+        ResponseEntity.ok(
+            deviceDtoConverter.convertToDto(
+                deviceService.registerNewDevice(deviceDto.deviceName)
+            )
+        )
 }

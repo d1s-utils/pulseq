@@ -11,6 +11,7 @@ import uno.d1s.pulseq.dto.BeatDto
 import uno.d1s.pulseq.service.BeatService
 import javax.servlet.http.HttpServletResponse
 
+
 @RestController
 class BeatControllerImpl : BeatController {
 
@@ -19,6 +20,13 @@ class BeatControllerImpl : BeatController {
 
     @Autowired
     private lateinit var beatDtoConverter: DtoConverter<Beat, BeatDto>
+
+    override fun getBeatBtId(id: String): ResponseEntity<BeatDto> =
+        ResponseEntity.ok(
+            beatDtoConverter.convertToDto(
+                beatService.findBeatById(id)
+            )
+        )
 
     override fun registerNewBeatWithDeviceIdentify(
         device: String?,
