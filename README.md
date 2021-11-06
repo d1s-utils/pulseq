@@ -14,6 +14,7 @@ The main idea of pulseq is to provide statistics on your device usage and notify
 ```shell
 git clone https://github.com/d1snin-dev/pulseq.git &&\
   cd ./pulseq &&\
+  ./gradlew pulseq:bootBuildImage &&\
   docker-compose up -d
 ```
 
