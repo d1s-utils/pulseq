@@ -2,7 +2,7 @@ package uno.d1s.pulseq.controller
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import uno.d1s.pulseq.constant.mapping.BeatMappingConstants
+import uno.d1s.pulseq.core.constant.mapping.BeatMappingConstants
 import uno.d1s.pulseq.dto.BeatDto
 import javax.servlet.http.HttpServletResponse
 

@@ -11,15 +11,13 @@ import org.apache.logging.log4j.LogManager
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import uno.d1s.pulseq.client.configuration.properties.ClientConfigurationProperties
+import uno.d1s.pulseq.core.constant.mapping.BeatMappingConstants
 import uno.d1s.pulseq.client.service.BeatSenderService
+import uno.d1s.pulseq.core.util.buildUrl
 import uno.d1s.pulseq.core.util.withSlash
 
 @Service
 class BeatSenderServiceImpl : BeatSenderService {
-
-    companion object {
-        private const val BEAT_PATH = "api/beat/"
-    }
 
     private val logger = LogManager.getLogger()
 
@@ -33,7 +31,9 @@ class BeatSenderServiceImpl : BeatSenderService {
         CoroutineScope(Dispatchers.Default).launch {
             logger.info("Sending beat from device ${clientConfigurationProperties.deviceName} to ${clientConfigurationProperties.serverUrl!!}")
             httpClient.post<HttpResponse>(
-                clientConfigurationProperties.serverUrl!!.withSlash() + BEAT_PATH
+                buildUrl(clientConfigurationProperties.serverUrl!!.withSlash()) {
+                    path(BeatMappingConstants.BASE)
+                }
             ) {
                 parameter("device", clientConfigurationProperties.deviceName)
                 header("Authorization", clientConfigurationProperties.serverSecret)

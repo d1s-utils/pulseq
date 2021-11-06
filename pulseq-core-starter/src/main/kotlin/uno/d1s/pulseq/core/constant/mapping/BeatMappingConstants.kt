@@ -1,4 +1,4 @@
-package uno.d1s.pulseq.constant.mapping
+package uno.d1s.pulseq.core.constant.mapping
 
 object BeatMappingConstants {
     const val BASE = "${GlobalMappingConstants.API}/beat"
