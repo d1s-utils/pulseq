@@ -24,7 +24,7 @@ server:
       enabled: false
 
 pulseq:
-  version: 0.1.2-alpha.3
+  version: 0.2.0-alpha.3
   repository: https://github.com/d1snin/pulseq
 
   security:
