@@ -30,6 +30,29 @@
           integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script>
+        <!-- Thanks, heartbeat -->
+        <!-- This is absolutely horrible, but this is all that I can do. -->
+
+        window.onload = function () {
+            setInterval(updateInfo, 1000)
+        }
+
+        async function updateInfo() {
+            const response = await fetch("/api/statistic");
+            const data = await response.json();
+
+            for (const it of data) {
+                await setInfo(it)
+            }
+        }
+
+        async function setInfo(data) {
+            document.getElementById(`title-${data.identify}`).innerHTML = data.title
+            document.getElementById(`description-${data.identify}`).innerHTML = data.description
+        }
+    </script>
 </head>
 <body id="vanta">
 <div class="container justify-content-center">
@@ -52,12 +75,63 @@
         </div>
     </div>
     <div class="row justify-content-center">
-        <div th:each="card : ${@statisticService.getAllStatistics()}" class="col-sm-6">
+        <div id="devices" class="col-sm-6">
             <div class="card border-success text-white bg-dark">
                 <div class="card-body">
-                    <h5 class="card-title" th:text="${card.title}">Special title treatment</h5>
-                    <p class="card-text" th:text="${card.description}">With supporting text below as a natural lead-in
-                        to additional content.</p>
+                    <h5 id="title-devices" class="card-title">
+                        <span class="spinner-grow text-success" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </span>
+                    </h5>
+                    <p id="description-devices" class="card-text"></p>
+                </div>
+            </div>
+        </div>
+        <div id="last-beat" class="col-sm-6">
+            <div class="card border-success text-white bg-dark">
+                <div class="card-body">
+                    <h5 id="title-last-beat" class="card-title">
+                        <span class="spinner-grow text-success" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </span>
+                    </h5>
+                    <p id="description-last-beat" class="card-text"></p>
+                </div>
+            </div>
+        </div>
+        <div id="last-beat-time" class="col-sm-6">
+            <div class="card border-success text-white bg-dark">
+                <div class="card-body">
+                    <h5 id="title-last-beat-time" class="card-title">
+                        <span class="spinner-grow text-success" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </span>
+                    </h5>
+                    <p id="description-last-beat-time" class="card-text"></p>
+                </div>
+            </div>
+        </div>
+        <div id="longest-inactivity" class="col-sm-6">
+            <div class="card border-success text-white bg-dark">
+                <div class="card-body">
+                    <h5 id="title-longest-inactivity" class="card-title">
+                        <span class="spinner-grow text-success" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </span>
+                    </h5>
+                    <p id="description-longest-inactivity" class="card-text"></p>
+                </div>
+            </div>
+        </div>
+        <div id="total-beats" class="col-sm-6">
+            <div class="card border-success text-white bg-dark">
+                <div class="card-body">
+                    <h5 id="title-total-beats" class="card-title">
+                        <span class="spinner-grow text-success" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </span>
+                    </h5>
+                    <p id="description-total-beats" class="card-text"></p>
                 </div>
             </div>
         </div>
