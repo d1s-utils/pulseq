@@ -18,5 +18,7 @@ interface BeatService {
 
     fun totalBeats(): Int
 
+    fun totalBeatsByDevices(): Map<String, Int>
+
     fun findLastBeat(): Beat
 }

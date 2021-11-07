@@ -89,7 +89,6 @@ class BeatServiceImpl : BeatService {
     override fun findAllBeatsByDeviceName(deviceName: String): List<Beat> =
         beatRepository.findAllByDeviceNameEqualsIgnoreCase(deviceName)
 
-    @Transactional(readOnly = true)
     @Cacheable(cacheNames = [CacheNameConstants.BEATS])
     override fun findAllBeatsByDeviceIdentify(deviceIdentify: String): List<Beat> =
         deviceService.findDeviceByIdentify(deviceIdentify).beats ?: listOf()
@@ -99,12 +98,19 @@ class BeatServiceImpl : BeatService {
     override fun findAllBeats(): List<Beat> =
         beatRepository.findAll()
 
-    @Transactional(readOnly = true)
     override fun totalBeats(): Int =
         beatService.findAllBeats().size
 
-    @Cacheable(cacheNames = [CacheNameConstants.BEAT])
+    override fun totalBeatsByDevices(): Map<String, Int> = HashMap<String, Int>().apply {
+        // It would be easier to use Device's beats DBRef but this will hurt the performance,
+        // because this data is not cached (So, I should figure out how to cache it easier)
+        beatService.findAllBeats().forEach {
+            put(it.device.name, (get(it.device.name) ?: 0) + 1)
+        }
+    }
+
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = [CacheNameConstants.BEAT])
     override fun findLastBeat(): Beat =
         this.findAllBeats().let { all ->
             all.firstOrNull { beat ->
