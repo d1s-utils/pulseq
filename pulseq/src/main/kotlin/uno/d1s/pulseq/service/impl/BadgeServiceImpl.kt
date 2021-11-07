@@ -35,7 +35,7 @@ class BadgeServiceImpl : BadgeService {
     ): ByteArray =
         statisticService.getStatisticByIdentify(statisticId).let { stat ->
             restTemplate.getForObject(
-                buildUrl("https://shields.io/badge/${if (!StringUtils.isEmpty(title)) title!! else stat.title}-${stat.shortDescription}-${badgeConfigurationProperties.color}") {
+                buildUrl("https://shields.io/badge/${if (!StringUtils.isEmpty(title)) title!! else stat.title}-${stat.shortDescription}-${badgeConfigurationProperties.defaultColor}") {
                     if (!StringUtils.isEmpty(color)) {
                         parameter("color", color!!)
                     }
