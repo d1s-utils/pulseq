@@ -34,8 +34,12 @@ class BeatServiceImpl : BeatService {
     @Autowired
     private lateinit var eventPublisher: ApplicationEventPublisher
 
-    @Cacheable(cacheNames = [CacheNameConstants.BEAT])
+    // Here we inject ourselves to work with our methods (since we use caching and inject a proxy class)
+    @Autowired
+    private lateinit var beatService: BeatService
+
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = [CacheNameConstants.BEAT])
     override fun findBeatById(id: String): Beat =
         beatRepository.findById(id).orElseThrow {
             BeatNotFoundException("Could not find any beats with provided id.")
@@ -97,7 +101,7 @@ class BeatServiceImpl : BeatService {
 
     @Transactional(readOnly = true)
     override fun totalBeats(): Int =
-        this.findAllBeats().size
+        beatService.findAllBeats().size
 
     @Cacheable(cacheNames = [CacheNameConstants.BEAT])
     @Transactional(readOnly = true)

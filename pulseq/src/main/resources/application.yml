@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: production
+    active: default
 
   application:
     name: pulseq
@@ -22,6 +22,8 @@ server:
   error:
     whitelabel:
       enabled: false
+
+  port: 80
 
 pulseq:
   version: 0.2.0-alpha.3

@@ -3,6 +3,3 @@ management:
     web:
       exposure:
         exclude: "*"
-
-server:
-  port: 80
