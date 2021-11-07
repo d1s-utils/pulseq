@@ -2,11 +2,6 @@ spring:
   application:
     name: pulseq-client
 
-logging:
-  level:
-    org:
-      springframework: debug
-
 pulseq:
   client:
     server-url: localhost:80
