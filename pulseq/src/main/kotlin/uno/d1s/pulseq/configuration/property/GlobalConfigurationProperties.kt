@@ -7,7 +7,8 @@ import javax.annotation.PostConstruct
 @ConfigurationProperties("pulseq")
 class GlobalConfigurationProperties(
     var version: String?,
-    var repository: String?
+    var repository: String?,
+    var serverName: String?
 ) {
     @PostConstruct
     private fun checkProperties() {
@@ -17,6 +18,10 @@ class GlobalConfigurationProperties(
 
         repository ?: throw InvalidConfigurationException(
             "pulseq.repository"
+        )
+
+        serverName ?: throw InvalidConfigurationException(
+            "pulseq.server-name"
         )
     }
 }
