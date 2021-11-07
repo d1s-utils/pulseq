@@ -17,3 +17,7 @@ pulseq:
       count-down-latch:
         enabled: true
         count-trigger: 5
+
+      timer:
+        enabled: false
+        delay: 1m
