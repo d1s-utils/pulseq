@@ -1,13 +1,13 @@
 package uno.d1s.pulseq.controller.impl
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 import uno.d1s.pulseq.controller.BeatController
 import uno.d1s.pulseq.converter.DtoConverter
 import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.dto.BeatDto
+import uno.d1s.pulseq.exception.DeviceNotFoundException
 import uno.d1s.pulseq.service.BeatService
 import javax.servlet.http.HttpServletResponse
 
@@ -29,17 +29,15 @@ class BeatControllerImpl : BeatController {
         )
 
     override fun registerNewBeatWithDeviceIdentify(
-        device: String?,
+        deviceParam: String?,
+        deviceHeader: String?,
         response: HttpServletResponse
     ): ResponseEntity<BeatDto>? {
-        device ?: run {
-            response.sendError(HttpStatus.BAD_REQUEST.value(), "Device name is not present.")
-            return null
-        }
-
         return ResponseEntity.ok(
             beatDtoConverter.convertToDto(
-                beatService.registerNewBeatWithDeviceIdentify(device)
+                beatService.registerNewBeatWithDeviceIdentify(
+                    deviceParam ?: (deviceHeader ?: throw DeviceNotFoundException("Device definition must be present."))
+                )
             )
         )
     }

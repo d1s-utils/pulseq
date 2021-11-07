@@ -16,7 +16,8 @@ interface BeatController {
 
     @RequestMapping(BeatMappingConstants.BASE, method = [RequestMethod.POST, RequestMethod.GET])
     fun registerNewBeatWithDeviceIdentify(
-        @RequestParam(required = false) device: String?,
+        @RequestParam("device", required = false) deviceParam: String?,
+        @RequestHeader("Device", required = false) deviceHeader: String?,
         response: HttpServletResponse
     ): ResponseEntity<BeatDto>?
 
