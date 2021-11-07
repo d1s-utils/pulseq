@@ -23,6 +23,8 @@ server:
     whitelabel:
       enabled: false
 
+  port: 80
+
 pulseq:
   version: 0.2.0-alpha.3
   repository: https://github.com/d1snin/pulseq
