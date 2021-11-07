@@ -62,7 +62,7 @@
 <div class="container">
     <div class="card border-success text-white text-center bg-dark">
         <div class="card-body">
-            <h5 class="card-title">Hello</h5>
+            <h5 class="card-title" th:text="'Welcome to ' + ${globalConfigurationProperties.serverName} + '.'">Welcome</h5>
             <p class="card-text">This web page shows when I was last online from all my devices (pressed the key,
                 clicked on the phone
                 screen, etc.), one beat represents a successful request from the device to the server, here are some
@@ -71,6 +71,8 @@
             <p class="card-footer">
                 Running on version <code th:text="${globalConfigurationProperties.version}">version</code> of <a
                     th:href="${globalConfigurationProperties.repository}">Pulseq</a>
+                <br>
+                Want this for yourself? See the <a th:href="${globalConfigurationProperties.repository} + '/wiki'">docs</a>!
             </p>
         </div>
     </div>

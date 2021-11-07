@@ -28,6 +28,7 @@ server:
 pulseq:
   version: 0.2.1-alpha.0
   repository: https://github.com/d1snin/pulseq
+  server-name: "my pulseq instance"
 
   security:
     secured-paths:
