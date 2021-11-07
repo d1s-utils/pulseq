@@ -9,6 +9,11 @@ fun Duration.pretty(): String = buildString {
     val minutes = this@pretty.toMinutesPart()
     val seconds = this@pretty.toSecondsPart()
 
+    if (seconds == 0) {
+        append("just now")
+        return@buildString
+    }
+
     if (days != 0L) append("$days day${grammar(days)}, ")
     if (hours != 0) append("$hours hour${grammar(hours)}, ")
     if (minutes != 0) append("$minutes minute${grammar(minutes)}, ")
