@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 import java.time.Duration
 
 @ConfigurationProperties(prefix = "pulseq.inactivity")
-class InactivityConfigurationProperties(
+class ActivityConfigurationProperties(
     var common: Duration = Duration.ofHours(5),
     var warning: Duration = Duration.ofDays(1)
 )

@@ -15,7 +15,7 @@ import uno.d1s.pulseq.exception.NoBeatsReceivedException
 import uno.d1s.pulseq.repository.BeatRepository
 import uno.d1s.pulseq.service.BeatService
 import uno.d1s.pulseq.service.DeviceService
-import uno.d1s.pulseq.service.InactivityStatusService
+import uno.d1s.pulseq.service.ActivityService
 import uno.d1s.pulseq.util.findClosestInstantToCurrent
 import kotlin.properties.Delegates
 
@@ -29,7 +29,7 @@ class BeatServiceImpl : BeatService {
     private lateinit var deviceService: DeviceService
 
     @Autowired
-    private lateinit var inactivityService: InactivityStatusService
+    private lateinit var activityService: ActivityService
 
     @Autowired
     private lateinit var eventPublisher: ApplicationEventPublisher
@@ -59,11 +59,11 @@ class BeatServiceImpl : BeatService {
         Beat(
             device,
             runCatching {
-                inactivityService.getCurrentInactivity()
+                activityService.getCurrentInactivity()
             }.getOrElse {
                 null
             }).let { unsavedBeat ->
-            if (inactivityService.isRelevanceLevelNotCommon()) {
+            if (activityService.isInactivityRelevanceLevelNotCommon()) {
                 beatRepository.save(unsavedBeat).let { savedBeat ->
                     eventPublisher.publishEvent(
                         DelayedBeatReceivedEvent(

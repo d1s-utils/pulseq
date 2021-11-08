@@ -2,7 +2,7 @@ package uno.d1s.pulseq.statistic
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import uno.d1s.pulseq.service.InactivityStatusService
+import uno.d1s.pulseq.service.ActivityService
 import uno.d1s.pulseq.util.pretty
 import java.time.Duration
 
@@ -10,7 +10,7 @@ import java.time.Duration
 class LongestInactivityStatistic : Statistic {
 
     @Autowired
-    private lateinit var inactivityStatusService: InactivityStatusService
+    private lateinit var activityService: ActivityService
 
     override val identify = "longest-inactivity"
 
@@ -23,7 +23,7 @@ class LongestInactivityStatistic : Statistic {
         get() = longestInactivity()
 
     private fun longestInactivity() = runCatching {
-        inactivityStatusService.getLongestInactivity().let { inactivity ->
+        activityService.getLongestInactivity().let { inactivity ->
             if (inactivity == Duration.ZERO) {
                 "No inactivity information available."
             } else {

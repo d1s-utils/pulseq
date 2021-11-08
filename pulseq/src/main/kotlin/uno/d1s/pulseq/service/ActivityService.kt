@@ -3,7 +3,7 @@ package uno.d1s.pulseq.service
 import uno.d1s.pulseq.event.inactivity.InactivityRelevanceLevel
 import java.time.Duration
 
-interface InactivityStatusService {
+interface ActivityService {
 
     fun getCurrentInactivity(): Duration
 
@@ -13,5 +13,5 @@ interface InactivityStatusService {
 
     fun getCurrentInactivityRelevanceLevel(): InactivityRelevanceLevel
 
-    fun isRelevanceLevelNotCommon(): Boolean
+    fun isInactivityRelevanceLevelNotCommon(): Boolean
 }

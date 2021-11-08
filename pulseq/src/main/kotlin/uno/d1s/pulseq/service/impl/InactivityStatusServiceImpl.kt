@@ -3,23 +3,23 @@ package uno.d1s.pulseq.service.impl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import uno.d1s.pulseq.configuration.property.InactivityConfigurationProperties
+import uno.d1s.pulseq.configuration.property.ActivityConfigurationProperties
 import uno.d1s.pulseq.event.inactivity.InactivityRelevanceLevel
 import uno.d1s.pulseq.exception.NoBeatsReceivedException
 import uno.d1s.pulseq.service.BeatService
-import uno.d1s.pulseq.service.InactivityStatusService
+import uno.d1s.pulseq.service.ActivityService
 import uno.d1s.pulseq.util.pretty
 import java.time.Duration
 import java.time.Instant
 
 @Service("inactivityStatusService")
-class InactivityStatusServiceImpl : InactivityStatusService {
+class InactivityStatusServiceImpl : ActivityService {
 
     @Autowired
     private lateinit var beatService: BeatService
 
     @Autowired
-    private lateinit var inactivityConfigurationProperties: InactivityConfigurationProperties
+    private lateinit var activityConfigurationProperties: ActivityConfigurationProperties
 
     @Transactional(readOnly = true)
     override fun getCurrentInactivity(): Duration = Instant.now().let { now ->
@@ -58,14 +58,14 @@ class InactivityStatusServiceImpl : InactivityStatusService {
             InactivityRelevanceLevel.COMMON
         }
 
-    override fun isRelevanceLevelNotCommon(): Boolean =
+    override fun isInactivityRelevanceLevelNotCommon(): Boolean =
         this.getCurrentInactivityRelevanceLevel() != InactivityRelevanceLevel.COMMON
 
     private fun isLongInactivityDurationPointExceeded() =
-        this.isDurationPointExceeded(inactivityConfigurationProperties.common)
+        this.isDurationPointExceeded(activityConfigurationProperties.common)
 
     private fun isWarningInactivityDurationPointExceeded() =
-        this.isDurationPointExceeded(inactivityConfigurationProperties.warning)
+        this.isDurationPointExceeded(activityConfigurationProperties.warning)
 
     private fun isDurationPointExceeded(duration: Duration) = try {
         this.getCurrentInactivity() > duration
