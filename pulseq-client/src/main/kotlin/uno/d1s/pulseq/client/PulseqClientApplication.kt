@@ -1,5 +1,6 @@
 package uno.d1s.pulseq.client
 
+import org.springframework.boot.WebApplicationType
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
@@ -7,5 +8,7 @@ import org.springframework.boot.runApplication
 class PulseqClientApplication
 
 fun main(args: Array<String>) {
-    runApplication<PulseqClientApplication>(*args)
+    runApplication<PulseqClientApplication>(*args) {
+        webApplicationType = WebApplicationType.NONE
+    }
 }
