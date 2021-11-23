@@ -1,0 +1,39 @@
+version: '3'
+
+volumes:
+  db-data:
+    driver: local
+
+  mongo-config:
+    driver: local
+
+services:
+  pulseq-mongodb:
+    image: mongo:latest
+    container_name: pulseq-mongodb
+    restart: always
+    networks:
+      - pulseq-net
+    ports:
+      - "27017:27017"
+    expose:
+      - 27017
+    volumes:
+      - db-data:/data/db
+      - mongo-config:/data/configdb
+
+  pulseq:
+    image: pulseq:0.2.1-alpha.0
+    container_name: pulseq
+    networks:
+      - pulseq-net
+    ports:
+      - "8080:8080"
+    depends_on:
+      - pulseq-mongodb
+    environment:
+      SPRING_DATA_MONGODB_HOST: pulseq-mongodb
+
+networks:
+  pulseq-net:
+    driver: bridge

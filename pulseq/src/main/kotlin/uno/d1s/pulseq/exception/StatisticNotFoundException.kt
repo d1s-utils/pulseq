@@ -1,3 +1,3 @@
 package uno.d1s.pulseq.exception
 
-class StatisticNotFoundException(message: String) : RuntimeException(message)
+class StatisticNotFoundException(override val message: String) : RuntimeException(message)

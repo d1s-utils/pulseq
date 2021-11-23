@@ -33,8 +33,6 @@
 
     <script>
         <!-- Thanks, heartbeat -->
-        <!-- This is absolutely horrible, but this is all that I can do. -->
-
         window.onload = function () {
             setInterval(updateInfo, 1000)
         }
@@ -77,75 +75,15 @@
         </div>
     </div>
     <div class="row justify-content-center">
-        <div id="devices" class="col-sm-6">
+        <div th:each="stat : ${@statisticService.getAllStatistics()}" class="col-sm-6">
             <div class="card border-success text-white bg-dark">
                 <div class="card-body">
-                    <h5 id="title-devices" class="card-title">
+                    <h5 th:id="'title-' + ${stat.identify}" class="card-title">
                         <span class="spinner-grow text-success" role="status">
                             <span class="visually-hidden">Loading...</span>
                         </span>
                     </h5>
-                    <p id="description-devices" class="card-text"></p>
-                </div>
-            </div>
-        </div>
-        <div id="last-beat" class="col-sm-6">
-            <div class="card border-success text-white bg-dark">
-                <div class="card-body">
-                    <h5 id="title-last-beat" class="card-title">
-                        <span class="spinner-grow text-success" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </span>
-                    </h5>
-                    <p id="description-last-beat" class="card-text"></p>
-                </div>
-            </div>
-        </div>
-        <div id="last-beat-time" class="col-sm-6">
-            <div class="card border-success text-white bg-dark">
-                <div class="card-body">
-                    <h5 id="title-last-beat-time" class="card-title">
-                        <span class="spinner-grow text-success" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </span>
-                    </h5>
-                    <p id="description-last-beat-time" class="card-text"></p>
-                </div>
-            </div>
-        </div>
-        <div id="longest-inactivity" class="col-sm-6">
-            <div class="card border-success text-white bg-dark">
-                <div class="card-body">
-                    <h5 id="title-longest-inactivity" class="card-title">
-                        <span class="spinner-grow text-success" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </span>
-                    </h5>
-                    <p id="description-longest-inactivity" class="card-text"></p>
-                </div>
-            </div>
-        </div>
-        <div id="total-beats-by-devices" class="col-sm-6">
-            <div class="card border-success text-white bg-dark">
-                <div class="card-body">
-                    <h5 id="title-total-beats-by-devices" class="card-title">
-                        <span class="spinner-grow text-success" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </span>
-                    </h5>
-                    <p id="description-total-beats-by-devices" class="card-text"></p>
-                </div>
-            </div>
-        </div>
-        <div id="total-beats" class="col-sm-6">
-            <div class="card border-success text-white bg-dark">
-                <div class="card-body">
-                    <h5 id="title-total-beats" class="card-title">
-                        <span class="spinner-grow text-success" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </span>
-                    </h5>
-                    <p id="description-total-beats" class="card-text"></p>
+                    <p th:id="'description-' + ${stat.identify}" class="card-text"></p>
                 </div>
             </div>
         </div>

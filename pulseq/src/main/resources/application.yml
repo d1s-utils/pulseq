@@ -1,40 +1,32 @@
 spring:
   profiles:
-    active: production
+    active: "production"
 
   application:
-    name: pulseq
+    name: "pulseq"
 
   data:
     mongodb:
-      database: pulseq-data
+      database: "pulseq-data"
       auto-index-creation: on
-      host: localhost
+      host: "localhost"
       port: 27017
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
 
 server:
   error:
     whitelabel:
       enabled: false
 
-  port: 80
-
 pulseq:
-  version: 0.2.1-alpha.0
-  repository: https://github.com/d1snin/pulseq
+  version: "0.2.1-alpha.0"
+  repository: "https://github.com/d1snin/pulseq"
   server-name: "my pulseq instance"
 
   security:
     secured-paths:
       - "/api/beat/"
       - "/api/device/new/"
-    secret: change-this
+    secret: "change-this"
 
   view:
     enabled: true

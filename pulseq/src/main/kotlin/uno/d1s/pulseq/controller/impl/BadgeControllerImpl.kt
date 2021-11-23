@@ -16,7 +16,7 @@ class BadgeControllerImpl : BadgeController {
     private lateinit var badgeService: BadgeService
 
     override fun getBadge(
-        @NotEmpty statisticId: String,
+        statisticId: String,
         color: String?,
         title: String?,
         style: String?,

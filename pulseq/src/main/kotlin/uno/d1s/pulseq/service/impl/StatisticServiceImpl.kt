@@ -6,6 +6,7 @@ import uno.d1s.pulseq.configuration.property.StatisticsConfigurationProperties
 import uno.d1s.pulseq.exception.StatisticNotFoundException
 import uno.d1s.pulseq.service.StatisticService
 import uno.d1s.pulseq.statistic.Statistic
+import uno.d1s.pulseq.util.getOrMessage
 
 @Service("statisticService")
 class StatisticServiceImpl : StatisticService {
@@ -27,9 +28,11 @@ class StatisticServiceImpl : StatisticService {
         } ?: throw StatisticNotFoundException("Provided identify is not valid or the statistic is disabled.")
 
     override fun getStatisticsFormatted(): String =
-        this.getAllStatistics().joinToString("\n") {
-            "${it.title}: ${it.shortDescription}"
-        }
+        runCatching {
+            this.getAllStatistics().joinToString("\n") {
+                "${it.title}: ${it.shortDescription}"
+            }
+        }.getOrMessage()
 
     private fun notExcluded(identify: String) =
         statisticsConfigurationProperties.exclude.none {

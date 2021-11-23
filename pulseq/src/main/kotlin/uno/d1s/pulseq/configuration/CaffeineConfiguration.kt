@@ -14,6 +14,7 @@ class CaffeineConfiguration {
     fun caffeine(): Caffeine<Any, Any> = Caffeine.newBuilder()
         .weakKeys()
         .expireAfterWrite(Duration.ofHours(2))
+        .maximumSize(250_000)
 
     @Bean
     fun cacheManager(): CacheManager = CaffeineCacheManager().apply {

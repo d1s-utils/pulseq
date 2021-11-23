@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component
 import uno.d1s.pulseq.event.inactivity.InactivityDurationPointExceededEvent
 import uno.d1s.pulseq.exception.NoBeatsReceivedException
 import uno.d1s.pulseq.service.BeatService
-import uno.d1s.pulseq.service.InactivityStatusService
+import uno.d1s.pulseq.service.ActivityService
 import java.util.concurrent.TimeUnit
 
 @Component
@@ -17,7 +17,7 @@ class InactivityTriggerTask {
     private lateinit var beatService: BeatService
 
     @Autowired
-    private lateinit var inactivityService: InactivityStatusService
+    private lateinit var activityService: ActivityService
 
     @Autowired
     private lateinit var applicationEventPublisher: ApplicationEventPublisher
@@ -25,12 +25,12 @@ class InactivityTriggerTask {
     @Scheduled(fixedRate = 1, timeUnit = TimeUnit.SECONDS)
     fun inactivityTrigger() {
         try {
-            if (inactivityService.isRelevanceLevelNotCommon()) {
+            if (activityService.isInactivityRelevanceLevelNotCommon()) {
                 applicationEventPublisher.publishEvent(
                     InactivityDurationPointExceededEvent(
                         this,
-                        inactivityService.getCurrentInactivity(),
-                        inactivityService.getCurrentInactivityRelevanceLevel(),
+                        activityService.getCurrentInactivityDuration(),
+                        activityService.getCurrentInactivityRelevanceLevel(),
                         beatService.findLastBeat()
                     )
                 )

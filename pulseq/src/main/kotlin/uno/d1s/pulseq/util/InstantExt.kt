@@ -1,6 +1,9 @@
 package uno.d1s.pulseq.util
 
 import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.util.*
 
 fun List<Instant>.findClosestInstantToCurrent(): Optional<Instant> =
@@ -9,3 +12,7 @@ fun List<Instant>.findClosestInstantToCurrent(): Optional<Instant> =
             Instant.now() >= it
         }.maxOrNull()
     )
+
+fun Instant.pretty(): String =
+    DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG)
+        .withZone(ZoneId.of("UTC")).format(this)
