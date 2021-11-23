@@ -107,7 +107,7 @@ class ActivityServiceImpl : ActivityService {
                         postActivityHandling = false
                     }
 
-                    if ((nextBeat.isActivityDelimiterExceeded() && !activityHandling)) {
+                    if (nextBeat.isActivityDelimiterExceeded() && !activityHandling) {
                         if (this != nextBeat) {
                             add(
                                 TimeSpan(
@@ -119,7 +119,7 @@ class ActivityServiceImpl : ActivityService {
                             )
                         }
 
-                        return@forEachPartition ((allBeats.indexOf(nextBeat) + 1)..allBeats.size)
+                        return@forEachPartition (allBeats.indexOf(nextBeat) + 1)..allBeats.size
                     } else {
                         activityHandling = true
 
@@ -144,7 +144,7 @@ class ActivityServiceImpl : ActivityService {
                             postActivityHandling = true
                         }
 
-                        return@forEachPartition (allBeats.indexOf(this) + 1)..allBeats.size
+                        return@forEachPartition allBeats.indexOf(this) + 1..allBeats.size
                     }
                 }
             }
