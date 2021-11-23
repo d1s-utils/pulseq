@@ -33,10 +33,8 @@ class TimerKeyboardEventListener : ApplicationListener<KeyboardActivityDetectedE
         get() = keyboardListeningConfigurationProperties.timer.delay.toMillis()
 
     override fun onApplicationEvent(event: KeyboardActivityDetectedEvent) {
-        println("got event")
         if (!jobStarted) {
             startJob()
-            println("job started")
             jobStarted = true
         }
 
@@ -51,7 +49,6 @@ class TimerKeyboardEventListener : ApplicationListener<KeyboardActivityDetectedE
                     keyTyped = false
                 }
 
-                println("delay")
                 delay(delay)
             }
         }

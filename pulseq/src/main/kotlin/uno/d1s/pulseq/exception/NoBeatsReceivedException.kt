@@ -1,3 +1,5 @@
 package uno.d1s.pulseq.exception
 
-object NoBeatsReceivedException : RuntimeException("No beats received yet.")
+import uno.d1s.pulseq.constant.error.ErrorConstants
+
+object NoBeatsReceivedException : RuntimeException(ErrorConstants.NO_BEATS_RECEIVED)

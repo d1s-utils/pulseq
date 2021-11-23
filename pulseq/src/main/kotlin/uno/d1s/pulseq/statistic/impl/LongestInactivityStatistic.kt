@@ -1,10 +1,11 @@
-package uno.d1s.pulseq.statistic
+package uno.d1s.pulseq.statistic.impl
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import uno.d1s.pulseq.service.ActivityService
+import uno.d1s.pulseq.statistic.Statistic
+import uno.d1s.pulseq.util.getOrMessage
 import uno.d1s.pulseq.util.pretty
-import java.time.Duration
 
 @Component
 class LongestInactivityStatistic : Statistic {
@@ -17,20 +18,10 @@ class LongestInactivityStatistic : Statistic {
     override val title = "Longest Inactivity"
 
     override val description
-        get() = longestInactivity()
+        get() = runCatching {
+            activityService.getLongestInactivity().duration.pretty()
+        }.getOrMessage()
 
     override val shortDescription
-        get() = longestInactivity()
-
-    private fun longestInactivity() = runCatching {
-        activityService.getLongestInactivity().let { inactivity ->
-            if (inactivity == Duration.ZERO) {
-                "No inactivity information available."
-            } else {
-                inactivity.pretty()
-            }
-        }
-    }.getOrElse {
-        it.message!!
-    }
+        get() = this.description
 }

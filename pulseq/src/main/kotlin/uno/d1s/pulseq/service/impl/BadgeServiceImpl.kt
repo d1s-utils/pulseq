@@ -40,6 +40,15 @@ class BadgeServiceImpl : BadgeService {
                         parameter("color", color!!)
                     }
 
+                    parameter(
+                        "color",
+                        if (!StringUtils.isEmpty(color)) {
+                            color!!
+                        } else {
+                            badgeConfigurationProperties.defaultColor
+                        }
+                    )
+
                     if (!StringUtils.isEmpty(style)) {
                         parameter("style", style!!)
                     }

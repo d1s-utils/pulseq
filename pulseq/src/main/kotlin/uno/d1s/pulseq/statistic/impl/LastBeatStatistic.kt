@@ -1,15 +1,14 @@
-package uno.d1s.pulseq.statistic
+package uno.d1s.pulseq.statistic.impl
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import uno.d1s.pulseq.service.BeatService
 import uno.d1s.pulseq.service.ActivityService
+import uno.d1s.pulseq.statistic.Statistic
+import uno.d1s.pulseq.util.getOrMessage
+import uno.d1s.pulseq.util.pretty
 
 @Component
 class LastBeatStatistic : Statistic {
-
-    @Autowired
-    private lateinit var beatService: BeatService
 
     @Autowired
     private lateinit var activityService: ActivityService
@@ -20,16 +19,12 @@ class LastBeatStatistic : Statistic {
 
     override val description
         get() = runCatching {
-            val lastBeat = beatService.findLastBeat()
-            "Last beat with id ${lastBeat.id} was received ${activityService.getCurrentInactivityPretty()} ago from device ${lastBeat.device.name}."
-        }.getOrElse {
-            it.message!!
-        }
+            val activity = activityService.getCurrentTimeSpan()
+            "Last beat with id ${activity.startBeat.id} was received ${activity.duration.pretty()} ago from device ${activity.startBeat.device.name}."
+        }.getOrMessage()
 
     override val shortDescription
         get() = runCatching {
             "${activityService.getCurrentInactivityPretty()} ago"
-        }.getOrElse {
-            it.message!!
-        }
+        }.getOrMessage()
 }

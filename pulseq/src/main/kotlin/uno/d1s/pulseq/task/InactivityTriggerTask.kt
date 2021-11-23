@@ -29,7 +29,7 @@ class InactivityTriggerTask {
                 applicationEventPublisher.publishEvent(
                     InactivityDurationPointExceededEvent(
                         this,
-                        activityService.getCurrentInactivity(),
+                        activityService.getCurrentInactivityDuration(),
                         activityService.getCurrentInactivityRelevanceLevel(),
                         beatService.findLastBeat()
                     )

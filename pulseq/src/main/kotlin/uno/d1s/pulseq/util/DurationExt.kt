@@ -8,14 +8,15 @@ fun Duration.pretty(): String = buildString {
     val hours = this@pretty.toHoursPart()
     val minutes = this@pretty.toMinutesPart()
     val seconds = this@pretty.toSecondsPart()
+    val millis = this@pretty.toMillisPart()
 
     if (seconds == 0) {
-        append("just now")
+        append("$millis millisecond${grammar(millis)}")
         return@buildString
     }
 
     if (days != 0L) append("$days day${grammar(days)}, ")
     if (hours != 0) append("$hours hour${grammar(hours)}, ")
     if (minutes != 0) append("$minutes minute${grammar(minutes)}, ")
-    if (seconds != 0) append("$seconds second".grammar(seconds))
+    append("$seconds second".grammar(seconds))
 }

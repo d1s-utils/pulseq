@@ -5,12 +5,13 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestParam
 import uno.d1s.pulseq.core.constant.mapping.BadgeMappingConstants
 import javax.servlet.http.HttpServletResponse
+import javax.validation.constraints.NotEmpty
 
 interface BadgeController {
 
     @GetMapping(BadgeMappingConstants.GET_BADGE)
     fun getBadge(
-        @PathVariable statisticId: String,
+        @PathVariable @NotEmpty statisticId: String,
         @RequestParam(required = false) color: String?,
         @RequestParam(required = false) title: String?,
         @RequestParam(required = false) style: String?,
