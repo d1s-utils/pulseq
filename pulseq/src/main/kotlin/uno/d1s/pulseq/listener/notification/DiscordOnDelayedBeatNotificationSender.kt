@@ -12,7 +12,7 @@ import uno.d1s.pulseq.util.pretty
 
 @Component
 @ConditionalOnProperty("pulseq.notifications.discord.enabled")
-class DiscordDelayedBeatReceivedNotificationSender {
+class DiscordOnDelayedBeatNotificationSender {
 
     @Autowired
     private lateinit var webhookCluster: WebhookCluster
