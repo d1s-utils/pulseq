@@ -8,6 +8,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import uno.d1s.pulseq.configuration.property.GlobalConfigurationProperties
 import uno.d1s.pulseq.configuration.property.ViewConfigurationProperties
 import uno.d1s.pulseq.controller.ViewController
+import uno.d1s.pulseq.service.StatisticService
 import javax.servlet.http.HttpServletRequest
 
 @Controller
@@ -20,6 +21,9 @@ class ViewControllerImpl : ViewController {
     @Autowired
     private lateinit var viewConfigurationProperties: ViewConfigurationProperties
 
+    @Autowired
+    private lateinit var statisticService: StatisticService
+
     override fun getPage(request: HttpServletRequest): ModelAndView =
         // somehow I can't access this properties inside thymeleaf.
         ModelAndView(
@@ -30,7 +34,9 @@ class ViewControllerImpl : ViewController {
                     .replacePath(null)
                     .build()
                     .toUriString(),
-                "themeColor" to viewConfigurationProperties.metaThemeColor
+                "themeColor" to viewConfigurationProperties.metaThemeColor,
+                "statistics" to statisticService.getAllStatistics(),
+                "statisticsFormatted" to statisticService.getStatisticsFormatted()
             )
         )
 }
