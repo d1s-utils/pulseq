@@ -43,10 +43,10 @@ jobs:
           key: v1-dependencies-{{ checksum "build.gradle.kts" }}
           
       - run:
-        name: Building the artifacts
-        command: |
-          ./gradlew pulseq:bootJar &&\
-          ./gradlew pulseq-client:bootJar
+          name: Building the artifacts
+          command: |
+            ./gradlew pulseq:bootJar;
+            ./gradlew pulseq-client:bootJar
 
       - store_artifacts:
               path: ./build/libs 
