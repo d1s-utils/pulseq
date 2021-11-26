@@ -40,7 +40,7 @@ class BeatServiceImpl : BeatService {
     @Cacheable(cacheNames = [CacheNameConstants.BEAT])
     override fun findBeatById(id: String): Beat =
         beatRepository.findById(id).orElseThrow {
-            BeatNotFoundException("Could not find any beats with provided id.")
+            BeatNotFoundException()
         }
 
     @Transactional

@@ -37,7 +37,7 @@ class DeviceServiceImpl : DeviceService {
         try {
             this.findDeviceByName(identify)
         } catch (ex: Exception) {
-            throw DeviceNotFoundException("Could not find any devices with provided name nor id.")
+            throw DeviceNotFoundException()
         }
     }
 
