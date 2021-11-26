@@ -49,19 +49,19 @@ class DeviceControllerImplTest {
         } returns testDevices
 
         every {
-            deviceService.findDeviceByIdentify(VALID_ID)
+            deviceService.findDeviceByIdentify(VALID_STUB)
         } returns testDevice
 
         every {
-            deviceService.findDeviceByIdentify(INVALID_ID)
+            deviceService.findDeviceByIdentify(INVALID_STUB)
         } throws DeviceNotFoundException()
 
         every {
-            deviceService.registerNewDevice(VALID_ID)
+            deviceService.registerNewDevice(VALID_STUB)
         } returns testDevice
 
         every {
-            deviceService.registerNewDevice(INVALID_ID)
+            deviceService.registerNewDevice(INVALID_STUB)
         } throws DeviceAlreadyExistsException()
 
         every {
@@ -96,7 +96,7 @@ class DeviceControllerImplTest {
 
     @Test
     fun `should return 200 and valid device on getting device by identify`() {
-        getByIdentifyAndExpect(VALID_ID) {
+        getByIdentifyAndExpect(VALID_STUB) {
             status {
                 isOk()
             }
@@ -107,7 +107,7 @@ class DeviceControllerImplTest {
         }
 
         verify {
-            deviceService.findDeviceByIdentify(VALID_ID)
+            deviceService.findDeviceByIdentify(VALID_STUB)
         }
 
         verifyDeviceConversion()
@@ -115,20 +115,20 @@ class DeviceControllerImplTest {
 
     @Test
     fun `should return 400 on getting device with invalid identify`() {
-        getByIdentifyAndExpect(INVALID_ID) {
+        getByIdentifyAndExpect(INVALID_STUB) {
             status {
                 isBadRequest()
             }
         }
 
         verify {
-            deviceService.findDeviceByIdentify(INVALID_ID)
+            deviceService.findDeviceByIdentify(INVALID_STUB)
         }
     }
 
     @Test
     fun `should return 200 and valid device on device registration`() {
-        registerDeviceAndExpect(VALID_ID) {
+        registerDeviceAndExpect(VALID_STUB) {
             status {
                 isOk()
             }
@@ -139,7 +139,7 @@ class DeviceControllerImplTest {
         }
 
         verify {
-            deviceService.registerNewDevice(VALID_ID)
+            deviceService.registerNewDevice(VALID_STUB)
         }
 
         verifyDeviceConversion()
@@ -147,14 +147,14 @@ class DeviceControllerImplTest {
 
     @Test
     fun `should return 400 on device registration with existing name`() {
-        registerDeviceAndExpect(INVALID_ID) {
+        registerDeviceAndExpect(INVALID_STUB) {
             status {
                 isBadRequest()
             }
         }
 
         verify {
-            deviceService.registerNewDevice(INVALID_ID)
+            deviceService.registerNewDevice(INVALID_STUB)
         }
     }
 

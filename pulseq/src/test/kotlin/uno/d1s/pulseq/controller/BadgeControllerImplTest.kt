@@ -11,8 +11,8 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.MockMvcResultMatchersDsl
 import org.springframework.test.web.servlet.get
-import uno.d1s.pulseq.INVALID_ID
-import uno.d1s.pulseq.VALID_ID
+import uno.d1s.pulseq.INVALID_STUB
+import uno.d1s.pulseq.VALID_STUB
 import uno.d1s.pulseq.controller.advice.ExceptionHandlerControllerAdvice
 import uno.d1s.pulseq.controller.impl.BadgeControllerImpl
 import uno.d1s.pulseq.core.constant.mapping.BadgeMappingConstants
@@ -33,17 +33,17 @@ class BadgeControllerImplTest {
     @BeforeEach
     fun setup() {
         every {
-            badgeService.createBadge(VALID_ID, any(), any(), any(), any())
+            badgeService.createBadge(VALID_STUB, any(), any(), any(), any())
         }.returns(byteArrayOf())
 
         every {
-            badgeService.createBadge(INVALID_ID, any(), any(), any(), any())
+            badgeService.createBadge(INVALID_STUB, any(), any(), any(), any())
         } throws StatisticNotFoundException()
     }
 
     @Test
     fun `should return the badge on getBadge and 200`() {
-        getAndExpect(VALID_ID) {
+        getAndExpect(VALID_STUB) {
             content {
                 contentType("image/svg+xml")
             }
@@ -54,20 +54,20 @@ class BadgeControllerImplTest {
         }
 
         verify {
-            badgeService.createBadge(VALID_ID, any(), any(), any(), any())
+            badgeService.createBadge(VALID_STUB, any(), any(), any(), any())
         }
     }
 
     @Test
     fun `should return 400 on invalid statistic id`() {
-        getAndExpect(INVALID_ID) {
+        getAndExpect(INVALID_STUB) {
             status {
                 isBadRequest()
             }
         }
 
         verify {
-            badgeService.createBadge(INVALID_ID, any(), any(), any(), any())
+            badgeService.createBadge(INVALID_STUB, any(), any(), any(), any())
         }
     }
 

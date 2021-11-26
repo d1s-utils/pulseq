@@ -45,11 +45,11 @@ class BeatControllerImplTest {
     @BeforeEach
     fun setup() {
         every {
-            beatService.findBeatById(VALID_ID)
+            beatService.findBeatById(VALID_STUB)
         } returns testBeat
 
         every {
-            beatService.findBeatById(INVALID_ID)
+            beatService.findBeatById(INVALID_STUB)
         } throws BeatNotFoundException()
 
         every {
@@ -57,11 +57,11 @@ class BeatControllerImplTest {
         } returns testBeat
 
         every {
-            beatService.findAllBeatsByDeviceIdentify(VALID_ID)
+            beatService.findAllBeatsByDeviceIdentify(VALID_STUB)
         } returns testBeats
 
         every {
-            beatService.findAllBeatsByDeviceIdentify(INVALID_ID)
+            beatService.findAllBeatsByDeviceIdentify(INVALID_STUB)
         } throws DeviceNotFoundException()
 
         every {
@@ -83,7 +83,7 @@ class BeatControllerImplTest {
 
     @Test
     fun `should return 200 and valid beat on getting beat by id`() {
-        getBeatByIdAndExpect(VALID_ID) {
+        getBeatByIdAndExpect(VALID_STUB) {
             status {
                 isOk()
             }
@@ -94,7 +94,7 @@ class BeatControllerImplTest {
         }
 
         verify {
-            beatService.findBeatById(VALID_ID)
+            beatService.findBeatById(VALID_STUB)
         }
 
         verifyBeatConversion()
@@ -102,21 +102,21 @@ class BeatControllerImplTest {
 
     @Test
     fun `should return 400 on getting beat with invalid id`() {
-        getBeatByIdAndExpect(INVALID_ID) {
+        getBeatByIdAndExpect(INVALID_STUB) {
             status {
                 isBadRequest()
             }
         }
 
         verify {
-            beatService.findBeatById(INVALID_ID)
+            beatService.findBeatById(INVALID_STUB)
         }
     }
 
     @Test
     fun `should return 200 and valid beat on beat registration`() {
         mockMvc.post(BeatMappingConstants.BASE) {
-            header("Device", VALID_ID)
+            header("Device", VALID_STUB)
         }.andExpect {
             status {
                 isOk()
@@ -128,7 +128,7 @@ class BeatControllerImplTest {
         }
 
         verify {
-            beatService.registerNewBeatWithDeviceIdentify(VALID_ID)
+            beatService.registerNewBeatWithDeviceIdentify(VALID_STUB)
         }
 
         verifyBeatConversion()
@@ -136,7 +136,7 @@ class BeatControllerImplTest {
 
     @Test
     fun `should return 200 and valid list on getting beats by device identify`() {
-        getBeatsByDeviceIdentifyAndExpect(VALID_ID) {
+        getBeatsByDeviceIdentifyAndExpect(VALID_STUB) {
             status {
                 isOk()
             }
@@ -147,7 +147,7 @@ class BeatControllerImplTest {
         }
 
         verify {
-            beatService.findAllBeatsByDeviceIdentify(VALID_ID)
+            beatService.findAllBeatsByDeviceIdentify(VALID_STUB)
         }
 
         verifyBeatsConversion()
@@ -155,14 +155,14 @@ class BeatControllerImplTest {
 
     @Test
     fun `should return 400 on getting beats by invalid device identify`() {
-        getBeatsByDeviceIdentifyAndExpect(INVALID_ID) {
+        getBeatsByDeviceIdentifyAndExpect(INVALID_STUB) {
             status {
                 isBadRequest()
             }
         }
 
         verify {
-            beatService.findAllBeatsByDeviceIdentify(INVALID_ID)
+            beatService.findAllBeatsByDeviceIdentify(INVALID_STUB)
         }
     }
 
