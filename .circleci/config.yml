@@ -45,7 +45,7 @@ jobs:
       - run:
         name: Building the artifacts
         command: |
-          ./gradlew pulseq:bootJar;
+          ./gradlew pulseq:bootJar &&\
           ./gradlew pulseq-client:bootJar
 
       - store_artifacts:
