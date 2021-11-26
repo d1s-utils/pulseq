@@ -25,7 +25,7 @@ class StatisticServiceImpl : StatisticService {
     override fun getStatisticByIdentify(identify: String): Statistic =
         statistics.firstOrNull {
             it.identify == identify && notExcluded(identify)
-        } ?: throw StatisticNotFoundException("Provided identify is not valid or the statistic is disabled.")
+        } ?: throw StatisticNotFoundException()
 
     override fun getStatisticsFormatted(): String =
         runCatching {

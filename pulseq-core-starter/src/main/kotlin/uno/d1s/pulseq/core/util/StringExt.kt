@@ -12,3 +12,6 @@ fun String.withSlash() =
     } else {
         this
     }
+
+fun String.replacePathPlaceholder(placeholder: String, replacement: String) =
+    this.replace("{$placeholder}", replacement)
