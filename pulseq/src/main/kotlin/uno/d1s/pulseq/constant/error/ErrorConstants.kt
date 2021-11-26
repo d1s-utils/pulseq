@@ -6,4 +6,5 @@ object ErrorConstants {
     const val STATISTICS_NOT_FOUND = "Provided identify is not valid or the statistic is disabled."
     const val BEAT_NOT_FOUND = "Could not find any beats with provided id."
     const val DEVICE_NOT_FOUND = "Could not find any devices with provided name nor id."
+    const val DEVICE_ALREADY_EXISTS = "Device with the same name already exists."
 }

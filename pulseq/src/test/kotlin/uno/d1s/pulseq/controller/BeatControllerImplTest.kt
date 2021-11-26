@@ -3,6 +3,7 @@ package uno.d1s.pulseq.controller
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
+import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,8 +13,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.MockMvcResultMatchersDsl
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
-import uno.d1s.pulseq.INVALID_ID
-import uno.d1s.pulseq.VALID_ID
+import uno.d1s.pulseq.*
 import uno.d1s.pulseq.controller.advice.ExceptionHandlerControllerAdvice
 import uno.d1s.pulseq.controller.impl.BeatControllerImpl
 import uno.d1s.pulseq.converter.DtoConverter
@@ -24,8 +24,7 @@ import uno.d1s.pulseq.dto.BeatDto
 import uno.d1s.pulseq.exception.BeatNotFoundException
 import uno.d1s.pulseq.exception.DeviceNotFoundException
 import uno.d1s.pulseq.service.BeatService
-import uno.d1s.pulseq.testBeat
-import uno.d1s.pulseq.testBeatDto
+import uno.d1s.pulseq.util.expectJsonContentType
 
 @WebMvcTest(useDefaultFilters = false, controllers = [BeatControllerImpl::class])
 @ContextConfiguration(classes = [BeatControllerImpl::class, ExceptionHandlerControllerAdvice::class])
@@ -59,7 +58,7 @@ class BeatControllerImplTest {
 
         every {
             beatService.findAllBeatsByDeviceIdentify(VALID_ID)
-        } returns listOf()
+        } returns testBeats
 
         every {
             beatService.findAllBeatsByDeviceIdentify(INVALID_ID)
@@ -67,7 +66,7 @@ class BeatControllerImplTest {
 
         every {
             beatService.findAllBeats()
-        } returns listOf()
+        } returns testBeats
 
         every {
             beatService.findLastBeat()
@@ -78,8 +77,8 @@ class BeatControllerImplTest {
         } returns testBeatDto
 
         every {
-            beatDtoConverter.convertToDtoList(any())
-        } returns listOf()
+            beatDtoConverter.convertToDtoList(testBeats)
+        } returns testBeatsDto
     }
 
     @Test
@@ -90,7 +89,15 @@ class BeatControllerImplTest {
             }
 
             expectBeatDto()
+
+            expectJsonContentType()
         }
+
+        verify {
+            beatService.findBeatById(VALID_ID)
+        }
+
+        verifyBeatConversion()
     }
 
     @Test
@@ -100,19 +107,31 @@ class BeatControllerImplTest {
                 isBadRequest()
             }
         }
+
+        verify {
+            beatService.findBeatById(INVALID_ID)
+        }
     }
 
     @Test
     fun `should return 200 and valid beat on beat registration`() {
         mockMvc.post(BeatMappingConstants.BASE) {
-            header("Device", "test_device")
+            header("Device", VALID_ID)
         }.andExpect {
             status {
                 isOk()
             }
 
             expectBeatDto()
+
+            expectJsonContentType()
         }
+
+        verify {
+            beatService.registerNewBeatWithDeviceIdentify(VALID_ID)
+        }
+
+        verifyBeatConversion()
     }
 
     @Test
@@ -123,7 +142,15 @@ class BeatControllerImplTest {
             }
 
             expectBeatDtoList()
+
+            expectJsonContentType()
         }
+
+        verify {
+            beatService.findAllBeatsByDeviceIdentify(VALID_ID)
+        }
+
+        verifyBeatsConversion()
     }
 
     @Test
@@ -132,6 +159,10 @@ class BeatControllerImplTest {
             status {
                 isBadRequest()
             }
+        }
+
+        verify {
+            beatService.findAllBeatsByDeviceIdentify(INVALID_ID)
         }
     }
 
@@ -143,7 +174,15 @@ class BeatControllerImplTest {
             }
 
             expectBeatDtoList()
+
+            expectJsonContentType()
         }
+
+        verify {
+            beatService.findAllBeats()
+        }
+
+        verifyBeatsConversion()
     }
 
     @Test
@@ -154,7 +193,15 @@ class BeatControllerImplTest {
             }
 
             expectBeatDto()
+
+            expectJsonContentType()
         }
+
+        verify {
+            beatService.findLastBeat()
+        }
+
+        verifyBeatConversion()
     }
 
     private fun getBeatByIdAndExpect(id: String, block: MockMvcResultMatchersDsl.() -> Unit) {
@@ -174,7 +221,19 @@ class BeatControllerImplTest {
 
     private fun MockMvcResultMatchersDsl.expectBeatDtoList() {
         content {
-            json(objectMapper.writeValueAsString(listOf<BeatDto>()))
+            json(objectMapper.writeValueAsString(testBeatsDto))
+        }
+    }
+
+    private fun verifyBeatConversion() {
+        verify {
+            beatDtoConverter.convertToDto(testBeat)
+        }
+    }
+
+    private fun verifyBeatsConversion() {
+        verify {
+            beatDtoConverter.convertToDtoList(testBeats)
         }
     }
 }

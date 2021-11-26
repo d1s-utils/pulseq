@@ -18,24 +18,21 @@ class DeviceControllerImpl : DeviceController {
     @Autowired
     private lateinit var deviceDtoConverter: DtoConverter<Device, DeviceDto>
 
-    override fun getAllDevices(): ResponseEntity<List<DeviceDto>> =
-        ResponseEntity.ok(
-            deviceDtoConverter.convertToDtoList(
-                deviceService.findAllRegisteredDevices()
-            )
+    override fun getAllDevices(): ResponseEntity<List<DeviceDto>> = ResponseEntity.ok(
+        deviceDtoConverter.convertToDtoList(
+            deviceService.findAllRegisteredDevices()
         )
+    )
 
-    override fun getDeviceByIdentify(identify: String): ResponseEntity<DeviceDto> =
-        ResponseEntity.ok(
-            deviceDtoConverter.convertToDto(
-                deviceService.findDeviceByIdentify(identify)
-            )
+    override fun getDeviceByIdentify(identify: String): ResponseEntity<DeviceDto> = ResponseEntity.ok(
+        deviceDtoConverter.convertToDto(
+            deviceService.findDeviceByIdentify(identify)
         )
+    )
 
-    override fun registerNewDevice(deviceDto: DeviceDto): ResponseEntity<DeviceDto> =
-        ResponseEntity.ok(
-            deviceDtoConverter.convertToDto(
-                deviceService.registerNewDevice(deviceDto.deviceName)
-            )
+    override fun registerNewDevice(deviceName: String): ResponseEntity<DeviceDto> = ResponseEntity.ok(
+        deviceDtoConverter.convertToDto(
+            deviceService.registerNewDevice(deviceName)
         )
+    )
 }

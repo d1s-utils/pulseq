@@ -2,6 +2,7 @@ package uno.d1s.pulseq.controller
 
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
+import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -51,6 +52,10 @@ class BadgeControllerImplTest {
                 isOk()
             }
         }
+
+        verify {
+            badgeService.createBadge(VALID_ID, any(), any(), any(), any())
+        }
     }
 
     @Test
@@ -59,6 +64,10 @@ class BadgeControllerImplTest {
             status {
                 isBadRequest()
             }
+        }
+
+        verify {
+            badgeService.createBadge(INVALID_ID, any(), any(), any(), any())
         }
     }
 

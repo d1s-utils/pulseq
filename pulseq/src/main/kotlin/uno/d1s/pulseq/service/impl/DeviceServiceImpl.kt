@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uno.d1s.pulseq.domain.Device
+import uno.d1s.pulseq.exception.DeviceAlreadyExistsException
 import uno.d1s.pulseq.exception.DeviceNotFoundException
 import uno.d1s.pulseq.repository.DeviceRepository
 import uno.d1s.pulseq.service.DeviceService
@@ -43,5 +44,9 @@ class DeviceServiceImpl : DeviceService {
 
     @Transactional
     override fun registerNewDevice(name: String): Device =
-        deviceRepository.save(Device(name))
+        if (deviceRepository.findDeviceByNameEqualsIgnoreCase(name).isPresent) {
+            throw DeviceAlreadyExistsException()
+        } else {
+            deviceRepository.save(Device(name))
+        }
 }
