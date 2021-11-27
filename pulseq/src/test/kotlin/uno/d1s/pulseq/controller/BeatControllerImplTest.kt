@@ -28,7 +28,7 @@ import uno.d1s.pulseq.util.expectJsonContentType
 
 @WebMvcTest(useDefaultFilters = false, controllers = [BeatControllerImpl::class])
 @ContextConfiguration(classes = [BeatControllerImpl::class, ExceptionHandlerControllerAdvice::class])
-class BeatControllerImplTest {
+internal class BeatControllerImplTest {
 
     @Autowired
     private lateinit var mockMvc: MockMvc

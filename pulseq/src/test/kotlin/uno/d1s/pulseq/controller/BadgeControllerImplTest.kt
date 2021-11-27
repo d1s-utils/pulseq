@@ -22,7 +22,7 @@ import uno.d1s.pulseq.service.BadgeService
 
 @WebMvcTest(useDefaultFilters = false, controllers = [BadgeControllerImpl::class])
 @ContextConfiguration(classes = [BadgeControllerImpl::class, ExceptionHandlerControllerAdvice::class])
-class BadgeControllerImplTest {
+internal class BadgeControllerImplTest {
 
     @Autowired
     private lateinit var mockMvc: MockMvc

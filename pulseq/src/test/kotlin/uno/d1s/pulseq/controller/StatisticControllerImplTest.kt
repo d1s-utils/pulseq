@@ -26,7 +26,7 @@ import uno.d1s.pulseq.util.expectJsonContentType
 
 @WebMvcTest(useDefaultFilters = false, controllers = [StatisticControllerImpl::class])
 @ContextConfiguration(classes = [StatisticControllerImpl::class, ExceptionHandlerControllerAdvice::class])
-class StatisticControllerImplTest {
+internal class StatisticControllerImplTest {
 
     @Autowired
     private lateinit var mockMvc: MockMvc

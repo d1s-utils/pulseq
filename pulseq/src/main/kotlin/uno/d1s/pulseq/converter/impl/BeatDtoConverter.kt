@@ -4,23 +4,19 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import uno.d1s.pulseq.converter.DtoConverter
 import uno.d1s.pulseq.domain.Beat
-import uno.d1s.pulseq.domain.Device
 import uno.d1s.pulseq.dto.BeatDto
-import uno.d1s.pulseq.dto.DeviceDto
 import uno.d1s.pulseq.service.DeviceService
 
 @Component
 class BeatDtoConverter : DtoConverter<Beat, BeatDto> {
 
     @Autowired
-    private lateinit var deviceDtoConverter: DtoConverter<Device, DeviceDto>
-
-    @Autowired
     private lateinit var deviceService: DeviceService
 
     override fun convertToDto(domain: Beat): BeatDto =
         BeatDto(
-            deviceDtoConverter.convertToDto(domain.device).id!!,
+            domain.device.id
+                ?: throw IllegalArgumentException("Device id could not be null."),
             domain.beatTime,
             domain.inactivityBeforeBeat
         ).apply {

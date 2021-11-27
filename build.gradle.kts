@@ -59,20 +59,12 @@ subprojects {
 
         testLogging {
             events.addAll(
-                org.gradle.api.tasks.testing.logging.TestLogEvent.values()
+                listOf(
+                    org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
+                    org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,
+                    org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
+                )
             )
-
-            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
-            showExceptions = true
-            showCauses = true
-            showStackTraces = true
-
-            debug {
-                events.addAll(org.gradle.api.tasks.testing.logging.TestLogEvent.values())
-            }
-
-            info.events = debug.events
-            info.exceptionFormat = debug.exceptionFormat
         }
     }
 

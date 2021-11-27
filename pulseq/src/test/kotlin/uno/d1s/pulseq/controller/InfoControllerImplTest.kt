@@ -14,7 +14,7 @@ import uno.d1s.pulseq.core.constant.mapping.InfoMappingConstants
 
 @ContextConfiguration(classes = [InfoControllerImpl::class])
 @WebMvcTest(useDefaultFilters = false, controllers = [InfoControllerImpl::class])
-class InfoControllerImplTest {
+internal class InfoControllerImplTest {
 
     @Autowired
     private lateinit var mockMvc: MockMvc

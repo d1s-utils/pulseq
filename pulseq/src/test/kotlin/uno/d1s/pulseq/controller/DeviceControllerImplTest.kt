@@ -28,7 +28,7 @@ import uno.d1s.pulseq.util.expectJsonContentType
 
 @WebMvcTest(useDefaultFilters = false, controllers = [DeviceControllerImpl::class])
 @ContextConfiguration(classes = [DeviceControllerImpl::class, ExceptionHandlerControllerAdvice::class])
-class DeviceControllerImplTest {
+internal class DeviceControllerImplTest {
 
     @Autowired
     private lateinit var mockMvc: MockMvc

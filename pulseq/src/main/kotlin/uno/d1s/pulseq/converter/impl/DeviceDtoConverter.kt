@@ -24,8 +24,8 @@ class DeviceDtoConverter : DtoConverter<Device, DeviceDto> {
                 id = it
 
                 domain.beats?.let { beatList ->
-                    beats = beatDtoConverter.convertToDtoList(beatList).map {
-                        domain.id!!
+                    beats = beatDtoConverter.convertToDtoList(beatList).map { beat ->
+                        beat.id!!
                     }
                 }
             }
