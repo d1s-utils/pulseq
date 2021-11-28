@@ -4,6 +4,7 @@ import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.domain.Device
 import uno.d1s.pulseq.dto.BeatDto
 import uno.d1s.pulseq.dto.DeviceDto
+import uno.d1s.pulseq.event.AbstractNotifiableEvent
 import uno.d1s.pulseq.statistic.Statistic
 import java.time.Instant
 
@@ -39,3 +40,8 @@ internal val testStatistic
         override val shortDescription = VALID_STUB
     }
 internal val testStatistics get() = listOf<Statistic>()
+
+internal val testEvent
+    get() = object : AbstractNotifiableEvent(VALID_STUB) {
+        override val notificationMessage = VALID_STUB
+    }

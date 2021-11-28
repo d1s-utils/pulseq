@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.test.context.ContextConfiguration
+import org.springframework.test.context.TestPropertySource
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import uno.d1s.pulseq.configuration.property.GlobalConfigurationProperties
@@ -13,6 +14,7 @@ import uno.d1s.pulseq.controller.impl.ViewControllerImpl
 import uno.d1s.pulseq.service.StatisticService
 
 @ContextConfiguration(classes = [ViewControllerImpl::class])
+@TestPropertySource(properties = ["pulseq.view.enabled=true"])
 @WebMvcTest(useDefaultFilters = false, controllers = [ViewControllerImpl::class])
 internal class ViewControllerImplTest {
 

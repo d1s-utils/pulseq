@@ -9,8 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.TestPropertySource
 import uno.d1s.pulseq.configuration.property.ColorsConfigurationProperties
-import uno.d1s.pulseq.event.impl.DelayedBeatReceivedEvent
-import uno.d1s.pulseq.testBeat
+import uno.d1s.pulseq.testEvent
 import uno.d1s.pulseq.util.WebhookEmbedBuilderHelper
 
 @SpringBootTest
@@ -31,7 +30,7 @@ class DiscordNotificationSenderTest {
 
     @Test
     fun `should send notification on delayed beat`() {
-        discordNotificationSender.sendNotification(DelayedBeatReceivedEvent(this, testBeat))
+        discordNotificationSender.sendNotification(testEvent)
 
         verify {
             webhookCluster.broadcast(any<WebhookEmbed>())
