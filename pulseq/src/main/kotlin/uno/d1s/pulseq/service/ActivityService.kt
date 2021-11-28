@@ -2,7 +2,7 @@ package uno.d1s.pulseq.service
 
 import uno.d1s.pulseq.domain.activity.TimeSpan
 import uno.d1s.pulseq.domain.activity.TimeSpanType
-import uno.d1s.pulseq.event.inactivity.InactivityRelevanceLevel
+import uno.d1s.pulseq.event.impl.inactivity.InactivityRelevanceLevel
 import java.time.Duration
 
 interface ActivityService {

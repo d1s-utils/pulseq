@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
-import uno.d1s.pulseq.event.inactivity.InactivityDurationPointExceededEvent
-import uno.d1s.pulseq.event.inactivity.InactivityRelevanceLevel
+import uno.d1s.pulseq.event.impl.inactivity.InactivityDurationPointExceededEvent
+import uno.d1s.pulseq.event.impl.inactivity.InactivityRelevanceLevel
 import uno.d1s.pulseq.exception.NoBeatsReceivedException
 import uno.d1s.pulseq.service.ActivityService
 import uno.d1s.pulseq.service.BeatService

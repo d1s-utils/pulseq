@@ -1,8 +1,8 @@
 package uno.d1s.pulseq.notification
 
-import org.springframework.context.ApplicationEvent
+import uno.d1s.pulseq.event.NotifiableEvent
 
-interface NotificationSender<T : ApplicationEvent> {
+interface NotificationSender {
 
-    fun sendNotification(event: T)
+    fun sendNotification(event: NotifiableEvent)
 }

@@ -6,7 +6,7 @@ import uno.d1s.pulseq.configuration.property.ActivityConfigurationProperties
 import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.domain.activity.TimeSpan
 import uno.d1s.pulseq.domain.activity.TimeSpanType
-import uno.d1s.pulseq.event.inactivity.InactivityRelevanceLevel
+import uno.d1s.pulseq.event.impl.inactivity.InactivityRelevanceLevel
 import uno.d1s.pulseq.exception.NoBeatsReceivedException
 import uno.d1s.pulseq.exception.TimeSpansNotAvailableException
 import uno.d1s.pulseq.service.ActivityService
