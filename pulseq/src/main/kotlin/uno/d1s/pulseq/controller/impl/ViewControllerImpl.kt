@@ -12,7 +12,7 @@ import uno.d1s.pulseq.service.StatisticService
 import javax.servlet.http.HttpServletRequest
 
 @Controller
-@ConditionalOnProperty(prefix = "pulseq.view", name = ["enabled"])
+@ConditionalOnProperty("pulseq.view.enabled")
 class ViewControllerImpl : ViewController {
 
     @Autowired

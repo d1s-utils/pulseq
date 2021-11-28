@@ -16,7 +16,7 @@ import uno.d1s.pulseq.VALID_STUB
 import uno.d1s.pulseq.service.AuthenticationService
 
 @SpringBootTest
-class AuthenticationRequestFilterTest {
+internal class AuthenticationRequestFilterTest {
 
     @Autowired
     private lateinit var authenticationRequestFilter: AuthenticationRequestFilter

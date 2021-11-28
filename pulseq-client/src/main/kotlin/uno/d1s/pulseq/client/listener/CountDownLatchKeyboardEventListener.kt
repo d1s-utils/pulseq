@@ -12,10 +12,7 @@ import java.util.*
 import java.util.concurrent.ConcurrentLinkedDeque
 
 @Component
-@ConditionalOnProperty(
-    prefix = "pulseq.client.keyboard-listening-mode.count-down-latch",
-    name = ["enabled"]
-)
+@ConditionalOnProperty("pulseq.client.keyboard-listening-mode.count-down-latch.enabled")
 class CountDownLatchKeyboardEventListener : ApplicationListener<KeyboardActivityDetectedEvent> {
 
     @Autowired

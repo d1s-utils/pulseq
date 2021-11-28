@@ -13,10 +13,7 @@ import uno.d1s.pulseq.client.event.KeyboardActivityDetectedEvent
 import uno.d1s.pulseq.client.service.BeatSenderService
 
 @Component
-@ConditionalOnProperty(
-    prefix = "pulseq.client.keyboard-listening-mode.timer",
-    name = ["enabled"]
-)
+@ConditionalOnProperty("pulseq.client.keyboard-listening-mode.timer.enabled")
 class TimerKeyboardEventListener : ApplicationListener<KeyboardActivityDetectedEvent> {
 
     @Autowired

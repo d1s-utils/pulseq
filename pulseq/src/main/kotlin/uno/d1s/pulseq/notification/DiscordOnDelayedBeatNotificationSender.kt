@@ -1,4 +1,4 @@
-package uno.d1s.pulseq.listener.notification
+package uno.d1s.pulseq.notification
 
 import club.minnced.discord.webhook.WebhookCluster
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,7 +12,7 @@ import uno.d1s.pulseq.util.pretty
 
 @Component
 @ConditionalOnProperty("pulseq.notifications.discord.enabled")
-class DiscordOnDelayedBeatNotificationSender {
+class DiscordOnDelayedBeatNotificationSender : NotificationSender<DelayedBeatReceivedEvent> {
 
     @Autowired
     private lateinit var webhookCluster: WebhookCluster
@@ -24,7 +24,7 @@ class DiscordOnDelayedBeatNotificationSender {
     private lateinit var colorsConfigurationProperties: ColorsConfigurationProperties
 
     @EventListener
-    fun sendNotification(event: DelayedBeatReceivedEvent) {
+    override fun sendNotification(event: DelayedBeatReceivedEvent) {
         webhookCluster.broadcast(
             embedBuilderHelper.embedDefault {
                 setColor(colorsConfigurationProperties.common)
