@@ -41,7 +41,6 @@ jobs:
           paths:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle.kts" }}
-          
       - run:
           name: Building the artifacts
           command: |
