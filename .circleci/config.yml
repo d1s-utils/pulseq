@@ -49,7 +49,7 @@ jobs:
             ./gradlew pulseq-client:bootJar
 
       - store_artifacts:
-          path: ./pulseq/build/libs 
+          path: ./pulseq/build/libs
       - store_artifacts:
           path: ./pulseq-client/build/libs
 
