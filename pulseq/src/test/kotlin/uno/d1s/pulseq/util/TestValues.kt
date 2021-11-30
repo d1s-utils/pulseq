@@ -2,6 +2,8 @@ package uno.d1s.pulseq.util
 
 import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.domain.Device
+import uno.d1s.pulseq.domain.activity.TimeSpan
+import uno.d1s.pulseq.domain.activity.TimeSpanType
 import uno.d1s.pulseq.dto.BeatDto
 import uno.d1s.pulseq.dto.DeviceDto
 import uno.d1s.pulseq.event.AbstractNotifiableEvent
@@ -49,3 +51,6 @@ internal val testEvent
     get() = object : AbstractNotifiableEvent(VALID_STUB) {
         override val notificationMessage = VALID_STUB
     }
+
+internal val testTimeSpan
+    get() = TimeSpan(Duration.ZERO, TimeSpanType.ACTIVITY, testBeat, testBeat)
