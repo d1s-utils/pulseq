@@ -7,11 +7,18 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import uno.d1s.pulseq.*
+import org.springframework.test.context.ContextConfiguration
 import uno.d1s.pulseq.converter.impl.BeatDtoConverter
 import uno.d1s.pulseq.service.DeviceService
+import uno.d1s.pulseq.util.VALID_STUB
+import uno.d1s.pulseq.util.testBeat
+import uno.d1s.pulseq.util.testBeatDto
+import uno.d1s.pulseq.util.testBeats
+import uno.d1s.pulseq.util.testBeatsDto
+import uno.d1s.pulseq.util.testDevice
 
 @SpringBootTest
+@ContextConfiguration(classes = [BeatDtoConverter::class])
 internal class BeatDtoConverterTest {
 
     @Autowired

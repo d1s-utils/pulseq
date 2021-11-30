@@ -3,15 +3,18 @@ package uno.d1s.pulseq.listener
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.verify
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertDoesNotThrow
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.TestPropertySource
 import uno.d1s.pulseq.notification.NotificationSender
-import uno.d1s.pulseq.testEvent
+import uno.d1s.pulseq.util.testEvent
 
 @SpringBootTest
+@ContextConfiguration(classes = [NotifiableEventListener::class])
 @TestPropertySource(properties = ["pulseq.notifications.enabled=true"])
-class NotifiableEventListenerTest {
+internal class NotifiableEventListenerTest {
 
     @Autowired
     private lateinit var notifiableEventListener: NotifiableEventListener
@@ -22,7 +25,9 @@ class NotifiableEventListenerTest {
 
     @Test
     fun `should send notification on event`() {
-        notifiableEventListener.interceptNotifiableEvent(testEvent)
+        assertDoesNotThrow {
+            notifiableEventListener.interceptNotifiableEvent(testEvent)
+        }
 
         verify {
             notificationSender.sendNotification(any())

@@ -12,16 +12,16 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.MockMvcResultMatchersDsl
 import org.springframework.test.web.servlet.get
-import uno.d1s.pulseq.INVALID_STUB
-import uno.d1s.pulseq.VALID_STUB
+import uno.d1s.pulseq.util.INVALID_STUB
+import uno.d1s.pulseq.util.VALID_STUB
 import uno.d1s.pulseq.controller.advice.ExceptionHandlerControllerAdvice
 import uno.d1s.pulseq.controller.impl.StatisticControllerImpl
 import uno.d1s.pulseq.core.constant.mapping.StatisticMappingConstants
 import uno.d1s.pulseq.core.util.replacePathPlaceholder
 import uno.d1s.pulseq.exception.StatisticNotFoundException
 import uno.d1s.pulseq.service.StatisticService
-import uno.d1s.pulseq.testStatistic
-import uno.d1s.pulseq.testStatistics
+import uno.d1s.pulseq.util.testStatistic
+import uno.d1s.pulseq.util.testStatistics
 import uno.d1s.pulseq.util.expectJsonContentType
 
 @WebMvcTest(useDefaultFilters = false, controllers = [StatisticControllerImpl::class])

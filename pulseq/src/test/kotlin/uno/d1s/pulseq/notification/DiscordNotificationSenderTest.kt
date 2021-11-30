@@ -5,16 +5,19 @@ import club.minnced.discord.webhook.send.WebhookEmbed
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.verify
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertDoesNotThrow
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.TestPropertySource
 import uno.d1s.pulseq.configuration.property.ColorsConfigurationProperties
-import uno.d1s.pulseq.testEvent
 import uno.d1s.pulseq.util.WebhookEmbedBuilderHelper
+import uno.d1s.pulseq.util.testEvent
 
 @SpringBootTest
+@ContextConfiguration(classes = [DiscordNotificationSender::class])
 @TestPropertySource(properties = ["pulseq.notifications.discord.enabled=true"])
-class DiscordNotificationSenderTest {
+internal class DiscordNotificationSenderTest {
 
     @Autowired
     private lateinit var discordNotificationSender: DiscordNotificationSender
@@ -30,7 +33,9 @@ class DiscordNotificationSenderTest {
 
     @Test
     fun `should send notification on delayed beat`() {
-        discordNotificationSender.sendNotification(testEvent)
+        assertDoesNotThrow {
+            discordNotificationSender.sendNotification(testEvent)
+        }
 
         verify {
             webhookCluster.broadcast(any<WebhookEmbed>())

@@ -10,4 +10,6 @@ interface BeatRepository : MongoRepository<Beat, String> {
     fun findAllByDeviceIdEquals(id: String): List<Beat>
 
     fun findAllByDeviceNameEqualsIgnoreCase(deviceName: String): List<Beat>
+
+    fun findAllByDeviceNameEqualsIgnoreCaseOrDeviceIdEquals(identify: String): List<Beat>
 }

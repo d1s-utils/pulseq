@@ -1,4 +1,4 @@
-package uno.d1s.pulseq
+package uno.d1s.pulseq.util
 
 import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.domain.Device
@@ -6,6 +6,7 @@ import uno.d1s.pulseq.dto.BeatDto
 import uno.d1s.pulseq.dto.DeviceDto
 import uno.d1s.pulseq.event.AbstractNotifiableEvent
 import uno.d1s.pulseq.statistic.Statistic
+import java.time.Duration
 import java.time.Instant
 
 internal const val VALID_STUB = "valid_stub"
@@ -25,11 +26,14 @@ internal val testDeviceDto
 internal val testDevicesDto get() = listOf<DeviceDto>()
 
 internal val testBeat
-    get() = Beat(testDevice, null, Instant.EPOCH).apply {
+    get() = Beat(testDevice, Duration.ZERO, Instant.EPOCH).apply {
         id = VALID_STUB
     }
 internal val testBeats get() = listOf<Beat>()
-internal val testBeatDto get() = BeatDto(VALID_STUB, Instant.EPOCH, null)
+internal val testBeatDto
+    get() = BeatDto(VALID_STUB, Instant.EPOCH, Duration.ZERO).apply {
+        id = VALID_STUB
+    }
 internal val testBeatsDto get() = listOf<BeatDto>()
 
 internal val testStatistic

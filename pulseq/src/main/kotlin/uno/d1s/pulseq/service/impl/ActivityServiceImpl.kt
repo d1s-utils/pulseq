@@ -19,7 +19,7 @@ import java.time.Duration
 import java.time.Instant
 import kotlin.properties.Delegates
 
-@Service("inactivityStatusService")
+@Service
 class ActivityServiceImpl : ActivityService {
 
     @Autowired

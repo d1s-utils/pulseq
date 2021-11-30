@@ -13,7 +13,6 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.MockMvcResultMatchersDsl
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
-import uno.d1s.pulseq.*
 import uno.d1s.pulseq.controller.advice.ExceptionHandlerControllerAdvice
 import uno.d1s.pulseq.controller.impl.BeatControllerImpl
 import uno.d1s.pulseq.converter.DtoConverter
@@ -24,7 +23,7 @@ import uno.d1s.pulseq.dto.BeatDto
 import uno.d1s.pulseq.exception.BeatNotFoundException
 import uno.d1s.pulseq.exception.DeviceNotFoundException
 import uno.d1s.pulseq.service.BeatService
-import uno.d1s.pulseq.util.expectJsonContentType
+import uno.d1s.pulseq.util.*
 
 @WebMvcTest(useDefaultFilters = false, controllers = [BeatControllerImpl::class])
 @ContextConfiguration(classes = [BeatControllerImpl::class, ExceptionHandlerControllerAdvice::class])

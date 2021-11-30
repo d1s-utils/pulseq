@@ -13,7 +13,6 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.MockMvcResultMatchersDsl
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
-import uno.d1s.pulseq.*
 import uno.d1s.pulseq.controller.advice.ExceptionHandlerControllerAdvice
 import uno.d1s.pulseq.controller.impl.DeviceControllerImpl
 import uno.d1s.pulseq.converter.DtoConverter
@@ -24,7 +23,13 @@ import uno.d1s.pulseq.dto.DeviceDto
 import uno.d1s.pulseq.exception.DeviceAlreadyExistsException
 import uno.d1s.pulseq.exception.DeviceNotFoundException
 import uno.d1s.pulseq.service.DeviceService
+import uno.d1s.pulseq.util.INVALID_STUB
+import uno.d1s.pulseq.util.VALID_STUB
 import uno.d1s.pulseq.util.expectJsonContentType
+import uno.d1s.pulseq.util.testDevice
+import uno.d1s.pulseq.util.testDeviceDto
+import uno.d1s.pulseq.util.testDevices
+import uno.d1s.pulseq.util.testDevicesDto
 
 @WebMvcTest(useDefaultFilters = false, controllers = [DeviceControllerImpl::class])
 @ContextConfiguration(classes = [DeviceControllerImpl::class, ExceptionHandlerControllerAdvice::class])

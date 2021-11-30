@@ -8,13 +8,22 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import uno.d1s.pulseq.*
+import org.springframework.test.context.ContextConfiguration
 import uno.d1s.pulseq.converter.impl.DeviceDtoConverter
 import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.dto.BeatDto
 import uno.d1s.pulseq.service.BeatService
+import uno.d1s.pulseq.util.VALID_STUB
+import uno.d1s.pulseq.util.testBeat
+import uno.d1s.pulseq.util.testBeats
+import uno.d1s.pulseq.util.testBeatsDto
+import uno.d1s.pulseq.util.testDevice
+import uno.d1s.pulseq.util.testDeviceDto
+import uno.d1s.pulseq.util.testDevices
+import uno.d1s.pulseq.util.testDevicesDto
 
 @SpringBootTest
+@ContextConfiguration(classes = [DeviceDtoConverter::class])
 internal class DeviceDtoConverterTest {
 
     @Autowired

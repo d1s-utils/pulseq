@@ -17,7 +17,7 @@ import uno.d1s.pulseq.service.BeatService
 import uno.d1s.pulseq.service.DeviceService
 import uno.d1s.pulseq.util.findClosestInstantToCurrent
 
-@Service("beatService")
+@Service
 class BeatServiceImpl : BeatService {
 
     @Autowired
@@ -38,31 +38,27 @@ class BeatServiceImpl : BeatService {
 
     @Transactional(readOnly = true)
     @Cacheable(cacheNames = [CacheNameConstants.BEAT])
-    override fun findBeatById(id: String): Beat =
-        beatRepository.findById(id).orElseThrow {
-            BeatNotFoundException()
-        }
+    override fun findBeatById(id: String): Beat = beatRepository.findById(id).orElseThrow {
+        BeatNotFoundException()
+    }
 
     @Transactional
     @CacheEvict(cacheNames = [CacheNameConstants.BEAT, CacheNameConstants.BEATS], allEntries = true)
     override fun registerNewBeatWithDeviceIdentify(identify: String): Beat {
-        Beat(
-            runCatching {
-                deviceService.findDeviceByIdentify(identify)
-            }.getOrElse {
-                deviceService.registerNewDevice(identify)
-            },
-            runCatching {
-                activityService.getCurrentInactivityDuration()
-            }.getOrElse {
-                null
-            }).let { unsavedBeat ->
+        Beat(runCatching {
+            deviceService.findDeviceByIdentify(identify)
+        }.getOrElse {
+            deviceService.registerNewDevice(identify)
+        }, runCatching {
+            activityService.getCurrentInactivityDuration()
+        }.getOrElse {
+            null
+        }).let { unsavedBeat ->
             if (activityService.isInactivityRelevanceLevelNotCommon()) {
                 beatRepository.save(unsavedBeat).let { savedBeat ->
                     eventPublisher.publishEvent(
                         DelayedBeatReceivedEvent(
-                            this,
-                            savedBeat
+                            this, savedBeat
                         )
                     )
                     return savedBeat
@@ -75,8 +71,7 @@ class BeatServiceImpl : BeatService {
 
     @Transactional(readOnly = true)
     @Cacheable(cacheNames = [CacheNameConstants.BEATS])
-    override fun findAllBeatsByDeviceId(deviceId: String): List<Beat> =
-        beatRepository.findAllByDeviceIdEquals(deviceId)
+    override fun findAllBeatsByDeviceId(deviceId: String): List<Beat> = beatRepository.findAllByDeviceIdEquals(deviceId)
 
     @Transactional(readOnly = true)
     @Cacheable(cacheNames = [CacheNameConstants.BEATS])
@@ -85,15 +80,13 @@ class BeatServiceImpl : BeatService {
 
     @Cacheable(cacheNames = [CacheNameConstants.BEATS])
     override fun findAllBeatsByDeviceIdentify(deviceIdentify: String): List<Beat> =
-        deviceService.findDeviceByIdentify(deviceIdentify).beats ?: listOf()
+        beatRepository.findAllByDeviceNameEqualsIgnoreCaseOrDeviceIdEquals(deviceIdentify)
 
     @Transactional(readOnly = true)
     @Cacheable(cacheNames = [CacheNameConstants.BEATS])
-    override fun findAllBeats(): List<Beat> =
-        beatRepository.findAll()
+    override fun findAllBeats(): List<Beat> = beatRepository.findAll()
 
-    override fun totalBeats(): Int =
-        beatService.findAllBeats().size
+    override fun totalBeats(): Int = beatService.findAllBeats().size
 
     override fun totalBeatsByDevices(): Map<String, Int> = HashMap<String, Int>().apply {
         // It would be easier to use Device's beats DBRef but this will hurt the performance,
@@ -104,24 +97,22 @@ class BeatServiceImpl : BeatService {
     }
 
     @Cacheable(cacheNames = [CacheNameConstants.BEAT])
-    override fun findLastBeat(): Beat =
-        beatService.findAllBeats().let { all ->
-            all.firstOrNull { beat ->
-                all.map {
-                    it.beatTime
-                }.findClosestInstantToCurrent().orElseThrow {
-                    NoBeatsReceivedException
-                } == beat.beatTime
-            } ?: throw NoBeatsReceivedException
-        }
+    override fun findLastBeat(): Beat = beatService.findAllBeats().let { all ->
+        all.firstOrNull { beat ->
+            all.map {
+                it.beatTime
+            }.findClosestInstantToCurrent().orElseThrow {
+                NoBeatsReceivedException
+            } == beat.beatTime
+        } ?: throw NoBeatsReceivedException
+    }
 
     @Cacheable(cacheNames = [CacheNameConstants.BEAT])
-    override fun findFirstBeat(): Beat =
-        beatService.findAllBeats().let { all ->
-            all.firstOrNull { beat ->
-                all.minOfOrNull {
-                    it.beatTime
-                } == beat.beatTime
-            } ?: throw NoBeatsReceivedException
-        }
+    override fun findFirstBeat(): Beat = beatService.findAllBeats().let { all ->
+        all.firstOrNull { beat ->
+            all.minOfOrNull {
+                it.beatTime
+            } == beat.beatTime
+        } ?: throw NoBeatsReceivedException
+    }
 }

@@ -8,7 +8,7 @@ import uno.d1s.pulseq.service.StatisticService
 import uno.d1s.pulseq.statistic.Statistic
 import uno.d1s.pulseq.util.getOrMessage
 
-@Service("statisticService")
+@Service
 class StatisticServiceImpl : StatisticService {
 
     @Autowired

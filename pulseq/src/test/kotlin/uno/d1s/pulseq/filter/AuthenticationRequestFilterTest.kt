@@ -11,11 +11,13 @@ import org.springframework.http.HttpStatus
 import org.springframework.mock.web.MockFilterChain
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.mock.web.MockHttpServletResponse
-import uno.d1s.pulseq.INVALID_STUB
-import uno.d1s.pulseq.VALID_STUB
+import org.springframework.test.context.ContextConfiguration
 import uno.d1s.pulseq.service.AuthenticationService
+import uno.d1s.pulseq.util.INVALID_STUB
+import uno.d1s.pulseq.util.VALID_STUB
 
 @SpringBootTest
+@ContextConfiguration(classes = [AuthenticationRequestFilter::class])
 internal class AuthenticationRequestFilterTest {
 
     @Autowired

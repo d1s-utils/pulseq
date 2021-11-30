@@ -9,7 +9,7 @@ import uno.d1s.pulseq.exception.DeviceNotFoundException
 import uno.d1s.pulseq.repository.DeviceRepository
 import uno.d1s.pulseq.service.DeviceService
 
-@Service("deviceService")
+@Service
 class DeviceServiceImpl : DeviceService {
 
     @Autowired
