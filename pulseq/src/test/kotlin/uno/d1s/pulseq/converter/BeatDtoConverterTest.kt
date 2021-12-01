@@ -10,12 +10,12 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ContextConfiguration
 import uno.d1s.pulseq.converter.impl.BeatDtoConverter
 import uno.d1s.pulseq.service.DeviceService
-import uno.d1s.pulseq.util.VALID_STUB
-import uno.d1s.pulseq.util.testBeat
-import uno.d1s.pulseq.util.testBeatDto
-import uno.d1s.pulseq.util.testBeats
-import uno.d1s.pulseq.util.testBeatsDto
-import uno.d1s.pulseq.util.testDevice
+import uno.d1s.pulseq.testUtils.VALID_STUB
+import uno.d1s.pulseq.testUtils.testBeat
+import uno.d1s.pulseq.testUtils.testBeatDto
+import uno.d1s.pulseq.testUtils.testBeats
+import uno.d1s.pulseq.testUtils.testBeatsDto
+import uno.d1s.pulseq.testUtils.testDevice
 
 @SpringBootTest
 @ContextConfiguration(classes = [BeatDtoConverter::class])

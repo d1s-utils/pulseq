@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Primary
 import uno.d1s.pulseq.testlistener.ApplicationEventTestListener
 
 @TestConfiguration
-class ApplicationEventTestListenerConfiguration {
+internal class ApplicationEventTestListenerConfiguration {
 
     @Bean
     @Primary

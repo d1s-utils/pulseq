@@ -6,7 +6,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
-import org.springframework.context.ApplicationListener
+import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
 import uno.d1s.pulseq.client.configuration.properties.KeyboardListeningConfigurationProperties
 import uno.d1s.pulseq.client.event.KeyboardActivityDetectedEvent
@@ -14,7 +14,7 @@ import uno.d1s.pulseq.client.service.BeatSenderService
 
 @Component
 @ConditionalOnProperty("pulseq.client.keyboard-listening-mode.timer.enabled")
-class TimerKeyboardEventListener : ApplicationListener<KeyboardActivityDetectedEvent> {
+class TimerKeyboardEventListener {
 
     @Autowired
     private lateinit var beatSenderService: BeatSenderService
@@ -29,7 +29,8 @@ class TimerKeyboardEventListener : ApplicationListener<KeyboardActivityDetectedE
     private val delay
         get() = keyboardListeningConfigurationProperties.timer.delay.toMillis()
 
-    override fun onApplicationEvent(event: KeyboardActivityDetectedEvent) {
+    @EventListener
+    fun onActivity(event: KeyboardActivityDetectedEvent) {
         if (!jobStarted) {
             startJob()
             jobStarted = true

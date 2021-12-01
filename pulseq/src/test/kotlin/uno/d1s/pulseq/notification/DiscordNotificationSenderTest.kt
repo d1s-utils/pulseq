@@ -12,7 +12,7 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.TestPropertySource
 import uno.d1s.pulseq.configuration.property.ColorsConfigurationProperties
 import uno.d1s.pulseq.util.WebhookEmbedBuilderHelper
-import uno.d1s.pulseq.util.testEvent
+import uno.d1s.pulseq.testUtils.testEvent
 
 @SpringBootTest
 @ContextConfiguration(classes = [DiscordNotificationSender::class])

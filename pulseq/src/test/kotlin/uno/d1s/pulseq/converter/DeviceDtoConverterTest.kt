@@ -13,14 +13,14 @@ import uno.d1s.pulseq.converter.impl.DeviceDtoConverter
 import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.dto.BeatDto
 import uno.d1s.pulseq.service.BeatService
-import uno.d1s.pulseq.util.VALID_STUB
-import uno.d1s.pulseq.util.testBeat
-import uno.d1s.pulseq.util.testBeats
-import uno.d1s.pulseq.util.testBeatsDto
-import uno.d1s.pulseq.util.testDevice
-import uno.d1s.pulseq.util.testDeviceDto
-import uno.d1s.pulseq.util.testDevices
-import uno.d1s.pulseq.util.testDevicesDto
+import uno.d1s.pulseq.testUtils.VALID_STUB
+import uno.d1s.pulseq.testUtils.testBeat
+import uno.d1s.pulseq.testUtils.testBeats
+import uno.d1s.pulseq.testUtils.testBeatsDto
+import uno.d1s.pulseq.testUtils.testDevice
+import uno.d1s.pulseq.testUtils.testDeviceDto
+import uno.d1s.pulseq.testUtils.testDevices
+import uno.d1s.pulseq.testUtils.testDevicesDto
 
 @SpringBootTest
 @ContextConfiguration(classes = [DeviceDtoConverter::class])

@@ -6,18 +6,17 @@ import org.springframework.context.event.EventListener
 
 // the reason of this class is https://github.com/spring-projects/spring-framework/issues/18907
 // spring is not allows you to mock the application event publisher yet.
-class ApplicationEventTestListener {
+internal class ApplicationEventTestListener {
 
-    lateinit var lastInterceptedEvent: ApplicationEvent
+    var lastInterceptedEvent: ApplicationEvent? = null
 
     @EventListener
     fun intercept(event: ApplicationEvent) {
         lastInterceptedEvent = event
     }
 
-    fun isLastEventIntercepted() =
-        this::lastInterceptedEvent.isInitialized
-
     inline fun <reified T : ApplicationEvent> isLastEventWas() =
-        this.isLastEventIntercepted() && lastInterceptedEvent is T
+        (lastInterceptedEvent != null && lastInterceptedEvent is T).also {
+            lastInterceptedEvent = null
+        }
 }

@@ -14,8 +14,8 @@ import uno.d1s.pulseq.configuration.property.StatisticsConfigurationProperties
 import uno.d1s.pulseq.exception.StatisticNotFoundException
 import uno.d1s.pulseq.service.impl.StatisticServiceImpl
 import uno.d1s.pulseq.statistic.Statistic
-import uno.d1s.pulseq.util.INVALID_STUB
-import uno.d1s.pulseq.util.VALID_STUB
+import uno.d1s.pulseq.testUtils.INVALID_STUB
+import uno.d1s.pulseq.testUtils.VALID_STUB
 
 
 @SpringBootTest

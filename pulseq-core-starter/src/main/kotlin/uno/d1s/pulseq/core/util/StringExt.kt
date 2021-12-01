@@ -1,9 +1,9 @@
 package uno.d1s.pulseq.core.util
 
-fun String.grammar(number: Number) =
+fun String.pluralGrammar(number: Number) =
     if (number != 1) "${this}s" else this
 
-fun grammar(number: Number) =
+fun pluralGrammar(number: Number) =
     if (number != 1) "s" else ""
 
 fun String.withSlash() =

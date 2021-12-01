@@ -23,6 +23,12 @@ import uno.d1s.pulseq.dto.BeatDto
 import uno.d1s.pulseq.exception.BeatNotFoundException
 import uno.d1s.pulseq.exception.DeviceNotFoundException
 import uno.d1s.pulseq.service.BeatService
+import uno.d1s.pulseq.testUtils.INVALID_STUB
+import uno.d1s.pulseq.testUtils.VALID_STUB
+import uno.d1s.pulseq.testUtils.testBeat
+import uno.d1s.pulseq.testUtils.testBeatDto
+import uno.d1s.pulseq.testUtils.testBeats
+import uno.d1s.pulseq.testUtils.testBeatsDto
 import uno.d1s.pulseq.util.*
 
 @WebMvcTest(useDefaultFilters = false, controllers = [BeatControllerImpl::class])

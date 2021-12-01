@@ -13,8 +13,8 @@ import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.mock.web.MockHttpServletResponse
 import org.springframework.test.context.ContextConfiguration
 import uno.d1s.pulseq.service.AuthenticationService
-import uno.d1s.pulseq.util.INVALID_STUB
-import uno.d1s.pulseq.util.VALID_STUB
+import uno.d1s.pulseq.testUtils.INVALID_STUB
+import uno.d1s.pulseq.testUtils.VALID_STUB
 
 @SpringBootTest
 @ContextConfiguration(classes = [AuthenticationRequestFilter::class])

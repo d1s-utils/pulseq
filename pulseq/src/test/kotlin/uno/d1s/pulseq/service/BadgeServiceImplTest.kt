@@ -13,8 +13,8 @@ import org.springframework.web.client.RestTemplate
 import org.springframework.web.client.getForObject
 import uno.d1s.pulseq.configuration.property.BadgeConfigurationProperties
 import uno.d1s.pulseq.service.impl.BadgeServiceImpl
-import uno.d1s.pulseq.util.VALID_STUB
-import uno.d1s.pulseq.util.testStatistic
+import uno.d1s.pulseq.testUtils.VALID_STUB
+import uno.d1s.pulseq.testUtils.testStatistic
 
 @SpringBootTest
 @ContextConfiguration(classes = [BadgeServiceImpl::class])

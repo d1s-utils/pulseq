@@ -12,11 +12,11 @@ import org.springframework.test.context.ContextConfiguration
 import uno.d1s.pulseq.service.ActivityService
 import uno.d1s.pulseq.statistic.impl.LongestInactivityStatistic
 import uno.d1s.pulseq.util.assertNoWhitespace
-import uno.d1s.pulseq.util.testTimeSpan
+import uno.d1s.pulseq.testUtils.testTimeSpan
 
 @SpringBootTest
 @ContextConfiguration(classes = [LongestInactivityStatistic::class])
-class LongestInactivityStatisticTest {
+internal class LongestInactivityStatisticTest {
 
     @Autowired
     private lateinit var longestInactivityStatistic: LongestInactivityStatistic

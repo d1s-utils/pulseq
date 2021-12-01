@@ -15,7 +15,7 @@ import uno.d1s.pulseq.util.assertNoWhitespace
 
 @SpringBootTest
 @ContextConfiguration(classes = [LastTimeSpansStatistic::class])
-class LastTimeSpansStatisticTest {
+internal class LastTimeSpansStatisticTest {
 
     @Autowired
     private lateinit var lastTimeSpansStatistic: LastTimeSpansStatistic

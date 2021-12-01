@@ -15,7 +15,7 @@ import uno.d1s.pulseq.exception.NoBeatsReceivedException
 import uno.d1s.pulseq.exception.TimeSpansNotAvailableException
 import uno.d1s.pulseq.service.impl.ActivityServiceImpl
 import uno.d1s.pulseq.util.buildBeat
-import uno.d1s.pulseq.util.testBeat
+import uno.d1s.pulseq.testUtils.testBeat
 import java.time.Duration
 import java.time.Instant
 

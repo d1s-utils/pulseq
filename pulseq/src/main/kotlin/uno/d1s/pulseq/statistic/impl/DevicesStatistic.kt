@@ -2,7 +2,7 @@ package uno.d1s.pulseq.statistic.impl
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import uno.d1s.pulseq.core.util.grammar
+import uno.d1s.pulseq.core.util.pluralGrammar
 import uno.d1s.pulseq.service.DeviceService
 import uno.d1s.pulseq.statistic.Statistic
 import uno.d1s.pulseq.util.toCommaDelimitedString
@@ -27,7 +27,7 @@ class DevicesStatistic : Statistic {
                 return@let EMPTY_COLLECTION_MESSAGE
             }
 
-            "The server receives beats from ${devices.size} device${grammar(devices.size)}: " +
+            "The server receives beats from ${devices.size} device${pluralGrammar(devices.size)}: " +
                     devices.map {
                         it.name
                     }.toCommaDelimitedString()

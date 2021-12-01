@@ -13,7 +13,7 @@ import uno.d1s.pulseq.util.assertNoWhitespace
 
 @SpringBootTest
 @ContextConfiguration(classes = [LastBeatStatistic::class])
-class LastBeatStatisticTest {
+internal class LastBeatStatisticTest {
 
     @Autowired
     private lateinit var lastBeatStatistic: LastBeatStatistic

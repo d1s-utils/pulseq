@@ -47,17 +47,15 @@ class InactivityTriggerTask {
     }
 
     private fun isEventSent(): Boolean {
-        if (!this::inactivityRelevanceLevel.isInitialized) {
-            inactivityRelevanceLevel = activityService.getCurrentInactivityRelevanceLevel()
-            return false
-        }
+        val relevanceLevel = activityService.getCurrentInactivityRelevanceLevel()
 
-        return if (inactivityRelevanceLevel == activityService.getCurrentInactivityRelevanceLevel()) {
-            true
-        } else {
-            inactivityRelevanceLevel = activityService.getCurrentInactivityRelevanceLevel()
+        return if (!this::inactivityRelevanceLevel.isInitialized
+            || inactivityRelevanceLevel != relevanceLevel
+        ) {
+            inactivityRelevanceLevel = relevanceLevel
             false
+        } else {
+            true
         }
     }
-
 }

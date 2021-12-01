@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.TestPropertySource
 import uno.d1s.pulseq.notification.NotificationSender
-import uno.d1s.pulseq.util.testEvent
+import uno.d1s.pulseq.testUtils.testEvent
 
 @SpringBootTest
 @ContextConfiguration(classes = [NotifiableEventListener::class])

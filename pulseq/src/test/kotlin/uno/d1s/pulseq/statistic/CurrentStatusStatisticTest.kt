@@ -12,11 +12,11 @@ import org.springframework.test.context.ContextConfiguration
 import uno.d1s.pulseq.service.ActivityService
 import uno.d1s.pulseq.statistic.impl.CurrentStatusStatistic
 import uno.d1s.pulseq.util.assertNoWhitespace
-import uno.d1s.pulseq.util.testTimeSpan
+import uno.d1s.pulseq.testUtils.testTimeSpan
 
 @SpringBootTest
 @ContextConfiguration(classes = [CurrentStatusStatistic::class])
-class CurrentStatusStatisticTest {
+internal class CurrentStatusStatisticTest {
 
     @Autowired
     private lateinit var currentStatusStatistic: CurrentStatusStatistic

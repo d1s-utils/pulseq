@@ -17,10 +17,10 @@ import uno.d1s.pulseq.exception.NoBeatsReceivedException
 import uno.d1s.pulseq.repository.BeatRepository
 import uno.d1s.pulseq.service.impl.BeatServiceImpl
 import uno.d1s.pulseq.testlistener.ApplicationEventTestListener
-import uno.d1s.pulseq.util.INVALID_STUB
-import uno.d1s.pulseq.util.VALID_STUB
-import uno.d1s.pulseq.util.testBeat
-import uno.d1s.pulseq.util.testDevice
+import uno.d1s.pulseq.testUtils.INVALID_STUB
+import uno.d1s.pulseq.testUtils.VALID_STUB
+import uno.d1s.pulseq.testUtils.testBeat
+import uno.d1s.pulseq.testUtils.testDevice
 import java.time.Duration
 import java.util.*
 

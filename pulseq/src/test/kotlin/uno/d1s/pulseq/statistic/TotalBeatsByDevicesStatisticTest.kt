@@ -15,7 +15,7 @@ import uno.d1s.pulseq.util.assertNoWhitespace
 
 @SpringBootTest
 @ContextConfiguration(classes = [TotalBeatsByDevicesStatistic::class])
-class TotalBeatsByDevicesStatisticTest {
+internal class TotalBeatsByDevicesStatisticTest {
 
     @Autowired
     private lateinit var totalBeatsByDevicesStatistic: TotalBeatsByDevicesStatistic

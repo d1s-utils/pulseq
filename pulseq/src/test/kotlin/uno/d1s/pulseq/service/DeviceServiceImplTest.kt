@@ -14,9 +14,9 @@ import uno.d1s.pulseq.exception.DeviceAlreadyExistsException
 import uno.d1s.pulseq.exception.DeviceNotFoundException
 import uno.d1s.pulseq.repository.DeviceRepository
 import uno.d1s.pulseq.service.impl.DeviceServiceImpl
-import uno.d1s.pulseq.util.INVALID_STUB
-import uno.d1s.pulseq.util.VALID_STUB
-import uno.d1s.pulseq.util.testDevice
+import uno.d1s.pulseq.testUtils.INVALID_STUB
+import uno.d1s.pulseq.testUtils.VALID_STUB
+import uno.d1s.pulseq.testUtils.testDevice
 import java.util.*
 
 @SpringBootTest

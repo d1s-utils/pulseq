@@ -12,11 +12,11 @@ import org.springframework.test.context.ContextConfiguration
 import uno.d1s.pulseq.service.BeatService
 import uno.d1s.pulseq.statistic.impl.LastBeatTimeStatistic
 import uno.d1s.pulseq.util.assertNoWhitespace
-import uno.d1s.pulseq.util.testBeat
+import uno.d1s.pulseq.testUtils.testBeat
 
 @SpringBootTest
 @ContextConfiguration(classes = [LastBeatTimeStatistic::class])
-class LastBeatTimeStatisticTest {
+internal class LastBeatTimeStatisticTest {
 
     @Autowired
     private lateinit var lastBeatTimeStatistic: LastBeatTimeStatistic

@@ -11,8 +11,8 @@ import org.springframework.test.context.ContextConfiguration
 import uno.d1s.pulseq.configuration.property.SecurityConfigurationProperties
 import uno.d1s.pulseq.core.util.withSlash
 import uno.d1s.pulseq.service.impl.AuthenticationServiceImpl
-import uno.d1s.pulseq.util.INVALID_STUB
-import uno.d1s.pulseq.util.VALID_STUB
+import uno.d1s.pulseq.testUtils.INVALID_STUB
+import uno.d1s.pulseq.testUtils.VALID_STUB
 
 @SpringBootTest
 @ContextConfiguration(classes = [AuthenticationServiceImpl::class])

@@ -13,7 +13,7 @@ class UrlBuilder(private var initialUrl: String) {
             pathVariable.removePrefix("/")
         } else {
             pathVariable
-        }
+        }.withSlash()
     }
 
     fun parameter(key: String, value: String) {

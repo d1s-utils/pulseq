@@ -23,13 +23,13 @@ import uno.d1s.pulseq.dto.DeviceDto
 import uno.d1s.pulseq.exception.DeviceAlreadyExistsException
 import uno.d1s.pulseq.exception.DeviceNotFoundException
 import uno.d1s.pulseq.service.DeviceService
-import uno.d1s.pulseq.util.INVALID_STUB
-import uno.d1s.pulseq.util.VALID_STUB
+import uno.d1s.pulseq.testUtils.INVALID_STUB
+import uno.d1s.pulseq.testUtils.VALID_STUB
 import uno.d1s.pulseq.util.expectJsonContentType
-import uno.d1s.pulseq.util.testDevice
-import uno.d1s.pulseq.util.testDeviceDto
-import uno.d1s.pulseq.util.testDevices
-import uno.d1s.pulseq.util.testDevicesDto
+import uno.d1s.pulseq.testUtils.testDevice
+import uno.d1s.pulseq.testUtils.testDeviceDto
+import uno.d1s.pulseq.testUtils.testDevices
+import uno.d1s.pulseq.testUtils.testDevicesDto
 
 @WebMvcTest(useDefaultFilters = false, controllers = [DeviceControllerImpl::class])
 @ContextConfiguration(classes = [DeviceControllerImpl::class, ExceptionHandlerControllerAdvice::class])

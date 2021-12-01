@@ -1,4 +1,4 @@
-package uno.d1s.pulseq.util
+package uno.d1s.pulseq.testUtils
 
 import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.domain.Device
@@ -54,3 +54,5 @@ internal val testEvent
 
 internal val testTimeSpan
     get() = TimeSpan(Duration.ZERO, TimeSpanType.ACTIVITY, testBeat, testBeat)
+
+internal val testCollection = listOf(1, 2, 3)
