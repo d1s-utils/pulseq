@@ -1,4 +1,4 @@
-package uno.d1s.pulseq.test
+package uno.d1s.pulseq.task
 
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
@@ -11,7 +11,6 @@ import uno.d1s.pulseq.event.impl.inactivity.InactivityDurationPointExceededEvent
 import uno.d1s.pulseq.event.impl.inactivity.InactivityRelevanceLevel
 import uno.d1s.pulseq.service.ActivityService
 import uno.d1s.pulseq.service.BeatService
-import uno.d1s.pulseq.task.InactivityTriggerTask
 import uno.d1s.pulseq.testlistener.ApplicationEventTestListener
 import uno.d1s.pulseq.testUtils.testBeat
 import java.time.Duration
