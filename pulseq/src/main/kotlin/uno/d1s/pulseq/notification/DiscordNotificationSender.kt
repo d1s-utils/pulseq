@@ -1,18 +1,16 @@
-package uno.d1s.pulseq.listener.notification
+package uno.d1s.pulseq.notification
 
 import club.minnced.discord.webhook.WebhookCluster
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
-import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
 import uno.d1s.pulseq.configuration.property.ColorsConfigurationProperties
-import uno.d1s.pulseq.event.DelayedBeatReceivedEvent
+import uno.d1s.pulseq.event.NotifiableEvent
 import uno.d1s.pulseq.util.WebhookEmbedBuilderHelper
-import uno.d1s.pulseq.util.pretty
 
 @Component
 @ConditionalOnProperty("pulseq.notifications.discord.enabled")
-class DiscordOnDelayedBeatNotificationSender {
+class DiscordNotificationSender : NotificationSender {
 
     @Autowired
     private lateinit var webhookCluster: WebhookCluster
@@ -23,16 +21,11 @@ class DiscordOnDelayedBeatNotificationSender {
     @Autowired
     private lateinit var colorsConfigurationProperties: ColorsConfigurationProperties
 
-    @EventListener
-    fun sendNotification(event: DelayedBeatReceivedEvent) {
+    override fun sendNotification(event: NotifiableEvent) {
         webhookCluster.broadcast(
             embedBuilderHelper.embedDefault {
                 setColor(colorsConfigurationProperties.common)
-                setDescription(
-                    event.beat.inactivityBeforeBeat.let {
-                        "A beat with id `${event.beat.id}` was just received" + if (it == null) "!" else " after `${it.pretty()}` of inactivity!"
-                    }
-                )
+                setDescription(event.notificationMessage)
             }
         )
     }

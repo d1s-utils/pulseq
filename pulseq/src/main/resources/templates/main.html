@@ -1,5 +1,5 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:with="desc=${@statisticService.getStatisticsFormatted()}">
+<head th:with="desc=${statisticsFormatted}">
 
     <title>Pulseq</title>
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -82,7 +82,7 @@
         </div>
     </div>
     <div class="row justify-content-center">
-        <div th:each="stat : ${@statisticService.getAllStatistics()}" class="col-sm-6">
+        <div th:each="stat : ${statistics}" class="col-sm-6">
             <div class="card border-success text-white bg-dark">
                 <div class="card-body">
                     <h5 th:id="'title-' + ${stat.identify}" class="card-title">

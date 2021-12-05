@@ -33,6 +33,7 @@ services:
       - pulseq-mongodb
     environment:
       SPRING_DATA_MONGODB_HOST: pulseq-mongodb
+      SPRING_PROFILES_ACTIVE: dev
 
 networks:
   pulseq-net:

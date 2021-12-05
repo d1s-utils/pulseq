@@ -1,4 +1,4 @@
-package uno.d1s.pulseq.event.inactivity
+package uno.d1s.pulseq.event.impl.inactivity
 
 enum class InactivityRelevanceLevel(
     val nameString: String,

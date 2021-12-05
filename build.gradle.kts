@@ -16,6 +16,7 @@ subprojects {
     }
 
     extra["dokkaVersion"] = "1.5.30"
+    extra["springMockkVersion"] = "3.0.1"
 
     group = "uno.d1s"
     version = "0.2.1-alpha.0"
@@ -39,6 +40,7 @@ subprojects {
         implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
         annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
         testImplementation("org.springframework.boot:spring-boot-starter-test")
+        testImplementation("com.ninja-squad:springmockk:${property("springMockkVersion")}")
     }
 
     tasks.withType<JavaCompile> {
@@ -54,6 +56,16 @@ subprojects {
 
     tasks.withType<Test> {
         useJUnitPlatform()
+
+        testLogging {
+            events.addAll(
+                listOf(
+                    org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
+                    org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,
+                    org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
+                )
+            )
+        }
     }
 
     tasks.register("wrapper") {}

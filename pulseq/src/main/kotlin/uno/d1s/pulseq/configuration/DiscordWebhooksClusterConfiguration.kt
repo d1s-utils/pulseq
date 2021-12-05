@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration
 import uno.d1s.pulseq.configuration.property.NotificationsConfigurationProperties
 
 @Configuration
-@ConditionalOnProperty(prefix = "pulseq.notifications.discord", name = ["enabled"])
+@ConditionalOnProperty("pulseq.notifications.discord.enabled")
 class DiscordWebhooksClusterConfiguration {
 
     @Autowired

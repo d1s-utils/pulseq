@@ -8,16 +8,18 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uno.d1s.pulseq.constant.cache.CacheNameConstants
 import uno.d1s.pulseq.domain.Beat
-import uno.d1s.pulseq.event.DelayedBeatReceivedEvent
+import uno.d1s.pulseq.event.impl.DelayedBeatReceivedEvent
 import uno.d1s.pulseq.exception.BeatNotFoundException
 import uno.d1s.pulseq.exception.NoBeatsReceivedException
 import uno.d1s.pulseq.repository.BeatRepository
 import uno.d1s.pulseq.service.ActivityService
 import uno.d1s.pulseq.service.BeatService
 import uno.d1s.pulseq.service.DeviceService
+import uno.d1s.pulseq.strategy.device.DeviceFindingStrategy
+import uno.d1s.pulseq.strategy.device.byAll
 import uno.d1s.pulseq.util.findClosestInstantToCurrent
 
-@Service("beatService")
+@Service
 class BeatServiceImpl : BeatService {
 
     @Autowired
@@ -38,31 +40,27 @@ class BeatServiceImpl : BeatService {
 
     @Transactional(readOnly = true)
     @Cacheable(cacheNames = [CacheNameConstants.BEAT])
-    override fun findBeatById(id: String): Beat =
-        beatRepository.findById(id).orElseThrow {
-            BeatNotFoundException("Could not find any beats with provided id.")
-        }
+    override fun findBeatById(id: String): Beat = beatRepository.findById(id).orElseThrow {
+        BeatNotFoundException()
+    }
 
     @Transactional
     @CacheEvict(cacheNames = [CacheNameConstants.BEAT, CacheNameConstants.BEATS], allEntries = true)
     override fun registerNewBeatWithDeviceIdentify(identify: String): Beat {
-        Beat(
-            runCatching {
-                deviceService.findDeviceByIdentify(identify)
-            }.getOrElse {
-                deviceService.registerNewDevice(identify)
-            },
-            runCatching {
-                activityService.getCurrentInactivityDuration()
-            }.getOrElse {
-                null
-            }).let { unsavedBeat ->
+        Beat(runCatching {
+            deviceService.findDevice(byAll(identify))
+        }.getOrElse {
+            deviceService.registerNewDevice(identify)
+        }, runCatching {
+            activityService.getCurrentInactivityDuration()
+        }.getOrElse {
+            null
+        }).let { unsavedBeat ->
             if (activityService.isInactivityRelevanceLevelNotCommon()) {
                 beatRepository.save(unsavedBeat).let { savedBeat ->
                     eventPublisher.publishEvent(
                         DelayedBeatReceivedEvent(
-                            this,
-                            savedBeat
+                            this, savedBeat
                         )
                     )
                     return savedBeat
@@ -73,27 +71,12 @@ class BeatServiceImpl : BeatService {
         }
     }
 
-    @Transactional(readOnly = true)
-    @Cacheable(cacheNames = [CacheNameConstants.BEATS])
-    override fun findAllBeatsByDeviceId(deviceId: String): List<Beat> =
-        beatRepository.findAllByDeviceIdEquals(deviceId)
+    override fun findAllByDevice(strategy: DeviceFindingStrategy): List<Beat> =
+        deviceService.findDevice(strategy).beats!!
 
-    @Transactional(readOnly = true)
-    @Cacheable(cacheNames = [CacheNameConstants.BEATS])
-    override fun findAllBeatsByDeviceName(deviceName: String): List<Beat> =
-        beatRepository.findAllByDeviceNameEqualsIgnoreCase(deviceName)
+    override fun findAllBeats(): List<Beat> = beatRepository.findAll()
 
-    @Cacheable(cacheNames = [CacheNameConstants.BEATS])
-    override fun findAllBeatsByDeviceIdentify(deviceIdentify: String): List<Beat> =
-        deviceService.findDeviceByIdentify(deviceIdentify).beats ?: listOf()
-
-    @Transactional(readOnly = true)
-    @Cacheable(cacheNames = [CacheNameConstants.BEATS])
-    override fun findAllBeats(): List<Beat> =
-        beatRepository.findAll()
-
-    override fun totalBeats(): Int =
-        beatService.findAllBeats().size
+    override fun totalBeats(): Int = beatService.findAllBeats().size
 
     override fun totalBeatsByDevices(): Map<String, Int> = HashMap<String, Int>().apply {
         // It would be easier to use Device's beats DBRef but this will hurt the performance,
@@ -104,24 +87,22 @@ class BeatServiceImpl : BeatService {
     }
 
     @Cacheable(cacheNames = [CacheNameConstants.BEAT])
-    override fun findLastBeat(): Beat =
-        beatService.findAllBeats().let { all ->
-            all.firstOrNull { beat ->
-                all.map {
-                    it.beatTime
-                }.findClosestInstantToCurrent().orElseThrow {
-                    NoBeatsReceivedException
-                } == beat.beatTime
-            } ?: throw NoBeatsReceivedException
-        }
+    override fun findLastBeat(): Beat = beatService.findAllBeats().let { all ->
+        all.firstOrNull { beat ->
+            all.map {
+                it.beatTime
+            }.findClosestInstantToCurrent().orElseThrow {
+                NoBeatsReceivedException
+            } == beat.beatTime
+        } ?: throw NoBeatsReceivedException
+    }
 
     @Cacheable(cacheNames = [CacheNameConstants.BEAT])
-    override fun findFirstBeat(): Beat =
-        beatService.findAllBeats().let { all ->
-            all.firstOrNull { beat ->
-                all.minOfOrNull {
-                    it.beatTime
-                } == beat.beatTime
-            } ?: throw NoBeatsReceivedException
-        }
+    override fun findFirstBeat(): Beat = beatService.findAllBeats().let { all ->
+        all.firstOrNull { beat ->
+            all.minOfOrNull {
+                it.beatTime
+            } == beat.beatTime
+        } ?: throw NoBeatsReceivedException
+    }
 }

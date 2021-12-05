@@ -7,7 +7,7 @@ import uno.d1s.pulseq.configuration.property.SecurityConfigurationProperties
 import uno.d1s.pulseq.core.util.withSlash
 import uno.d1s.pulseq.service.AuthenticationService
 
-@Service("authenticationService")
+@Service
 class AuthenticationServiceImpl : AuthenticationService {
 
     @Autowired

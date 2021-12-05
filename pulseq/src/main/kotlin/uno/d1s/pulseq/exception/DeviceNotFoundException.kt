@@ -1,3 +1,6 @@
 package uno.d1s.pulseq.exception
 
-class DeviceNotFoundException(override val message: String) : RuntimeException(message)
+import uno.d1s.pulseq.constant.error.ErrorConstants
+
+class DeviceNotFoundException(override val message: String = ErrorConstants.DEVICE_NOT_FOUND) :
+    RuntimeException(message)

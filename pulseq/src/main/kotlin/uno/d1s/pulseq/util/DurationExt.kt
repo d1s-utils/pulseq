@@ -1,6 +1,6 @@
 package uno.d1s.pulseq.util
 
-import uno.d1s.pulseq.core.util.grammar
+import uno.d1s.pulseq.core.util.pluralGrammar
 import java.time.Duration
 
 fun Duration.pretty(): String = buildString {
@@ -11,12 +11,12 @@ fun Duration.pretty(): String = buildString {
     val millis = this@pretty.toMillisPart()
 
     if (seconds == 0) {
-        append("$millis millisecond${grammar(millis)}")
+        append("$millis millisecond${pluralGrammar(millis)}")
         return@buildString
     }
 
-    if (days != 0L) append("$days day${grammar(days)}, ")
-    if (hours != 0) append("$hours hour${grammar(hours)}, ")
-    if (minutes != 0) append("$minutes minute${grammar(minutes)}, ")
-    append("$seconds second".grammar(seconds))
+    if (days != 0L) append("$days day${pluralGrammar(days)}, ")
+    if (hours != 0) append("$hours hour${pluralGrammar(hours)}, ")
+    if (minutes != 0) append("$minutes minute${pluralGrammar(minutes)}, ")
+    append("$seconds second".pluralGrammar(seconds))
 }
