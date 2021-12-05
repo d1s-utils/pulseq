@@ -6,6 +6,7 @@ import uno.d1s.pulseq.converter.DtoConverter
 import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.dto.BeatDto
 import uno.d1s.pulseq.service.DeviceService
+import uno.d1s.pulseq.strategy.device.byId
 
 @Component
 class BeatDtoConverter : DtoConverter<Beat, BeatDto> {
@@ -26,7 +27,11 @@ class BeatDtoConverter : DtoConverter<Beat, BeatDto> {
         }
 
     override fun convertToDomain(dto: BeatDto): Beat =
-        Beat(deviceService.findDeviceById(dto.device), dto.inactivityBeforeBeat, dto.beatTime).apply {
+        Beat(
+            deviceService.findDevice(byId(dto.device)),
+            dto.inactivityBeforeBeat,
+            dto.beatTime
+        ).apply {
             dto.id?.let {
                 id = it
             }

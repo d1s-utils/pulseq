@@ -9,7 +9,7 @@ interface ActivityService {
 
     fun getCurrentInactivityDuration(): Duration
 
-    fun getLongestInactivity(): TimeSpan
+    fun getLongestInactivity(processCurrent: Boolean = true): TimeSpan
 
     fun getCurrentInactivityPretty(): String
 

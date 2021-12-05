@@ -8,6 +8,8 @@ import uno.d1s.pulseq.converter.DtoConverter
 import uno.d1s.pulseq.domain.Device
 import uno.d1s.pulseq.dto.DeviceDto
 import uno.d1s.pulseq.service.DeviceService
+import uno.d1s.pulseq.strategy.device.DeviceFindingStrategyType
+import uno.d1s.pulseq.strategy.device.byStrategyType
 
 @RestController
 class DeviceControllerImpl : DeviceController {
@@ -24,9 +26,15 @@ class DeviceControllerImpl : DeviceController {
         )
     )
 
-    override fun getDeviceByIdentify(identify: String): ResponseEntity<DeviceDto> = ResponseEntity.ok(
+    override fun getDeviceByIdentify(
+        identify: String, findingStrategy: DeviceFindingStrategyType?
+    ): ResponseEntity<DeviceDto> = ResponseEntity.ok(
         deviceDtoConverter.convertToDto(
-            deviceService.findDeviceByIdentify(identify)
+            deviceService.findDevice(
+                byStrategyType(
+                    identify, findingStrategy ?: DeviceFindingStrategyType.BY_ALL
+                )
+            )
         )
     )
 

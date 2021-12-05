@@ -23,13 +23,9 @@ import uno.d1s.pulseq.dto.DeviceDto
 import uno.d1s.pulseq.exception.DeviceAlreadyExistsException
 import uno.d1s.pulseq.exception.DeviceNotFoundException
 import uno.d1s.pulseq.service.DeviceService
-import uno.d1s.pulseq.testUtils.INVALID_STUB
-import uno.d1s.pulseq.testUtils.VALID_STUB
+import uno.d1s.pulseq.strategy.device.byAll
+import uno.d1s.pulseq.testUtils.*
 import uno.d1s.pulseq.util.expectJsonContentType
-import uno.d1s.pulseq.testUtils.testDevice
-import uno.d1s.pulseq.testUtils.testDeviceDto
-import uno.d1s.pulseq.testUtils.testDevices
-import uno.d1s.pulseq.testUtils.testDevicesDto
 
 @WebMvcTest(useDefaultFilters = false, controllers = [DeviceControllerImpl::class])
 @ContextConfiguration(classes = [DeviceControllerImpl::class, ExceptionHandlerControllerAdvice::class])
@@ -54,11 +50,11 @@ internal class DeviceControllerImplTest {
         } returns testDevices
 
         every {
-            deviceService.findDeviceByIdentify(VALID_STUB)
+            deviceService.findDevice(byAll(VALID_STUB))
         } returns testDevice
 
         every {
-            deviceService.findDeviceByIdentify(INVALID_STUB)
+            deviceService.findDevice(byAll(INVALID_STUB))
         } throws DeviceNotFoundException()
 
         every {
@@ -112,7 +108,7 @@ internal class DeviceControllerImplTest {
         }
 
         verify {
-            deviceService.findDeviceByIdentify(VALID_STUB)
+            deviceService.findDevice(byAll(VALID_STUB))
         }
 
         verifyDeviceConversion()
@@ -127,7 +123,7 @@ internal class DeviceControllerImplTest {
         }
 
         verify {
-            deviceService.findDeviceByIdentify(INVALID_STUB)
+            deviceService.findDevice(byAll(INVALID_STUB))
         }
     }
 

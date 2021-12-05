@@ -1,27 +1,26 @@
 package uno.d1s.pulseq.converter
 
 import com.ninjasquad.springmockk.MockkBean
+import com.ninjasquad.springmockk.SpykBean
 import io.mockk.every
+import io.mockk.verify
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ContextConfiguration
 import uno.d1s.pulseq.converter.impl.BeatDtoConverter
+import uno.d1s.pulseq.domain.Beat
+import uno.d1s.pulseq.domain.Device
 import uno.d1s.pulseq.service.DeviceService
-import uno.d1s.pulseq.testUtils.VALID_STUB
-import uno.d1s.pulseq.testUtils.testBeat
-import uno.d1s.pulseq.testUtils.testBeatDto
-import uno.d1s.pulseq.testUtils.testBeats
-import uno.d1s.pulseq.testUtils.testBeatsDto
-import uno.d1s.pulseq.testUtils.testDevice
+import uno.d1s.pulseq.strategy.device.byId
+import uno.d1s.pulseq.testUtils.*
 
 @SpringBootTest
 @ContextConfiguration(classes = [BeatDtoConverter::class])
 internal class BeatDtoConverterTest {
 
-    @Autowired
+    @SpykBean
     private lateinit var beatDtoConverter: BeatDtoConverter
 
     @MockkBean
@@ -30,7 +29,7 @@ internal class BeatDtoConverterTest {
     @BeforeEach
     fun setup() {
         every {
-            deviceService.findDeviceById(VALID_STUB)
+            deviceService.findDevice(byId(VALID_STUB))
         } returns testDevice
     }
 
@@ -42,19 +41,30 @@ internal class BeatDtoConverterTest {
     @Test
     fun `should throw an exception on conversion to dto with null device id`() {
         Assertions.assertThrows(IllegalArgumentException::class.java) {
-            beatDtoConverter.convertToDto(testBeat.apply {
-                device.id = null
-            })
+            val nullDeviceIdBeat = Beat(
+                Device(VALID_STUB),
+                testBeat.inactivityBeforeBeat
+            )
+
+            beatDtoConverter.convertToDto(nullDeviceIdBeat)
         }
     }
 
     @Test
     fun `should return valid list on conversion to dto list`() {
         Assertions.assertEquals(testBeatsDto, beatDtoConverter.convertToDtoList(testBeats))
+
+        verify {
+            beatDtoConverter.convertToDto(any())
+        }
     }
 
     @Test
     fun `should return valid list on conversion to domain list`() {
         Assertions.assertEquals(testBeats, beatDtoConverter.convertToDomainList(testBeatsDto))
+
+        verify {
+            beatDtoConverter.convertToDomain(any())
+        }
     }
 }

@@ -1,32 +1,25 @@
 package uno.d1s.pulseq.converter
 
 import com.ninjasquad.springmockk.MockkBean
+import com.ninjasquad.springmockk.SpykBean
 import io.mockk.every
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ContextConfiguration
 import uno.d1s.pulseq.converter.impl.DeviceDtoConverter
 import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.dto.BeatDto
 import uno.d1s.pulseq.service.BeatService
-import uno.d1s.pulseq.testUtils.VALID_STUB
-import uno.d1s.pulseq.testUtils.testBeat
-import uno.d1s.pulseq.testUtils.testBeats
-import uno.d1s.pulseq.testUtils.testBeatsDto
-import uno.d1s.pulseq.testUtils.testDevice
-import uno.d1s.pulseq.testUtils.testDeviceDto
-import uno.d1s.pulseq.testUtils.testDevices
-import uno.d1s.pulseq.testUtils.testDevicesDto
+import uno.d1s.pulseq.testUtils.*
 
 @SpringBootTest
 @ContextConfiguration(classes = [DeviceDtoConverter::class])
 internal class DeviceDtoConverterTest {
 
-    @Autowired
+    @SpykBean
     private lateinit var deviceDtoConverter: DeviceDtoConverter
 
     @MockkBean
@@ -63,10 +56,18 @@ internal class DeviceDtoConverterTest {
     @Test
     fun `should return valid list on conversion to dto list`() {
         Assertions.assertEquals(testDevicesDto, deviceDtoConverter.convertToDtoList(testDevices))
+
+        verify {
+            deviceDtoConverter.convertToDto(any())
+        }
     }
 
     @Test
     fun `should return valid list on conversion to domain list`() {
         Assertions.assertEquals(testDevices, deviceDtoConverter.convertToDomainList(testDevicesDto))
+
+        verify {
+            deviceDtoConverter.convertToDomain(any())
+        }
     }
 }

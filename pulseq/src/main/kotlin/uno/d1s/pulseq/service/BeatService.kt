@@ -1,6 +1,7 @@
 package uno.d1s.pulseq.service
 
 import uno.d1s.pulseq.domain.Beat
+import uno.d1s.pulseq.strategy.device.DeviceFindingStrategy
 
 interface BeatService {
 
@@ -8,11 +9,9 @@ interface BeatService {
 
     fun registerNewBeatWithDeviceIdentify(identify: String): Beat
 
-    fun findAllBeatsByDeviceId(deviceId: String): List<Beat>
-
-    fun findAllBeatsByDeviceName(deviceName: String): List<Beat>
-
-    fun findAllBeatsByDeviceIdentify(deviceIdentify: String): List<Beat>
+    fun findAllByDevice(
+        strategy: DeviceFindingStrategy
+    ): List<Beat>
 
     fun findAllBeats(): List<Beat>
 

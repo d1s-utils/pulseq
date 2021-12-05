@@ -1,6 +1,7 @@
 package uno.d1s.pulseq.task
 
 import com.ninjasquad.springmockk.MockkBean
+import io.mockk.called
 import io.mockk.every
 import io.mockk.verify
 import org.junit.jupiter.api.*
@@ -11,9 +12,8 @@ import uno.d1s.pulseq.event.impl.inactivity.InactivityDurationPointExceededEvent
 import uno.d1s.pulseq.event.impl.inactivity.InactivityRelevanceLevel
 import uno.d1s.pulseq.service.ActivityService
 import uno.d1s.pulseq.service.BeatService
+import uno.d1s.pulseq.testUtils.testTimeSpan
 import uno.d1s.pulseq.testlistener.ApplicationEventTestListener
-import uno.d1s.pulseq.testUtils.testBeat
-import java.time.Duration
 
 @SpringBootTest
 @ContextConfiguration(
@@ -41,16 +41,12 @@ internal class InactivityTriggerTaskTest {
         } returns true
 
         every {
-            activityService.getCurrentInactivityDuration()
-        } returns Duration.ZERO
-
-        every {
             activityService.getCurrentInactivityRelevanceLevel()
-        } returns InactivityRelevanceLevel.LONG
+        } returns InactivityRelevanceLevel.COMMON
 
         every {
-            beatService.findLastBeat()
-        } returns testBeat
+            activityService.getCurrentTimeSpan()
+        } returns testTimeSpan
     }
 
     @Test
@@ -69,15 +65,7 @@ internal class InactivityTriggerTaskTest {
         }
 
         verify {
-            activityService.getCurrentInactivityRelevanceLevel()
-        }
-
-        verify {
-            activityService.getCurrentInactivityDuration()
-        }
-
-        verify {
-            beatService.findLastBeat()
+            activityService.getCurrentTimeSpan()
         }
     }
 
@@ -100,12 +88,8 @@ internal class InactivityTriggerTaskTest {
             activityService.getCurrentInactivityRelevanceLevel()
         }
 
-        verify(exactly = 0) {
-            activityService.getCurrentInactivityDuration()
-        }
-
-        verify(exactly = 0) {
-            beatService.findLastBeat()
+        verify {
+            activityService.getCurrentTimeSpan() wasNot called
         }
     }
 }

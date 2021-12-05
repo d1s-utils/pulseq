@@ -52,7 +52,7 @@ internal class CountDownLatchKeyboardEventListenerTest {
     fun `should not send the beat`() {
         countDownLatchKeyboardEventListener.onActivity(testKeyboardActivityDetectedEvent)
 
-        verify(exactly = 0) {
+        verify {
             beatSenderService.sendBeat()
         }
     }

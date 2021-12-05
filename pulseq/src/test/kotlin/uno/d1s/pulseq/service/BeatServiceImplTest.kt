@@ -11,18 +11,22 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ContextConfiguration
 import uno.d1s.pulseq.configuration.ApplicationEventTestListenerConfiguration
+import uno.d1s.pulseq.domain.Beat
+import uno.d1s.pulseq.domain.Device
 import uno.d1s.pulseq.event.impl.DelayedBeatReceivedEvent
 import uno.d1s.pulseq.exception.BeatNotFoundException
+import uno.d1s.pulseq.exception.DeviceNotFoundException
 import uno.d1s.pulseq.exception.NoBeatsReceivedException
 import uno.d1s.pulseq.repository.BeatRepository
 import uno.d1s.pulseq.service.impl.BeatServiceImpl
+import uno.d1s.pulseq.strategy.device.*
+import uno.d1s.pulseq.testUtils.*
 import uno.d1s.pulseq.testlistener.ApplicationEventTestListener
-import uno.d1s.pulseq.testUtils.INVALID_STUB
-import uno.d1s.pulseq.testUtils.VALID_STUB
-import uno.d1s.pulseq.testUtils.testBeat
-import uno.d1s.pulseq.testUtils.testDevice
+import uno.d1s.pulseq.util.buildBeat
 import java.time.Duration
+import java.time.Instant
 import java.util.*
+import kotlin.properties.Delegates
 
 @SpringBootTest
 @ContextConfiguration(
@@ -56,12 +60,32 @@ internal class BeatServiceImplTest {
         } returns Optional.empty()
 
         every {
-            deviceService.findDeviceByIdentify(VALID_STUB)
+            deviceService.registerNewDevice(VALID_STUB)
         } returns testDevice
 
         every {
-            deviceService.registerNewDevice(any())
+            deviceService.registerNewDevice(INVALID_STUB)
+        } returns Device(INVALID_STUB)
+
+        every {
+            deviceService.findDevice(byAll(VALID_STUB))
         } returns testDevice
+
+        every {
+            deviceService.findDevice(byAll(INVALID_STUB))
+        } throws DeviceNotFoundException()
+
+        every {
+            deviceService.findDevice(byId(VALID_STUB))
+        } returns testDevice
+
+        every {
+            deviceService.findDevice(byName(VALID_STUB))
+        } returns testDevice
+
+        every {
+            deviceService.findDevice(byName(INVALID_STUB))
+        } throws DeviceNotFoundException() andThen Device(INVALID_STUB)
 
         every {
             activityService.isInactivityRelevanceLevelNotCommon()
@@ -76,20 +100,8 @@ internal class BeatServiceImplTest {
         } returns testBeat
 
         every {
-            beatRepository.findAllByDeviceIdEquals(VALID_STUB)
-        } returns listOf()
-
-        every {
-            beatRepository.findAllByDeviceNameEqualsIgnoreCase(VALID_STUB)
-        } returns listOf()
-
-        every {
-            beatRepository.findAllByDeviceNameEqualsIgnoreCaseOrDeviceIdEquals(VALID_STUB)
-        } returns listOf()
-
-        every {
             beatRepository.findAll()
-        } returns listOf()
+        } returns testBeats
     }
 
     @Test
@@ -115,84 +127,87 @@ internal class BeatServiceImplTest {
     }
 
     @Test
+    fun `should register the beat with non existent device`() {
+        this.verifyBeatRegistrationPipelineCalls(INVALID_STUB, true)
+    }
+
+    @Test
     fun `should register the beat with existing device`() {
         this.verifyBeatRegistrationPipelineCalls(VALID_STUB, false)
     }
 
     @Test
-    fun `should register the beat with unresisting device`() {
-        this.verifyBeatRegistrationPipelineCalls(INVALID_STUB, true)
-    }
-
-    @Test
     fun `should find all beats by device id`() {
-        assertDoesNotThrow {
-            beatService.findAllBeatsByDeviceId(VALID_STUB)
-        }
-
-        verify {
-            beatRepository.findAllByDeviceIdEquals(VALID_STUB)
-        }
+        this.findAllByDeviceAndAssert(DeviceFindingStrategyType.BY_ID)
     }
 
     @Test
     fun `should find all beats by device name`() {
-        assertDoesNotThrow {
-            beatService.findAllBeatsByDeviceName(VALID_STUB)
-        }
-
-        verify {
-            beatRepository.findAllByDeviceNameEqualsIgnoreCase(VALID_STUB)
-        }
+        this.findAllByDeviceAndAssert(DeviceFindingStrategyType.BY_NAME)
     }
 
     @Test
     fun `should find all beats by device identify`() {
-        assertDoesNotThrow {
-            beatService.findAllBeatsByDeviceIdentify(VALID_STUB)
-        }
-
-        verify {
-            beatRepository.findAllByDeviceNameEqualsIgnoreCaseOrDeviceIdEquals(VALID_STUB)
-        }
+        this.findAllByDeviceAndAssert(DeviceFindingStrategyType.BY_ALL)
     }
 
     @Test
     fun `should find all beats`() {
+        var all: List<Beat> by Delegates.notNull()
+
         assertDoesNotThrow {
-            beatService.findAllBeats()
+            all = beatService.findAllBeats()
         }
 
         verify {
             beatRepository.findAll()
         }
+
+        Assertions.assertEquals(testBeats, all)
     }
 
     @Test
     fun `should find total beats number`() {
+        var total: Int by Delegates.notNull()
+
         assertDoesNotThrow {
-            beatService.totalBeats()
+            total = beatService.totalBeats()
         }
+
+        Assertions.assertEquals(testBeats.size, total)
     }
 
     @Test
     fun `should find total beats numbers by devices`() {
+        var beatsByDevices: Map<String, Int> by Delegates.notNull()
+
         assertDoesNotThrow {
-            beatService.totalBeatsByDevices()
+            beatsByDevices = beatService.totalBeatsByDevices()
         }
+
+        Assertions.assertEquals(
+            mapOf(
+                VALID_STUB to 1
+            ),
+            beatsByDevices
+        )
     }
 
     @Test
     fun `should find last beat`() {
-        this.makeBeatRepositoryNotEmpty()
+        var lastBeat: Beat by Delegates.notNull()
 
         assertDoesNotThrow {
-            beatService.findLastBeat()
+            lastBeat = beatService.findLastBeat()
         }
+
+        Assertions.assertEquals(testBeat, lastBeat)
     }
 
     @Test
     fun `should throw an exception on finding last beat if there are no beats`() {
+        this.emptyRepository()
+
         Assertions.assertThrows(NoBeatsReceivedException::class.java) {
             beatService.findLastBeat()
         }
@@ -200,23 +215,37 @@ internal class BeatServiceImplTest {
 
     @Test
     fun `should find first beat`() {
-        this.makeBeatRepositoryNotEmpty()
+        // I think there should be more test beats to increase test quality.
+        var firstBeat: Beat by Delegates.notNull()
 
         assertDoesNotThrow {
-            beatService.findFirstBeat()
+            firstBeat = beatService.findFirstBeat()
         }
+
+        Assertions.assertEquals(testBeat, firstBeat)
     }
 
     @Test
     fun `should throw an exception on finding first beat if there are no beats`() {
+        this.emptyRepository()
+
         Assertions.assertThrows(NoBeatsReceivedException::class.java) {
             beatService.findFirstBeat()
         }
     }
 
     private fun verifyBeatRegistrationPipelineCalls(deviceName: String, registerDevice: Boolean) {
+        every {
+            beatRepository.save(any())
+        } returns buildBeat {
+            beatTime = Instant.now()
+            device = Device(deviceName)
+        }
+
+        var beat: Beat by Delegates.notNull()
+
         assertDoesNotThrow {
-            beatService.registerNewBeatWithDeviceIdentify(deviceName)
+            beat = beatService.registerNewBeatWithDeviceIdentify(deviceName)
         }
 
         if (registerDevice) {
@@ -226,7 +255,7 @@ internal class BeatServiceImplTest {
         }
 
         verify {
-            deviceService.findDeviceByIdentify(deviceName)
+            deviceService.findDevice(byAll(deviceName))
         }
 
         verify {
@@ -244,11 +273,35 @@ internal class BeatServiceImplTest {
         Assertions.assertTrue(
             applicationEventTestListener.isLastEventWas<DelayedBeatReceivedEvent>()
         )
+
+        Assertions.assertEquals(testBeat.id, beat.id)
+        Assertions.assertEquals(Instant.now().epochSecond, beat.beatTime.epochSecond)
+        Assertions.assertEquals(deviceName, beat.device.name)
+        Assertions.assertEquals(activityService.getCurrentInactivityDuration(), beat.inactivityBeforeBeat)
     }
 
-    private fun makeBeatRepositoryNotEmpty() {
+    private fun findAllByDeviceAndAssert(
+        strategyType: DeviceFindingStrategyType
+    ) {
+        var all: List<Beat> by Delegates.notNull()
+        val strategy = byStrategyType(VALID_STUB, strategyType)
+
+        assertDoesNotThrow {
+            all = beatService.findAllByDevice(strategy)
+        }
+
+        verify {
+            deviceService.findDevice(strategy)
+        }
+
+        Assertions.assertEquals(
+            testBeats, all
+        )
+    }
+
+    private fun emptyRepository() {
         every {
             beatRepository.findAll()
-        } returns listOf(testBeat)
+        } returns listOf()
     }
 }

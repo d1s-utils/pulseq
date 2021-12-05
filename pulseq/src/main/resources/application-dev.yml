@@ -1,7 +1,8 @@
 pulseq:
   activity:
     activity-delimiter: "10s"
-    common: "20s"
+    long: "20s"
+    warning: "50s"
 
 server:
   port: 8080

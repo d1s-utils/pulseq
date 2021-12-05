@@ -15,6 +15,8 @@ import uno.d1s.pulseq.repository.BeatRepository
 import uno.d1s.pulseq.service.ActivityService
 import uno.d1s.pulseq.service.BeatService
 import uno.d1s.pulseq.service.DeviceService
+import uno.d1s.pulseq.strategy.device.DeviceFindingStrategy
+import uno.d1s.pulseq.strategy.device.byAll
 import uno.d1s.pulseq.util.findClosestInstantToCurrent
 
 @Service
@@ -46,7 +48,7 @@ class BeatServiceImpl : BeatService {
     @CacheEvict(cacheNames = [CacheNameConstants.BEAT, CacheNameConstants.BEATS], allEntries = true)
     override fun registerNewBeatWithDeviceIdentify(identify: String): Beat {
         Beat(runCatching {
-            deviceService.findDeviceByIdentify(identify)
+            deviceService.findDevice(byAll(identify))
         }.getOrElse {
             deviceService.registerNewDevice(identify)
         }, runCatching {
@@ -69,21 +71,9 @@ class BeatServiceImpl : BeatService {
         }
     }
 
-    @Transactional(readOnly = true)
-    @Cacheable(cacheNames = [CacheNameConstants.BEATS])
-    override fun findAllBeatsByDeviceId(deviceId: String): List<Beat> = beatRepository.findAllByDeviceIdEquals(deviceId)
+    override fun findAllByDevice(strategy: DeviceFindingStrategy): List<Beat> =
+        deviceService.findDevice(strategy).beats!!
 
-    @Transactional(readOnly = true)
-    @Cacheable(cacheNames = [CacheNameConstants.BEATS])
-    override fun findAllBeatsByDeviceName(deviceName: String): List<Beat> =
-        beatRepository.findAllByDeviceNameEqualsIgnoreCase(deviceName)
-
-    @Cacheable(cacheNames = [CacheNameConstants.BEATS])
-    override fun findAllBeatsByDeviceIdentify(deviceIdentify: String): List<Beat> =
-        beatRepository.findAllByDeviceNameEqualsIgnoreCaseOrDeviceIdEquals(deviceIdentify)
-
-    @Transactional(readOnly = true)
-    @Cacheable(cacheNames = [CacheNameConstants.BEATS])
     override fun findAllBeats(): List<Beat> = beatRepository.findAll()
 
     override fun totalBeats(): Int = beatService.findAllBeats().size

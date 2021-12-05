@@ -8,14 +8,10 @@ import uno.d1s.pulseq.event.impl.inactivity.InactivityDurationPointExceededEvent
 import uno.d1s.pulseq.event.impl.inactivity.InactivityRelevanceLevel
 import uno.d1s.pulseq.exception.NoBeatsReceivedException
 import uno.d1s.pulseq.service.ActivityService
-import uno.d1s.pulseq.service.BeatService
 import java.util.concurrent.TimeUnit
 
 @Component
 class InactivityTriggerTask {
-
-    @Autowired
-    private lateinit var beatService: BeatService
 
     @Autowired
     private lateinit var activityService: ActivityService
@@ -33,9 +29,7 @@ class InactivityTriggerTask {
                     applicationEventPublisher.publishEvent(
                         InactivityDurationPointExceededEvent(
                             this,
-                            activityService.getCurrentInactivityDuration(),
-                            activityService.getCurrentInactivityRelevanceLevel(),
-                            beatService.findLastBeat()
+                            activityService.getCurrentTimeSpan()
                         )
                     )
                 }

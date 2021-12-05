@@ -8,6 +8,8 @@ import uno.d1s.pulseq.exception.DeviceAlreadyExistsException
 import uno.d1s.pulseq.exception.DeviceNotFoundException
 import uno.d1s.pulseq.repository.DeviceRepository
 import uno.d1s.pulseq.service.DeviceService
+import uno.d1s.pulseq.strategy.device.DeviceFindingStrategy
+import uno.d1s.pulseq.strategy.device.DeviceFindingStrategy.*
 
 @Service
 class DeviceServiceImpl : DeviceService {
@@ -16,29 +18,18 @@ class DeviceServiceImpl : DeviceService {
     private lateinit var deviceRepository: DeviceRepository
 
     @Transactional(readOnly = true)
-    override fun findAllRegisteredDevices(): List<Device> =
-        deviceRepository.findAll()
+    override fun findAllRegisteredDevices(): List<Device> = deviceRepository.findAll()
 
     @Transactional(readOnly = true)
-    override fun findDeviceById(id: String): Device =
-        deviceRepository.findById(id).orElseThrow {
-            DeviceNotFoundException("Could not find any devices with provided id.")
+    override fun findDevice(strategy: DeviceFindingStrategy): Device = when (strategy) {
+        is ById -> deviceRepository.findById(strategy.identify).orElseThrow {
+            DeviceNotFoundException("Could not find any device with provided id.")
         }
-
-    @Transactional(readOnly = true)
-    override fun findDeviceByName(name: String): Device =
-        deviceRepository.findDeviceByNameEqualsIgnoreCase(name).orElseThrow {
-            DeviceNotFoundException("Could not find any devices with provided name.")
+        is ByName -> deviceRepository.findDeviceByNameEqualsIgnoreCase(strategy.identify).orElseThrow {
+            DeviceNotFoundException("Could not find any device with provided name.")
         }
-
-    @Transactional(readOnly = true)
-    override fun findDeviceByIdentify(identify: String): Device = try {
-        this.findDeviceById(identify)
-    } catch (ex: Exception) {
-        try {
-            this.findDeviceByName(identify)
-        } catch (ex: Exception) {
-            throw DeviceNotFoundException()
+        is ByAll -> deviceRepository.findDeviceByNameEqualsIgnoreCaseOrIdEquals(strategy.identify).orElseThrow {
+            DeviceNotFoundException("Could not find any device with provided name or id.")
         }
     }
 

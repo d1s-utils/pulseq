@@ -11,10 +11,10 @@ class DelayedBeatReceivedEvent(
 
     override val notificationMessage: String
         get() = beat.inactivityBeforeBeat.let {
-            "A beat with id `${beat.id}` was just received" + if (it == null) {
-                "!"
+            "A beat with id `${beat.id}` was just received" + if (it != null) {
+                " after `${it.pretty()}` of inactivity."
             } else {
-                " after `${it.pretty()}` of inactivity!"
+                "."
             }
         }
 }

@@ -4,8 +4,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
-import uno.d1s.pulseq.exception.*
-import java.net.MalformedURLException
 import javax.servlet.http.HttpServletResponse
 
 
