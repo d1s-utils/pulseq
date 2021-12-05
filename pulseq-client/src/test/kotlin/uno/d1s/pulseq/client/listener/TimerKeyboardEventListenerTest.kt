@@ -55,8 +55,8 @@ internal class TimerKeyboardEventListenerTest {
     fun `should not send the beat`() {
         timerKeyboardEventListener.onActivity(testKeyboardActivityDetectedEvent)
 
-        verify {
-            beatSenderService.sendBeat() wasNot called
+        verify(exactly = 0) {
+            beatSenderService.sendBeat()
         }
     }
 }
