@@ -56,17 +56,21 @@ class BeatServiceImpl : BeatService {
         }.getOrElse {
             null
         }).let { unsavedBeat ->
-            if (activityService.isInactivityRelevanceLevelNotCommon()) {
-                beatRepository.save(unsavedBeat).let { savedBeat ->
-                    eventPublisher.publishEvent(
-                        DelayedBeatReceivedEvent(
-                            this, savedBeat
+            return runCatching {
+                if (activityService.isInactivityRelevanceLevelNotCommon()) {
+                    beatRepository.save(unsavedBeat).let { savedBeat ->
+                        eventPublisher.publishEvent(
+                            DelayedBeatReceivedEvent(
+                                this, savedBeat
+                            )
                         )
-                    )
-                    return savedBeat
+                        savedBeat
+                    }
+                } else {
+                    beatRepository.save(unsavedBeat)
                 }
-            } else {
-                return beatRepository.save(unsavedBeat)
+            }.getOrElse {
+                beatRepository.save(unsavedBeat)
             }
         }
     }

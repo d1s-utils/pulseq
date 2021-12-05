@@ -9,6 +9,4 @@ import java.util.*
 interface DeviceRepository : MongoRepository<Device, String> {
 
     fun findDeviceByNameEqualsIgnoreCase(deviceName: String): Optional<Device>
-
-    fun findDeviceByNameEqualsIgnoreCaseOrIdEquals(identify: String): Optional<Device>
 }

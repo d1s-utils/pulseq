@@ -22,14 +22,16 @@ class DeviceServiceImpl : DeviceService {
 
     @Transactional(readOnly = true)
     override fun findDevice(strategy: DeviceFindingStrategy): Device = when (strategy) {
-        is ById -> deviceRepository.findById(strategy.identify).orElseThrow {
-            DeviceNotFoundException("Could not find any device with provided id.")
-        }
-        is ByName -> deviceRepository.findDeviceByNameEqualsIgnoreCase(strategy.identify).orElseThrow {
-            DeviceNotFoundException("Could not find any device with provided name.")
-        }
-        is ByAll -> deviceRepository.findDeviceByNameEqualsIgnoreCaseOrIdEquals(strategy.identify).orElseThrow {
-            DeviceNotFoundException("Could not find any device with provided name or id.")
+        is ById -> this.findById(strategy.identify)
+        is ByName -> this.findByName(strategy.identify)
+        is ByAll -> try {
+            this.findById(strategy.identify)
+        } catch (_: DeviceNotFoundException) {
+            try {
+                this.findByName(strategy.identify)
+            } catch (_: DeviceNotFoundException) {
+                throw DeviceNotFoundException("Could not find any device with provided name or id.")
+            }
         }
     }
 
@@ -40,4 +42,12 @@ class DeviceServiceImpl : DeviceService {
         } else {
             deviceRepository.save(Device(name))
         }
+
+    private fun findById(id: String) = deviceRepository.findById(id).orElseThrow {
+        DeviceNotFoundException("Could not find any device with provided id.")
+    }
+
+    private fun findByName(name: String) = deviceRepository.findDeviceByNameEqualsIgnoreCase(name).orElseThrow {
+        DeviceNotFoundException("Could not find any device with provided name.")
+    }
 }
