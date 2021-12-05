@@ -1,7 +1,6 @@
 package uno.d1s.pulseq.client.listener
 
 import com.ninjasquad.springmockk.MockkBean
-import io.mockk.called
 import io.mockk.every
 import io.mockk.verify
 import kotlinx.coroutines.delay
