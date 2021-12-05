@@ -62,14 +62,6 @@ internal class DeviceServiceImplTest {
             deviceRepository.findDeviceByNameEqualsIgnoreCase(INVALID_STUB)
         } returns Optional.empty()
 
-        every {
-            deviceRepository.findDeviceByNameEqualsIgnoreCaseOrIdEquals(VALID_STUB)
-        } returns optionalTestDevice
-
-        every {
-            deviceRepository.findDeviceByNameEqualsIgnoreCaseOrIdEquals(INVALID_STUB)
-        } returns Optional.empty()
-
         val savedDevice = Device(INVALID_STUB)
 
         every {
@@ -131,7 +123,7 @@ internal class DeviceServiceImplTest {
     @Test
     fun `should find the device by all strategies`() {
         this.findDeviceAndVerify(byAll(VALID_STUB)) {
-            deviceRepository.findDeviceByNameEqualsIgnoreCaseOrIdEquals(VALID_STUB)
+            deviceRepository.findById(VALID_STUB)
         }
     }
 
@@ -142,7 +134,11 @@ internal class DeviceServiceImplTest {
         }
 
         verify {
-            deviceRepository.findDeviceByNameEqualsIgnoreCaseOrIdEquals(INVALID_STUB)
+            deviceRepository.findById(INVALID_STUB)
+        }
+
+        verify {
+            deviceRepository.findDeviceByNameEqualsIgnoreCase(INVALID_STUB)
         }
     }
 
