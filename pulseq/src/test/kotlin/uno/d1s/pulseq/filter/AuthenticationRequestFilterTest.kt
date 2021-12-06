@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
 import org.springframework.mock.web.MockFilterChain
@@ -15,9 +16,10 @@ import org.springframework.test.context.ContextConfiguration
 import uno.d1s.pulseq.service.AuthenticationService
 import uno.d1s.pulseq.testUtils.INVALID_STUB
 import uno.d1s.pulseq.testUtils.VALID_STUB
+import uno.d1s.pulseq.util.HttpServletResponseUtil
 
 @SpringBootTest
-@ContextConfiguration(classes = [AuthenticationRequestFilter::class])
+@ContextConfiguration(classes = [AuthenticationRequestFilter::class, HttpServletResponseUtil::class, JacksonAutoConfiguration::class])
 internal class AuthenticationRequestFilterTest {
 
     @Autowired
