@@ -8,7 +8,7 @@ import org.springframework.web.client.getForObject
 import org.thymeleaf.util.StringUtils
 import uno.d1s.pulseq.configuration.property.BadgeConfigurationProperties
 import uno.d1s.pulseq.core.util.buildUrl
-import uno.d1s.pulseq.exception.InvalidImageUrlException
+import uno.d1s.pulseq.exception.impl.InvalidImageUrlException
 import uno.d1s.pulseq.service.BadgeService
 import uno.d1s.pulseq.service.StatisticService
 import java.net.URL

@@ -3,7 +3,7 @@ package uno.d1s.pulseq.service.impl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import uno.d1s.pulseq.configuration.property.StatisticsConfigurationProperties
-import uno.d1s.pulseq.exception.StatisticNotFoundException
+import uno.d1s.pulseq.exception.impl.StatisticNotFoundException
 import uno.d1s.pulseq.service.StatisticService
 import uno.d1s.pulseq.statistic.Statistic
 import uno.d1s.pulseq.util.getOrMessage

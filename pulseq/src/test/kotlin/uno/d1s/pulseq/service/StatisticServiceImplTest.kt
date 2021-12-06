@@ -11,7 +11,7 @@ import org.junit.jupiter.api.assertDoesNotThrow
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ContextConfiguration
 import uno.d1s.pulseq.configuration.property.StatisticsConfigurationProperties
-import uno.d1s.pulseq.exception.StatisticNotFoundException
+import uno.d1s.pulseq.exception.impl.StatisticNotFoundException
 import uno.d1s.pulseq.service.impl.StatisticServiceImpl
 import uno.d1s.pulseq.statistic.Statistic
 import uno.d1s.pulseq.testUtils.INVALID_STUB

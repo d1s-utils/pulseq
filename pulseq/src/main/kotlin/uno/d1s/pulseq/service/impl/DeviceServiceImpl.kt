@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uno.d1s.pulseq.domain.Device
-import uno.d1s.pulseq.exception.DeviceAlreadyExistsException
-import uno.d1s.pulseq.exception.DeviceNotFoundException
+import uno.d1s.pulseq.exception.impl.DeviceAlreadyExistsException
+import uno.d1s.pulseq.exception.impl.DeviceNotFoundException
 import uno.d1s.pulseq.repository.DeviceRepository
 import uno.d1s.pulseq.service.DeviceService
 import uno.d1s.pulseq.strategy.device.DeviceFindingStrategy

@@ -7,7 +7,7 @@ import uno.d1s.pulseq.controller.BeatController
 import uno.d1s.pulseq.converter.DtoConverter
 import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.dto.BeatDto
-import uno.d1s.pulseq.exception.DeviceNotFoundException
+import uno.d1s.pulseq.exception.impl.DeviceNotFoundException
 import uno.d1s.pulseq.service.BeatService
 import uno.d1s.pulseq.strategy.device.byAll
 import javax.servlet.http.HttpServletResponse

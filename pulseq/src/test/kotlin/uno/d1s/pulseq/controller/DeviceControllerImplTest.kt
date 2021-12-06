@@ -20,15 +20,16 @@ import uno.d1s.pulseq.core.constant.mapping.DeviceMappingConstants
 import uno.d1s.pulseq.core.util.replacePathPlaceholder
 import uno.d1s.pulseq.domain.Device
 import uno.d1s.pulseq.dto.DeviceDto
-import uno.d1s.pulseq.exception.DeviceAlreadyExistsException
-import uno.d1s.pulseq.exception.DeviceNotFoundException
+import uno.d1s.pulseq.exception.impl.DeviceAlreadyExistsException
+import uno.d1s.pulseq.exception.impl.DeviceNotFoundException
 import uno.d1s.pulseq.service.DeviceService
 import uno.d1s.pulseq.strategy.device.byAll
 import uno.d1s.pulseq.testUtils.*
+import uno.d1s.pulseq.util.HttpServletResponseUtil
 import uno.d1s.pulseq.util.expectJsonContentType
 
 @WebMvcTest(useDefaultFilters = false, controllers = [DeviceControllerImpl::class])
-@ContextConfiguration(classes = [DeviceControllerImpl::class, ExceptionHandlerControllerAdvice::class])
+@ContextConfiguration(classes = [DeviceControllerImpl::class, ExceptionHandlerControllerAdvice::class, HttpServletResponseUtil::class])
 internal class DeviceControllerImplTest {
 
     @Autowired
@@ -118,7 +119,7 @@ internal class DeviceControllerImplTest {
     fun `should return 400 on getting device with invalid identify`() {
         getByIdentifyAndExpect(INVALID_STUB) {
             status {
-                isBadRequest()
+                isNotFound()
             }
         }
 
@@ -150,7 +151,7 @@ internal class DeviceControllerImplTest {
     fun `should return 400 on device registration with existing name`() {
         registerDeviceAndExpect(INVALID_STUB) {
             status {
-                isBadRequest()
+                isConflict()
             }
         }
 
