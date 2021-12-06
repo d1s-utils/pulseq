@@ -9,7 +9,7 @@
 
 > Pulseq is inspired by [`technically-functional/heartbeat`](https://github.com/technically-functional/heartbeat), which is licensed under the [ISC license](https://github.com/technically-functional/heartbeat/blob/master/LICENSE.md).
 
-The main idea of pulseq is to provide statistics on your device usage and notify you if you haven't been online for too long.
+The main idea of pulseq is to provide data on the resource usage.
 
 #### Try pulseq in action right now!
 ```shell
