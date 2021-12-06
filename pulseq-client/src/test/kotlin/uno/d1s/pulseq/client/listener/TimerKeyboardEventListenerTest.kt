@@ -1,8 +1,8 @@
 package uno.d1s.pulseq.client.listener
 
 import com.ninjasquad.springmockk.MockkBean
+import io.mockk.coVerify
 import io.mockk.every
-import io.mockk.verify
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeEach
@@ -44,7 +44,7 @@ internal class TimerKeyboardEventListenerTest {
 
             delay(15)
 
-            verify {
+            coVerify {
                 beatSenderService.sendBeat()
             }
         }
@@ -54,7 +54,7 @@ internal class TimerKeyboardEventListenerTest {
     fun `should not send the beat`() {
         timerKeyboardEventListener.onActivity(testKeyboardActivityDetectedEvent)
 
-        verify(exactly = 0) {
+        coVerify(exactly = 0) {
             beatSenderService.sendBeat()
         }
     }
