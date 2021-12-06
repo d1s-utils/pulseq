@@ -11,12 +11,4 @@
 
 The main idea of pulseq is to provide data on the resource usage.
 
-#### Try pulseq in action right now!
-```shell
-git clone https://github.com/d1snin-dev/pulseq.git &&\
-  cd ./pulseq &&\
-  ./gradlew pulseq:bootBuildImage &&\
-  docker-compose up -d
-```
-
-[***Read the docs***](https://github.com/d1snin-dev/pulseq/wiki)
+#### Try pulseq in action right now: [***Read the docs***](https://github.com/d1snin-dev/pulseq/wiki)
