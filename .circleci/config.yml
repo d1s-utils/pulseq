@@ -51,6 +51,13 @@ jobs:
           path: ./pulseq/build/libs
       - store_artifacts:
           path: ./pulseq-client/build/libs
+          
+      - run:
+          name: Creating the sha512 checksums
+          command: |
+            sha512sum ./pulseq/build/libs/$(ls ./pulseq/build/libs) >> ./pulseq.sha512 &&\
+            sha512sum ./pulseq-client/build/libs/$(ls ./pulseq-client/build/libs) >> ./pulseq-client.sha512
+
 
       # run tests!
       - run: ./gradlew test
