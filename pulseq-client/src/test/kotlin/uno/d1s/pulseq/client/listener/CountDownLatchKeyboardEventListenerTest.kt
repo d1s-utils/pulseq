@@ -1,8 +1,8 @@
 package uno.d1s.pulseq.client.listener
 
 import com.ninjasquad.springmockk.MockkBean
+import io.mockk.coVerify
 import io.mockk.every
-import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
@@ -43,7 +43,7 @@ internal class CountDownLatchKeyboardEventListenerTest {
             }
         }
 
-        verify {
+        coVerify {
             beatSenderService.sendBeat()
         }
     }
@@ -53,7 +53,7 @@ internal class CountDownLatchKeyboardEventListenerTest {
         countDownLatchKeyboardEventListener.onActivity(testKeyboardActivityDetectedEvent)
 
         // wasNot called declaration does not work somehow.
-        verify(exactly = 0) {
+        coVerify(exactly = 0) {
             beatSenderService.sendBeat()
         }
     }

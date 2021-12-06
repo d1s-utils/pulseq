@@ -12,20 +12,21 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.MockMvcResultMatchersDsl
 import org.springframework.test.web.servlet.get
-import uno.d1s.pulseq.testUtils.INVALID_STUB
-import uno.d1s.pulseq.testUtils.VALID_STUB
 import uno.d1s.pulseq.controller.advice.ExceptionHandlerControllerAdvice
 import uno.d1s.pulseq.controller.impl.StatisticControllerImpl
 import uno.d1s.pulseq.core.constant.mapping.StatisticMappingConstants
 import uno.d1s.pulseq.core.util.replacePathPlaceholder
-import uno.d1s.pulseq.exception.StatisticNotFoundException
+import uno.d1s.pulseq.exception.impl.StatisticNotFoundException
 import uno.d1s.pulseq.service.StatisticService
+import uno.d1s.pulseq.testUtils.INVALID_STUB
+import uno.d1s.pulseq.testUtils.VALID_STUB
 import uno.d1s.pulseq.testUtils.testStatistic
 import uno.d1s.pulseq.testUtils.testStatistics
+import uno.d1s.pulseq.util.HttpServletResponseUtil
 import uno.d1s.pulseq.util.expectJsonContentType
 
 @WebMvcTest(useDefaultFilters = false, controllers = [StatisticControllerImpl::class])
-@ContextConfiguration(classes = [StatisticControllerImpl::class, ExceptionHandlerControllerAdvice::class])
+@ContextConfiguration(classes = [StatisticControllerImpl::class, ExceptionHandlerControllerAdvice::class, HttpServletResponseUtil::class])
 internal class StatisticControllerImplTest {
 
     @Autowired
@@ -94,7 +95,7 @@ internal class StatisticControllerImplTest {
     fun `should return 400 on getting statistic by invalid identify`() {
         getStatisticByIdentifyAndExpect(INVALID_STUB) {
             status {
-                isBadRequest()
+                isNotFound()
             }
         }
 

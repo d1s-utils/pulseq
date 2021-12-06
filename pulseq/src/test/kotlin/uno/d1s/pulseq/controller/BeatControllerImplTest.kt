@@ -20,15 +20,16 @@ import uno.d1s.pulseq.core.constant.mapping.BeatMappingConstants
 import uno.d1s.pulseq.core.util.replacePathPlaceholder
 import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.dto.BeatDto
-import uno.d1s.pulseq.exception.BeatNotFoundException
-import uno.d1s.pulseq.exception.DeviceNotFoundException
+import uno.d1s.pulseq.exception.impl.BeatNotFoundException
+import uno.d1s.pulseq.exception.impl.DeviceNotFoundException
 import uno.d1s.pulseq.service.BeatService
 import uno.d1s.pulseq.strategy.device.byAll
 import uno.d1s.pulseq.testUtils.*
+import uno.d1s.pulseq.util.HttpServletResponseUtil
 import uno.d1s.pulseq.util.expectJsonContentType
 
 @WebMvcTest(useDefaultFilters = false, controllers = [BeatControllerImpl::class])
-@ContextConfiguration(classes = [BeatControllerImpl::class, ExceptionHandlerControllerAdvice::class])
+@ContextConfiguration(classes = [BeatControllerImpl::class, ExceptionHandlerControllerAdvice::class, HttpServletResponseUtil::class])
 internal class BeatControllerImplTest {
 
     @Autowired
@@ -105,7 +106,7 @@ internal class BeatControllerImplTest {
     fun `should return 400 on getting beat with invalid id`() {
         getBeatByIdAndExpect(INVALID_STUB) {
             status {
-                isBadRequest()
+                isNotFound()
             }
         }
 
@@ -158,7 +159,7 @@ internal class BeatControllerImplTest {
     fun `should return 400 on getting beats by invalid device identify`() {
         getBeatsByDeviceIdentifyAndExpect(INVALID_STUB) {
             status {
-                isBadRequest()
+                isNotFound()
             }
         }
 

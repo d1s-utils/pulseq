@@ -8,7 +8,7 @@ import java.io.PrintStream
 object PulseqSpringBootBanner : Banner {
 
     override fun printBanner(environment: Environment, sourceClass: Class<*>, out: PrintStream) {
-        println(
+        out.println(
             """
                  _                
      _ __  _   _| |___  ___  __ _ 

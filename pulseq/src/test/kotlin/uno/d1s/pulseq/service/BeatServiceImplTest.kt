@@ -14,9 +14,9 @@ import uno.d1s.pulseq.configuration.ApplicationEventTestListenerConfiguration
 import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.domain.Device
 import uno.d1s.pulseq.event.impl.DelayedBeatReceivedEvent
-import uno.d1s.pulseq.exception.BeatNotFoundException
-import uno.d1s.pulseq.exception.DeviceNotFoundException
-import uno.d1s.pulseq.exception.NoBeatsReceivedException
+import uno.d1s.pulseq.exception.impl.BeatNotFoundException
+import uno.d1s.pulseq.exception.impl.DeviceNotFoundException
+import uno.d1s.pulseq.exception.impl.NoBeatsReceivedException
 import uno.d1s.pulseq.repository.BeatRepository
 import uno.d1s.pulseq.service.impl.BeatServiceImpl
 import uno.d1s.pulseq.strategy.device.*

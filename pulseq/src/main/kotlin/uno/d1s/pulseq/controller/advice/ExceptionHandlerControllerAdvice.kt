@@ -1,19 +1,27 @@
 package uno.d1s.pulseq.controller.advice
 
-import org.springframework.http.HttpStatus
-import org.springframework.web.bind.annotation.ControllerAdvice
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.ExceptionHandler
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
+import org.springframework.web.bind.annotation.RestControllerAdvice
+import uno.d1s.pulseq.exception.AbstractHttpStatusException
+import uno.d1s.pulseq.util.HttpServletResponseUtil
 import javax.servlet.http.HttpServletResponse
 
 
-@ControllerAdvice
-class ExceptionHandlerControllerAdvice : ResponseEntityExceptionHandler() {
+@RestControllerAdvice
+class ExceptionHandlerControllerAdvice {
 
-    @ExceptionHandler(
-        Exception::class
-    )
-    fun handleConflict(ex: RuntimeException, response: HttpServletResponse) {
-        response.sendError(HttpStatus.BAD_REQUEST.value(), ex.message)
+    @Autowired
+    private lateinit var httpServletResponseUtil: HttpServletResponseUtil
+
+    @ExceptionHandler(Exception::class)
+    fun handle(ex: Exception, response: HttpServletResponse) {
+        httpServletResponseUtil.sendErrorDto(response) {
+            if (ex is AbstractHttpStatusException) {
+                status = ex.status.value()
+            }
+
+            message = ex.message!!
+        }
     }
 }
