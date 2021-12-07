@@ -3,9 +3,9 @@ package uno.d1s.pulseq.service.impl
 import org.apache.commons.io.IOUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.util.StringUtils
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.client.getForObject
-import org.thymeleaf.util.StringUtils
 import uno.d1s.pulseq.configuration.property.BadgeConfigurationProperties
 import uno.d1s.pulseq.core.util.buildUrl
 import uno.d1s.pulseq.exception.impl.InvalidImageUrlException
@@ -37,31 +37,31 @@ class BadgeServiceImpl : BadgeService {
             restTemplate.getForObject(
                 buildUrl(
                     "https://shields.io/badge/${
-                        if (!StringUtils.isEmpty(title)) {
+                        if (StringUtils.hasText(title)) {
                             title!!
                         } else {
                             stat.title
                         }
                     }-${stat.shortDescription}-${badgeConfigurationProperties.defaultColor}"
                 ) {
-                    if (!StringUtils.isEmpty(color)) {
+                    if (StringUtils.hasText(color)) {
                         parameter("color", color!!)
                     }
 
                     parameter(
                         "color",
-                        if (!StringUtils.isEmpty(color)) {
+                        if (StringUtils.hasText(color)) {
                             color!!
                         } else {
                             badgeConfigurationProperties.defaultColor
                         }
                     )
 
-                    if (!StringUtils.isEmpty(style)) {
+                    if (StringUtils.hasText(style)) {
                         parameter("style", style!!)
                     }
 
-                    if (!StringUtils.isEmpty(logoUrl)) {
+                    if (StringUtils.hasText(logoUrl)) {
                         parameter(
                             "logo",
                             "data:image/png;base64,${

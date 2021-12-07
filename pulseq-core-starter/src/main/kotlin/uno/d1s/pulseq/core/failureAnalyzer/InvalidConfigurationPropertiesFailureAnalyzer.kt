@@ -1,4 +1,4 @@
-package uno.d1s.pulseq.core.failure.analyzer
+package uno.d1s.pulseq.core.failureAnalyzer
 
 import org.springframework.boot.diagnostics.AbstractFailureAnalyzer
 import org.springframework.boot.diagnostics.FailureAnalysis
