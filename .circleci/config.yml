@@ -51,7 +51,6 @@ jobs:
           path: ./pulseq/build/libs
       - store_artifacts:
           path: ./pulseq-client/build/libs
-          
       - run:
           name: Creating the sha512 checksums
           command: |
