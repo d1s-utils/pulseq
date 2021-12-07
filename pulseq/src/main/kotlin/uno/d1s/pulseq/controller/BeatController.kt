@@ -14,15 +14,12 @@ interface BeatController {
     @GetMapping(BeatMappingConstants.GET_BEAT_BY_ID)
     fun getBeatBtId(@PathVariable @NotEmpty id: String): ResponseEntity<BeatDto>
 
-    @RequestMapping(BeatMappingConstants.BASE, method = [RequestMethod.POST, RequestMethod.GET])
+    @PostMapping(BeatMappingConstants.BASE)
     fun registerNewBeatWithDeviceIdentify(
         @RequestParam("device", required = false) deviceParam: String?,
         @RequestHeader("Device", required = false) deviceHeader: String?,
         response: HttpServletResponse
     ): ResponseEntity<BeatDto>?
-
-    @GetMapping(BeatMappingConstants.GET_BEATS_BY_DEVICE_IDENTIFY)
-    fun getBeatsByDeviceIdentify(@PathVariable @NotEmpty identify: String): ResponseEntity<List<BeatDto>>
 
     @GetMapping(BeatMappingConstants.GET_BEATS)
     fun getBeats(): ResponseEntity<List<BeatDto>>

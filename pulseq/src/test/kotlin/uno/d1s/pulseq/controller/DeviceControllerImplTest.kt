@@ -18,7 +18,9 @@ import uno.d1s.pulseq.controller.impl.DeviceControllerImpl
 import uno.d1s.pulseq.converter.DtoConverter
 import uno.d1s.pulseq.core.constant.mapping.DeviceMappingConstants
 import uno.d1s.pulseq.core.util.replacePathPlaceholder
+import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.domain.Device
+import uno.d1s.pulseq.dto.BeatDto
 import uno.d1s.pulseq.dto.DeviceDto
 import uno.d1s.pulseq.exception.impl.DeviceAlreadyExistsException
 import uno.d1s.pulseq.exception.impl.DeviceNotFoundException
@@ -44,6 +46,9 @@ internal class DeviceControllerImplTest {
     @MockkBean
     private lateinit var deviceDtoConverter: DtoConverter<Device, DeviceDto>
 
+    @MockkBean
+    private lateinit var beatDtoConverter: DtoConverter<Beat, BeatDto>
+
     @BeforeEach
     fun setup() {
         every {
@@ -67,12 +72,24 @@ internal class DeviceControllerImplTest {
         } throws DeviceAlreadyExistsException()
 
         every {
+            deviceService.findDeviceBeats(byAll(VALID_STUB))
+        } returns testBeats
+
+        every {
+            deviceService.findDeviceBeats(byAll(INVALID_STUB))
+        } throws DeviceNotFoundException()
+
+        every {
             deviceDtoConverter.convertToDto(testDevice)
         } returns testDeviceDto
 
         every {
             deviceDtoConverter.convertToDtoList(testDevices)
         } returns testDevicesDto
+
+        every {
+            beatDtoConverter.convertToDtoList(testBeats)
+        } returns testBeatsDto
     }
 
     @Test
@@ -116,7 +133,7 @@ internal class DeviceControllerImplTest {
     }
 
     @Test
-    fun `should return 400 on getting device with invalid identify`() {
+    fun `should return 404 on getting device with invalid identify`() {
         getByIdentifyAndExpect(INVALID_STUB) {
             status {
                 isNotFound()
@@ -129,10 +146,10 @@ internal class DeviceControllerImplTest {
     }
 
     @Test
-    fun `should return 200 and valid device on device registration`() {
+    fun `should return 201 and valid device on device registration`() {
         registerDeviceAndExpect(VALID_STUB) {
             status {
-                isOk()
+                isCreated()
             }
 
             expectDeviceDto()
@@ -148,7 +165,7 @@ internal class DeviceControllerImplTest {
     }
 
     @Test
-    fun `should return 400 on device registration with existing name`() {
+    fun `should return 409 on device registration with existing name`() {
         registerDeviceAndExpect(INVALID_STUB) {
             status {
                 isConflict()
@@ -164,6 +181,46 @@ internal class DeviceControllerImplTest {
         content {
             json(objectMapper.writeValueAsString(testDeviceDto))
         }
+    }
+
+    @Test
+    fun `should return 200 and valid list on getting beats by device identify`() {
+        getBeatsByDeviceIdentifyAndExpect(VALID_STUB) {
+            status {
+                isOk()
+            }
+
+            content {
+                json(objectMapper.writeValueAsString(testBeatsDto))
+            }
+
+            expectJsonContentType()
+        }
+
+        verify {
+            deviceService.findDeviceBeats(byAll(VALID_STUB))
+        }
+
+        verify {
+            beatDtoConverter.convertToDtoList(testBeats)
+        }
+    }
+
+    @Test
+    fun `should return 404 on getting beats by invalid device identify`() {
+        getBeatsByDeviceIdentifyAndExpect(INVALID_STUB) {
+            status {
+                isNotFound()
+            }
+        }
+
+        verify {
+            deviceService.findDeviceBeats(byAll(INVALID_STUB))
+        }
+    }
+
+    private fun getBeatsByDeviceIdentifyAndExpect(id: String, block: MockMvcResultMatchersDsl.() -> Unit) {
+        mockMvc.get(DeviceMappingConstants.GET_BEATS.replacePathPlaceholder("identify", id)).andExpect(block)
     }
 
     private fun getByIdentifyAndExpect(identify: String, block: MockMvcResultMatchersDsl.() -> Unit) {

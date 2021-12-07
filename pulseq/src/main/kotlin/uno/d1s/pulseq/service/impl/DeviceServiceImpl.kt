@@ -3,6 +3,7 @@ package uno.d1s.pulseq.service.impl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.domain.Device
 import uno.d1s.pulseq.exception.impl.DeviceAlreadyExistsException
 import uno.d1s.pulseq.exception.impl.DeviceNotFoundException
@@ -42,6 +43,9 @@ class DeviceServiceImpl : DeviceService {
         } else {
             deviceRepository.save(Device(name))
         }
+
+    @Transactional(readOnly = true)
+    override fun findDeviceBeats(strategy: DeviceFindingStrategy): List<Beat> = this.findDevice(strategy).beats!!
 
     private fun findById(id: String) = deviceRepository.findById(id).orElseThrow {
         DeviceNotFoundException("Could not find any device with provided id.")

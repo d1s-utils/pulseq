@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestParam
 import uno.d1s.pulseq.core.constant.mapping.DeviceMappingConstants
+import uno.d1s.pulseq.dto.BeatDto
 import uno.d1s.pulseq.dto.DeviceDto
 import uno.d1s.pulseq.strategy.device.DeviceFindingStrategyType
 import javax.validation.constraints.NotEmpty
@@ -25,4 +26,10 @@ interface DeviceController {
 
     @PostMapping(DeviceMappingConstants.REGISTER_DEVICE)
     fun registerNewDevice(@RequestParam @NotEmpty deviceName: String): ResponseEntity<DeviceDto>
+
+    @GetMapping(DeviceMappingConstants.GET_BEATS)
+    fun getDeviceBeats(
+        @PathVariable @NotEmpty identify: String,
+        @RequestParam(required = false, name = "strategy") findingStrategy: DeviceFindingStrategyType?
+    ): ResponseEntity<List<BeatDto>>
 }

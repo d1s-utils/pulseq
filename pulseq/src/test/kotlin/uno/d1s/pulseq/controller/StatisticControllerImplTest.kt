@@ -92,7 +92,7 @@ internal class StatisticControllerImplTest {
     }
 
     @Test
-    fun `should return 400 on getting statistic by invalid identify`() {
+    fun `should return 404 on getting statistic by invalid identify`() {
         getStatisticByIdentifyAndExpect(INVALID_STUB) {
             status {
                 isNotFound()

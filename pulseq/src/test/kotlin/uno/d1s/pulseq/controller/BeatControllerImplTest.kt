@@ -103,7 +103,7 @@ internal class BeatControllerImplTest {
     }
 
     @Test
-    fun `should return 400 on getting beat with invalid id`() {
+    fun `should return 404 on getting beat with invalid id`() {
         getBeatByIdAndExpect(INVALID_STUB) {
             status {
                 isNotFound()
@@ -116,12 +116,12 @@ internal class BeatControllerImplTest {
     }
 
     @Test
-    fun `should return 200 and valid beat on beat registration`() {
+    fun `should return 201 and valid beat on beat registration`() {
         mockMvc.post(BeatMappingConstants.BASE) {
             header("Device", VALID_STUB)
         }.andExpect {
             status {
-                isOk()
+                isCreated()
             }
 
             expectBeatDto()
@@ -137,45 +137,15 @@ internal class BeatControllerImplTest {
     }
 
     @Test
-    fun `should return 200 and valid list on getting beats by device identify`() {
-        getBeatsByDeviceIdentifyAndExpect(VALID_STUB) {
-            status {
-                isOk()
-            }
-
-            expectBeatDtoList()
-
-            expectJsonContentType()
-        }
-
-        verify {
-            beatService.findAllByDevice(byAll(VALID_STUB))
-        }
-
-        verifyBeatsConversion()
-    }
-
-    @Test
-    fun `should return 400 on getting beats by invalid device identify`() {
-        getBeatsByDeviceIdentifyAndExpect(INVALID_STUB) {
-            status {
-                isNotFound()
-            }
-        }
-
-        verify {
-            beatService.findAllByDevice(byAll(INVALID_STUB))
-        }
-    }
-
-    @Test
     fun `should return 200 and valid list on getting beats`() {
         mockMvc.get(BeatMappingConstants.GET_BEATS).andExpect {
             status {
                 isOk()
             }
 
-            expectBeatDtoList()
+            content {
+                json(objectMapper.writeValueAsString(testBeatsDto))
+            }
 
             expectJsonContentType()
         }
@@ -210,20 +180,9 @@ internal class BeatControllerImplTest {
         mockMvc.get(BeatMappingConstants.GET_BEAT_BY_ID.replacePathPlaceholder("id", id)).andExpect(block)
     }
 
-    private fun getBeatsByDeviceIdentifyAndExpect(id: String, block: MockMvcResultMatchersDsl.() -> Unit) {
-        mockMvc.get(BeatMappingConstants.GET_BEATS_BY_DEVICE_IDENTIFY.replacePathPlaceholder("identify", id))
-            .andExpect(block)
-    }
-
     private fun MockMvcResultMatchersDsl.expectBeatDto() {
         content {
             json(objectMapper.writeValueAsString(testBeatDto))
-        }
-    }
-
-    private fun MockMvcResultMatchersDsl.expectBeatDtoList() {
-        content {
-            json(objectMapper.writeValueAsString(testBeatsDto))
         }
     }
 

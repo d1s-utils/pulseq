@@ -3,13 +3,13 @@ package uno.d1s.pulseq.controller.impl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import uno.d1s.pulseq.controller.BeatController
 import uno.d1s.pulseq.converter.DtoConverter
 import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.dto.BeatDto
 import uno.d1s.pulseq.exception.impl.DeviceNotFoundException
 import uno.d1s.pulseq.service.BeatService
-import uno.d1s.pulseq.strategy.device.byAll
 import javax.servlet.http.HttpServletResponse
 
 
@@ -31,20 +31,16 @@ class BeatControllerImpl : BeatController {
     override fun registerNewBeatWithDeviceIdentify(
         deviceParam: String?, deviceHeader: String?, response: HttpServletResponse
     ): ResponseEntity<BeatDto>? {
-        return ResponseEntity.ok(
-            beatDtoConverter.convertToDto(
-                beatService.registerNewBeatWithDeviceIdentify(
-                    deviceParam ?: (deviceHeader ?: throw DeviceNotFoundException("Device definition must be present."))
-                )
+        val createdBeat = beatDtoConverter.convertToDto(
+            beatService.registerNewBeatWithDeviceIdentify(
+                deviceParam ?: (deviceHeader ?: throw DeviceNotFoundException("Device definition must be present."))
             )
         )
-    }
 
-    override fun getBeatsByDeviceIdentify(identify: String): ResponseEntity<List<BeatDto>> = ResponseEntity.ok(
-        beatDtoConverter.convertToDtoList(
-            beatService.findAllByDevice(byAll(identify))
-        )
-    )
+        return ResponseEntity.created(
+            ServletUriComponentsBuilder.fromCurrentRequestUri().buildAndExpand(createdBeat.id!!).toUri()
+        ).body(createdBeat)
+    }
 
     override fun getBeats(): ResponseEntity<List<BeatDto>> = ResponseEntity.ok(
         beatDtoConverter.convertToDtoList(
