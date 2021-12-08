@@ -1,14 +1,14 @@
-package uno.d1s.pulseq.statistic.impl
+package uno.d1s.pulseq.metric.impl
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import uno.d1s.pulseq.constant.error.ErrorConstants
 import uno.d1s.pulseq.service.BeatService
-import uno.d1s.pulseq.statistic.Statistic
+import uno.d1s.pulseq.metric.Metric
 import uno.d1s.pulseq.util.pretty
 
 @Component
-class TotalBeatsStatistic : Statistic {
+class TotalBeatsMetric : Metric {
 
     @Autowired
     private lateinit var beatService: BeatService

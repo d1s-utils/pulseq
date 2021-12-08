@@ -1,4 +1,4 @@
-package uno.d1s.pulseq.statistic
+package uno.d1s.pulseq.metric
 
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
@@ -9,59 +9,71 @@ import org.junit.jupiter.api.assertDoesNotThrow
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ContextConfiguration
-import uno.d1s.pulseq.service.ActivityService
-import uno.d1s.pulseq.statistic.impl.LongestInactivityStatistic
+import uno.d1s.pulseq.service.BeatService
+import uno.d1s.pulseq.metric.impl.TotalBeatsMetric
 import uno.d1s.pulseq.util.assertNoWhitespace
-import uno.d1s.pulseq.testUtils.testTimeSpan
+import uno.d1s.pulseq.testUtils.testBeat
 
 @SpringBootTest
-@ContextConfiguration(classes = [LongestInactivityStatistic::class])
-internal class LongestInactivityStatisticTest {
+@ContextConfiguration(classes = [TotalBeatsMetric::class])
+internal class TotalBeatsMetricTest {
 
     @Autowired
-    private lateinit var longestInactivityStatistic: LongestInactivityStatistic
+    private lateinit var totalBeatsMetric: TotalBeatsMetric
 
     @MockkBean
-    private lateinit var activityService: ActivityService
+    private lateinit var beatService: BeatService
 
     @BeforeEach
     fun setup() {
         every {
-            activityService.getLongestInactivity()
-        } returns testTimeSpan
+            beatService.findFirstBeat()
+        } returns testBeat
+
+        every {
+            beatService.totalBeats()
+        } returns 1
     }
 
     @Test
     fun `should return valid identify`() {
         assertDoesNotThrow {
-            longestInactivityStatistic.identify
+            totalBeatsMetric.identify
         }
 
-        longestInactivityStatistic.identify.assertNoWhitespace()
+        totalBeatsMetric.identify.assertNoWhitespace()
     }
 
     @Test
     fun `should return title`() {
         assertDoesNotThrow {
-            longestInactivityStatistic.title
+            totalBeatsMetric.title
         }
     }
 
     @Test
     fun `should return description`() {
         assertDoesNotThrow {
-            longestInactivityStatistic.description
+            totalBeatsMetric.description
         }
 
         verify {
-            activityService.getLongestInactivity()
+            beatService.totalBeats()
+        }
+
+        verify {
+            beatService.findFirstBeat()
         }
     }
 
     @Test
     fun `should return short description`() {
         assertDoesNotThrow {
-            longestInactivityStatistic.shortDescription
+            totalBeatsMetric.shortDescription
+        }
+
+        verify {
+            beatService.totalBeats()
         }
     }
 }

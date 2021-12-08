@@ -1,4 +1,4 @@
-package uno.d1s.pulseq.statistic
+package uno.d1s.pulseq.metric
 
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
@@ -9,51 +9,62 @@ import org.junit.jupiter.api.assertDoesNotThrow
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ContextConfiguration
-import uno.d1s.pulseq.service.ActivityService
-import uno.d1s.pulseq.statistic.impl.LastTimeSpansStatistic
+import uno.d1s.pulseq.service.DeviceService
+import uno.d1s.pulseq.metric.impl.DevicesMetric
 import uno.d1s.pulseq.util.assertNoWhitespace
 
 @SpringBootTest
-@ContextConfiguration(classes = [LastTimeSpansStatistic::class])
-internal class LastTimeSpansStatisticTest {
+@ContextConfiguration(classes = [DevicesMetric::class])
+internal class DevicesMetricTest {
 
     @Autowired
-    private lateinit var lastTimeSpansStatistic: LastTimeSpansStatistic
+    private lateinit var devicesMetric: DevicesMetric
 
     @MockkBean
-    private lateinit var activityService: ActivityService
+    private lateinit var deviceService: DeviceService
 
     @BeforeEach
     fun setup() {
         every {
-            activityService.getAllTimeSpans()
+            deviceService.findAllRegisteredDevices()
         } returns listOf()
     }
 
     @Test
     fun `should return valid identify`() {
         assertDoesNotThrow {
-            lastTimeSpansStatistic.identify
+            devicesMetric.identify
         }
 
-        lastTimeSpansStatistic.identify.assertNoWhitespace()
+        devicesMetric.identify.assertNoWhitespace()
+    }
+
+    @Test
+    fun `should return title`() {
+        assertDoesNotThrow {
+            devicesMetric.title
+        }
     }
 
     @Test
     fun `should return description`() {
         assertDoesNotThrow {
-            lastTimeSpansStatistic.description
+            devicesMetric.description
         }
 
         verify {
-            activityService.getAllTimeSpans()
+            deviceService.findAllRegisteredDevices()
         }
     }
 
     @Test
     fun `should return short description`() {
         assertDoesNotThrow {
-            lastTimeSpansStatistic.shortDescription
+            devicesMetric.shortDescription
+        }
+
+        verify {
+            deviceService.findAllRegisteredDevices()
         }
     }
 }

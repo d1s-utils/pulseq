@@ -8,7 +8,7 @@ import uno.d1s.pulseq.dto.BeatDto
 import uno.d1s.pulseq.dto.DeviceDto
 import uno.d1s.pulseq.event.AbstractNotifiableEvent
 import uno.d1s.pulseq.event.impl.inactivity.InactivityRelevanceLevel
-import uno.d1s.pulseq.statistic.Statistic
+import uno.d1s.pulseq.metric.Metric
 import java.time.Duration
 import java.time.Instant
 
@@ -41,14 +41,14 @@ internal val testBeatDto = BeatDto(VALID_STUB, Instant.EPOCH, Duration.ZERO).app
 }
 internal val testBeatsDto = listOf(testBeatDto)
 
-// statistics
-internal val testStatistic = object : Statistic {
+// metrics
+internal val testMetric = object : Metric {
     override val identify = VALID_STUB
     override val title = VALID_STUB
     override val description = VALID_STUB
     override val shortDescription = VALID_STUB
 }
-internal val testStatistics = listOf(testStatistic)
+internal val testMetrics = listOf(testMetric)
 
 
 // events

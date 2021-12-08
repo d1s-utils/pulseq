@@ -1,16 +1,16 @@
-package uno.d1s.pulseq.statistic.impl
+package uno.d1s.pulseq.metric.impl
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import uno.d1s.pulseq.constant.error.ErrorConstants
 import uno.d1s.pulseq.domain.activity.TimeSpan
 import uno.d1s.pulseq.service.ActivityService
-import uno.d1s.pulseq.statistic.Statistic
+import uno.d1s.pulseq.metric.Metric
 import uno.d1s.pulseq.util.pretty
 import uno.d1s.pulseq.util.toSemicolonDelimitedString
 
 @Component
-class LastTimeSpansStatistic : Statistic {
+class LastTimeSpansMetric : Metric {
 
     @Autowired
     private lateinit var activityService: ActivityService

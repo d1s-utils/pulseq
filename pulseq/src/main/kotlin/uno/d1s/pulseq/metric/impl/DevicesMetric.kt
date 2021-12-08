@@ -1,14 +1,14 @@
-package uno.d1s.pulseq.statistic.impl
+package uno.d1s.pulseq.metric.impl
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import uno.d1s.pulseq.core.util.pluralGrammar
 import uno.d1s.pulseq.service.DeviceService
-import uno.d1s.pulseq.statistic.Statistic
+import uno.d1s.pulseq.metric.Metric
 import uno.d1s.pulseq.util.toCommaDelimitedString
 
 @Component
-class DevicesStatistic : Statistic {
+class DevicesMetric : Metric {
 
     companion object {
         private const val EMPTY_COLLECTION_MESSAGE = "No devices registered yet."

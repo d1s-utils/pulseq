@@ -1,6 +1,6 @@
-package uno.d1s.pulseq.statistic
+package uno.d1s.pulseq.metric
 
-interface Statistic {
+interface Metric {
     val identify: String
     val title: String
     val description: String

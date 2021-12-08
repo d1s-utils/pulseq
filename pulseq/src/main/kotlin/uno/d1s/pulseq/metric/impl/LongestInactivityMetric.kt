@@ -1,14 +1,14 @@
-package uno.d1s.pulseq.statistic.impl
+package uno.d1s.pulseq.metric.impl
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import uno.d1s.pulseq.service.ActivityService
-import uno.d1s.pulseq.statistic.Statistic
+import uno.d1s.pulseq.metric.Metric
 import uno.d1s.pulseq.util.getOrMessage
 import uno.d1s.pulseq.util.pretty
 
 @Component
-class LongestInactivityStatistic : Statistic {
+class LongestInactivityMetric : Metric {
 
     @Autowired
     private lateinit var activityService: ActivityService

@@ -1,4 +1,4 @@
-package uno.d1s.pulseq.statistic
+package uno.d1s.pulseq.metric
 
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
@@ -10,16 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ContextConfiguration
 import uno.d1s.pulseq.service.BeatService
-import uno.d1s.pulseq.statistic.impl.TotalBeatsStatistic
+import uno.d1s.pulseq.metric.impl.LastBeatTimeMetric
 import uno.d1s.pulseq.util.assertNoWhitespace
 import uno.d1s.pulseq.testUtils.testBeat
 
 @SpringBootTest
-@ContextConfiguration(classes = [TotalBeatsStatistic::class])
-internal class TotalBeatsStatisticTest {
+@ContextConfiguration(classes = [LastBeatTimeMetric::class])
+internal class LastBeatTimeMetricTest {
 
     @Autowired
-    private lateinit var totalBeatsStatistic: TotalBeatsStatistic
+    private lateinit var lastBeatTimeMetric: LastBeatTimeMetric
 
     @MockkBean
     private lateinit var beatService: BeatService
@@ -27,53 +27,45 @@ internal class TotalBeatsStatisticTest {
     @BeforeEach
     fun setup() {
         every {
-            beatService.findFirstBeat()
+            beatService.findLastBeat()
         } returns testBeat
-
-        every {
-            beatService.totalBeats()
-        } returns 1
     }
 
     @Test
     fun `should return valid identify`() {
         assertDoesNotThrow {
-            totalBeatsStatistic.identify
+            lastBeatTimeMetric.identify
         }
 
-        totalBeatsStatistic.identify.assertNoWhitespace()
+        lastBeatTimeMetric.identify.assertNoWhitespace()
     }
 
     @Test
     fun `should return title`() {
         assertDoesNotThrow {
-            totalBeatsStatistic.title
+            lastBeatTimeMetric.title
         }
     }
 
     @Test
     fun `should return description`() {
         assertDoesNotThrow {
-            totalBeatsStatistic.description
+            lastBeatTimeMetric.description
         }
 
         verify {
-            beatService.totalBeats()
-        }
-
-        verify {
-            beatService.findFirstBeat()
+            beatService.findLastBeat()
         }
     }
 
     @Test
     fun `should return short description`() {
         assertDoesNotThrow {
-            totalBeatsStatistic.shortDescription
+            lastBeatTimeMetric.shortDescription
         }
 
         verify {
-            beatService.totalBeats()
+            beatService.findLastBeat()
         }
     }
 }

@@ -15,7 +15,7 @@ import uno.d1s.pulseq.controller.advice.ExceptionHandlerControllerAdvice
 import uno.d1s.pulseq.controller.impl.BadgeControllerImpl
 import uno.d1s.pulseq.core.constant.mapping.BadgeMappingConstants
 import uno.d1s.pulseq.core.util.replacePathPlaceholder
-import uno.d1s.pulseq.exception.impl.StatisticNotFoundException
+import uno.d1s.pulseq.exception.impl.MetricNotFoundException
 import uno.d1s.pulseq.service.BadgeService
 import uno.d1s.pulseq.testUtils.INVALID_STUB
 import uno.d1s.pulseq.testUtils.VALID_STUB
@@ -39,7 +39,7 @@ internal class BadgeControllerImplTest {
 
         every {
             badgeService.createBadge(INVALID_STUB, any(), any(), any(), any())
-        } throws StatisticNotFoundException()
+        } throws MetricNotFoundException()
     }
 
     @Test
@@ -60,7 +60,7 @@ internal class BadgeControllerImplTest {
     }
 
     @Test
-    fun `should return 400 on invalid statistic id`() {
+    fun `should return 400 on invalid metric id`() {
         getAndExpect(INVALID_STUB) {
             status {
                 isNotFound()
@@ -72,8 +72,8 @@ internal class BadgeControllerImplTest {
         }
     }
 
-    private fun getAndExpect(statisticId: String, block: MockMvcResultMatchersDsl.() -> Unit) {
-        mockMvc.get(BadgeMappingConstants.GET_BADGE.replacePathPlaceholder("statisticId", statisticId)) {
+    private fun getAndExpect(metricId: String, block: MockMvcResultMatchersDsl.() -> Unit) {
+        mockMvc.get(BadgeMappingConstants.GET_BADGE.replacePathPlaceholder("metricId", metricId)) {
             param("color", "red")
             param("title", "redefined title")
         }.andExpect(block)

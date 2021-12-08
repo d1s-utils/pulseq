@@ -1,4 +1,4 @@
-package uno.d1s.pulseq.statistic
+package uno.d1s.pulseq.metric
 
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
@@ -10,16 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ContextConfiguration
 import uno.d1s.pulseq.service.ActivityService
-import uno.d1s.pulseq.statistic.impl.CurrentStatusStatistic
+import uno.d1s.pulseq.metric.impl.LongestInactivityMetric
 import uno.d1s.pulseq.util.assertNoWhitespace
 import uno.d1s.pulseq.testUtils.testTimeSpan
 
 @SpringBootTest
-@ContextConfiguration(classes = [CurrentStatusStatistic::class])
-internal class CurrentStatusStatisticTest {
+@ContextConfiguration(classes = [LongestInactivityMetric::class])
+internal class LongestInactivityMetricTest {
 
     @Autowired
-    private lateinit var currentStatusStatistic: CurrentStatusStatistic
+    private lateinit var longestInactivityMetric: LongestInactivityMetric
 
     @MockkBean
     private lateinit var activityService: ActivityService
@@ -27,45 +27,41 @@ internal class CurrentStatusStatisticTest {
     @BeforeEach
     fun setup() {
         every {
-            activityService.getCurrentTimeSpan()
+            activityService.getLongestInactivity()
         } returns testTimeSpan
     }
 
     @Test
-    fun `should return identify`() {
+    fun `should return valid identify`() {
         assertDoesNotThrow {
-            currentStatusStatistic.identify
+            longestInactivityMetric.identify
         }
 
-        currentStatusStatistic.identify.assertNoWhitespace()
+        longestInactivityMetric.identify.assertNoWhitespace()
     }
 
     @Test
     fun `should return title`() {
         assertDoesNotThrow {
-            currentStatusStatistic.title
+            longestInactivityMetric.title
         }
     }
 
     @Test
     fun `should return description`() {
         assertDoesNotThrow {
-            currentStatusStatistic.description
+            longestInactivityMetric.description
         }
 
         verify {
-            activityService.getCurrentTimeSpan()
+            activityService.getLongestInactivity()
         }
     }
 
     @Test
     fun `should return short description`() {
         assertDoesNotThrow {
-            currentStatusStatistic.shortDescription
-        }
-
-        verify {
-            activityService.getCurrentTimeSpan()
+            longestInactivityMetric.shortDescription
         }
     }
 }

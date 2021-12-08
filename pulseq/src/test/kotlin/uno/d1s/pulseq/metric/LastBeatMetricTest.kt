@@ -1,4 +1,4 @@
-package uno.d1s.pulseq.statistic
+package uno.d1s.pulseq.metric
 
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.verify
@@ -8,15 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ContextConfiguration
 import uno.d1s.pulseq.service.ActivityService
-import uno.d1s.pulseq.statistic.impl.LastBeatStatistic
+import uno.d1s.pulseq.metric.impl.LastBeatMetric
 import uno.d1s.pulseq.util.assertNoWhitespace
 
 @SpringBootTest
-@ContextConfiguration(classes = [LastBeatStatistic::class])
-internal class LastBeatStatisticTest {
+@ContextConfiguration(classes = [LastBeatMetric::class])
+internal class LastBeatMetricTest {
 
     @Autowired
-    private lateinit var lastBeatStatistic: LastBeatStatistic
+    private lateinit var lastBeatMetric: LastBeatMetric
 
     @MockkBean(relaxed = true)
     private lateinit var activityService: ActivityService
@@ -24,23 +24,23 @@ internal class LastBeatStatisticTest {
     @Test
     fun `should return valid identify`() {
         assertDoesNotThrow {
-            lastBeatStatistic.identify
+            lastBeatMetric.identify
         }
 
-        lastBeatStatistic.identify.assertNoWhitespace()
+        lastBeatMetric.identify.assertNoWhitespace()
     }
 
     @Test
     fun `should return title`() {
         assertDoesNotThrow {
-            lastBeatStatistic.title
+            lastBeatMetric.title
         }
     }
 
     @Test
     fun `should return description`() {
         assertDoesNotThrow {
-            lastBeatStatistic.description
+            lastBeatMetric.description
         }
 
         verify {
@@ -51,7 +51,7 @@ internal class LastBeatStatisticTest {
     @Test
     fun `should return short description`() {
         assertDoesNotThrow {
-            lastBeatStatistic.shortDescription
+            lastBeatMetric.shortDescription
         }
 
         verify {

@@ -1,4 +1,4 @@
-package uno.d1s.pulseq.statistic
+package uno.d1s.pulseq.metric
 
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
@@ -9,62 +9,63 @@ import org.junit.jupiter.api.assertDoesNotThrow
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ContextConfiguration
-import uno.d1s.pulseq.service.BeatService
-import uno.d1s.pulseq.statistic.impl.TotalBeatsByDevicesStatistic
+import uno.d1s.pulseq.service.ActivityService
+import uno.d1s.pulseq.metric.impl.CurrentStatusMetric
 import uno.d1s.pulseq.util.assertNoWhitespace
+import uno.d1s.pulseq.testUtils.testTimeSpan
 
 @SpringBootTest
-@ContextConfiguration(classes = [TotalBeatsByDevicesStatistic::class])
-internal class TotalBeatsByDevicesStatisticTest {
+@ContextConfiguration(classes = [CurrentStatusMetric::class])
+internal class CurrentStatusMetricTest {
 
     @Autowired
-    private lateinit var totalBeatsByDevicesStatistic: TotalBeatsByDevicesStatistic
+    private lateinit var currentStatusMetric: CurrentStatusMetric
 
     @MockkBean
-    private lateinit var beatService: BeatService
+    private lateinit var activityService: ActivityService
 
     @BeforeEach
     fun setup() {
         every {
-            beatService.totalBeatsByDevices()
-        } returns mapOf()
+            activityService.getCurrentTimeSpan()
+        } returns testTimeSpan
     }
 
     @Test
-    fun `should return valid identify`() {
+    fun `should return identify`() {
         assertDoesNotThrow {
-            totalBeatsByDevicesStatistic.identify
+            currentStatusMetric.identify
         }
 
-        totalBeatsByDevicesStatistic.identify.assertNoWhitespace()
+        currentStatusMetric.identify.assertNoWhitespace()
     }
 
     @Test
     fun `should return title`() {
         assertDoesNotThrow {
-            totalBeatsByDevicesStatistic.title
+            currentStatusMetric.title
         }
     }
 
     @Test
     fun `should return description`() {
         assertDoesNotThrow {
-            totalBeatsByDevicesStatistic.description
+            currentStatusMetric.description
         }
 
         verify {
-            beatService.totalBeatsByDevices()
+            activityService.getCurrentTimeSpan()
         }
     }
 
     @Test
     fun `should return short description`() {
         assertDoesNotThrow {
-            totalBeatsByDevicesStatistic.shortDescription
+            currentStatusMetric.shortDescription
         }
 
         verify {
-            beatService.totalBeatsByDevices()
+            activityService.getCurrentTimeSpan()
         }
     }
 }

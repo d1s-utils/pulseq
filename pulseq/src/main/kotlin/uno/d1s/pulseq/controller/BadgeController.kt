@@ -13,7 +13,7 @@ interface BadgeController {
 
     @GetMapping(BadgeMappingConstants.GET_BADGE)
     fun getBadge(
-        @PathVariable @NotEmpty statisticId: String,
+        @PathVariable @NotEmpty metricId: String,
         @RequestParam(required = false) color: String?,
         @RequestParam(required = false) title: String?,
         @RequestParam(required = false) style: String?,

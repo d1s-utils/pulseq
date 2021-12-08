@@ -10,7 +10,7 @@ import uno.d1s.pulseq.configuration.property.BadgeConfigurationProperties
 import uno.d1s.pulseq.core.util.buildUrl
 import uno.d1s.pulseq.exception.impl.InvalidImageUrlException
 import uno.d1s.pulseq.service.BadgeService
-import uno.d1s.pulseq.service.StatisticService
+import uno.d1s.pulseq.service.MetricService
 import java.net.URL
 import java.util.*
 
@@ -24,16 +24,16 @@ class BadgeServiceImpl : BadgeService {
     private lateinit var badgeConfigurationProperties: BadgeConfigurationProperties
 
     @Autowired
-    private lateinit var statisticService: StatisticService
+    private lateinit var metricService: MetricService
 
     override fun createBadge(
-        statisticId: String,
+        metricId: String,
         color: String?,
         title: String?,
         style: String?,
         logoUrl: String?
     ): ByteArray =
-        statisticService.getStatisticByIdentify(statisticId).let { stat ->
+        metricService.getMetricByIdentify(metricId).let { stat ->
             restTemplate.getForObject(
                 buildUrl(
                     "https://shields.io/badge/${
