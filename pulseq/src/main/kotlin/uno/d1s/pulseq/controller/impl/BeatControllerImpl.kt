@@ -53,4 +53,9 @@ class BeatControllerImpl : BeatController {
             beatService.findLastBeat()
         )
     )
+
+    override fun deleteBeat(id: String): ResponseEntity<Any> {
+        beatService.deleteBeat(id)
+        return ResponseEntity.noContent().build()
+    }
 }

@@ -5,7 +5,8 @@ import uno.d1s.pulseq.domain.Device
 import uno.d1s.pulseq.domain.activity.TimeSpan
 import uno.d1s.pulseq.domain.activity.TimeSpanType
 import uno.d1s.pulseq.dto.BeatDto
-import uno.d1s.pulseq.dto.DeviceDto
+import uno.d1s.pulseq.dto.device.DeviceDto
+import uno.d1s.pulseq.dto.device.DevicePatchDto
 import uno.d1s.pulseq.event.AbstractNotifiableEvent
 import uno.d1s.pulseq.event.impl.inactivity.InactivityRelevanceLevel
 import uno.d1s.pulseq.metric.Metric
@@ -27,6 +28,17 @@ internal val testDeviceDto = DeviceDto(VALID_STUB).apply {
     beats = listOf(VALID_STUB)
 }
 internal val testDevicesDto = listOf(testDeviceDto)
+internal val testDeviceUpdate = Device("new-name").apply {
+    id = testDevice.id
+    beats = testDevice.beats
+}
+internal val testDeviceUpdateDto = DeviceDto(testDeviceUpdate.name).apply {
+    id = testDeviceUpdate.id
+    beats = listOf(VALID_STUB)
+}
+internal val testDeviceUpdates = listOf(testDeviceUpdate)
+internal val testDevicePatchDto = DevicePatchDto("new-name")
+internal val testDevicePatchesDto = listOf(testDevicePatchDto)
 
 
 // beats

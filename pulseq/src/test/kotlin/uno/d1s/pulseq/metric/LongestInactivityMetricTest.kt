@@ -27,7 +27,7 @@ internal class LongestInactivityMetricTest {
     @BeforeEach
     fun setup() {
         every {
-            activityService.getLongestInactivity()
+            activityService.getLongestTimeSpan()
         } returns testTimeSpan
     }
 
@@ -54,7 +54,7 @@ internal class LongestInactivityMetricTest {
         }
 
         verify {
-            activityService.getLongestInactivity()
+            activityService.getLongestTimeSpan()
         }
     }
 

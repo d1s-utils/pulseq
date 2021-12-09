@@ -291,7 +291,7 @@ internal class BeatServiceImplTest {
         }
 
         verify {
-            deviceService.findDevice(strategy)
+            beatService.findAllBeats()
         }
 
         Assertions.assertEquals(

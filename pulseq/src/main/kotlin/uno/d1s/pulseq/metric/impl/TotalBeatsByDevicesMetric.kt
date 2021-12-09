@@ -3,8 +3,8 @@ package uno.d1s.pulseq.metric.impl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import uno.d1s.pulseq.constant.error.ErrorConstants
-import uno.d1s.pulseq.service.BeatService
 import uno.d1s.pulseq.metric.Metric
+import uno.d1s.pulseq.service.BeatService
 import uno.d1s.pulseq.util.toCommaDelimitedString
 import uno.d1s.pulseq.util.toSemicolonDelimitedString
 

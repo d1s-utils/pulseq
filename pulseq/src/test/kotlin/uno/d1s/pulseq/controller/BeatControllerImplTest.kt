@@ -3,33 +3,27 @@ package uno.d1s.pulseq.controller
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
+import io.mockk.justRun
 import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.MockMvcResultMatchersDsl
-import org.springframework.test.web.servlet.get
-import org.springframework.test.web.servlet.post
-import uno.d1s.pulseq.controller.advice.ExceptionHandlerControllerAdvice
+import org.springframework.test.web.servlet.*
 import uno.d1s.pulseq.controller.impl.BeatControllerImpl
 import uno.d1s.pulseq.converter.DtoConverter
 import uno.d1s.pulseq.core.constant.mapping.BeatMappingConstants
 import uno.d1s.pulseq.core.util.replacePathPlaceholder
 import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.dto.BeatDto
-import uno.d1s.pulseq.exception.impl.BeatNotFoundException
-import uno.d1s.pulseq.exception.impl.DeviceNotFoundException
 import uno.d1s.pulseq.service.BeatService
 import uno.d1s.pulseq.strategy.device.byAll
 import uno.d1s.pulseq.testUtils.*
-import uno.d1s.pulseq.util.HttpServletResponseUtil
 import uno.d1s.pulseq.util.expectJsonContentType
 
 @WebMvcTest(useDefaultFilters = false, controllers = [BeatControllerImpl::class])
-@ContextConfiguration(classes = [BeatControllerImpl::class, ExceptionHandlerControllerAdvice::class, HttpServletResponseUtil::class])
+@ContextConfiguration(classes = [BeatControllerImpl::class])
 internal class BeatControllerImplTest {
 
     @Autowired
@@ -51,20 +45,12 @@ internal class BeatControllerImplTest {
         } returns testBeat
 
         every {
-            beatService.findBeatById(INVALID_STUB)
-        } throws BeatNotFoundException()
-
-        every {
-            beatService.registerNewBeatWithDeviceIdentify(any())
+            beatService.registerNewBeatWithDeviceIdentify(VALID_STUB)
         } returns testBeat
 
         every {
             beatService.findAllByDevice(byAll(VALID_STUB))
         } returns testBeats
-
-        every {
-            beatService.findAllByDevice(byAll(INVALID_STUB))
-        } throws DeviceNotFoundException()
 
         every {
             beatService.findAllBeats()
@@ -73,6 +59,10 @@ internal class BeatControllerImplTest {
         every {
             beatService.findLastBeat()
         } returns testBeat
+
+        justRun {
+            beatService.deleteBeat(VALID_STUB)
+        }
 
         every {
             beatDtoConverter.convertToDto(testBeat)
@@ -85,7 +75,7 @@ internal class BeatControllerImplTest {
 
     @Test
     fun `should return 200 and valid beat on getting beat by id`() {
-        getBeatByIdAndExpect(VALID_STUB) {
+        mockMvc.get(BeatMappingConstants.GET_BEAT_BY_ID.replacePathPlaceholder("id", VALID_STUB)).andExpect {
             status {
                 isOk()
             }
@@ -100,19 +90,6 @@ internal class BeatControllerImplTest {
         }
 
         verifyBeatConversion()
-    }
-
-    @Test
-    fun `should return 404 on getting beat with invalid id`() {
-        getBeatByIdAndExpect(INVALID_STUB) {
-            status {
-                isNotFound()
-            }
-        }
-
-        verify {
-            beatService.findBeatById(INVALID_STUB)
-        }
     }
 
     @Test
@@ -176,8 +153,21 @@ internal class BeatControllerImplTest {
         verifyBeatConversion()
     }
 
-    private fun getBeatByIdAndExpect(id: String, block: MockMvcResultMatchersDsl.() -> Unit) {
-        mockMvc.get(BeatMappingConstants.GET_BEAT_BY_ID.replacePathPlaceholder("id", id)).andExpect(block)
+    @Test
+    fun `should return 204 on beat deletion`() {
+        mockMvc.delete(BeatMappingConstants.GET_BEAT_BY_ID.replacePathPlaceholder("id", VALID_STUB)).andExpect {
+            status {
+                isNoContent()
+            }
+
+            content {
+                string("")
+            }
+        }
+
+        verify {
+            beatService.deleteBeat(VALID_STUB)
+        }
     }
 
     private fun MockMvcResultMatchersDsl.expectBeatDto() {

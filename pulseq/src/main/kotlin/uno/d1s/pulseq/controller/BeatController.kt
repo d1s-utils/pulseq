@@ -26,4 +26,7 @@ interface BeatController {
 
     @GetMapping(BeatMappingConstants.LAST_BEAT)
     fun getLastBeat(): ResponseEntity<BeatDto>
+
+    @DeleteMapping(BeatMappingConstants.GET_BEAT_BY_ID)
+    fun deleteBeat(@PathVariable @NotEmpty id: String): ResponseEntity<Any>
 }

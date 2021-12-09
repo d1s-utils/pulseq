@@ -22,4 +22,6 @@ interface BeatService {
     fun findLastBeat(): Beat
 
     fun findFirstBeat(): Beat
+
+    fun deleteBeat(id: String)
 }

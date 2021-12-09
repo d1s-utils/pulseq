@@ -103,7 +103,7 @@ internal class ActivityServiceImplTest {
         var inactivity: TimeSpan by Delegates.notNull()
 
         assertDoesNotThrow {
-            inactivity = activityService.getLongestInactivity()
+            inactivity = activityService.getLongestTimeSpan()
         }
 
         verify {
@@ -125,7 +125,7 @@ internal class ActivityServiceImplTest {
         } returns listOf()
 
         Assertions.assertThrows(TimeSpansNotAvailableException::class.java) {
-            activityService.getLongestInactivity(processCurrent = false)
+            activityService.getLongestTimeSpan(processCurrent = false)
         }
     }
 

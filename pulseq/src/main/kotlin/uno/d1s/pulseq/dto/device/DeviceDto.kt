@@ -1,4 +1,4 @@
-package uno.d1s.pulseq.dto
+package uno.d1s.pulseq.dto.device
 
 class DeviceDto(
     val deviceName: String

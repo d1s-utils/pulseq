@@ -21,10 +21,7 @@ import uno.d1s.pulseq.strategy.device.DeviceFindingStrategy
 import uno.d1s.pulseq.strategy.device.byAll
 import uno.d1s.pulseq.strategy.device.byId
 import uno.d1s.pulseq.strategy.device.byName
-import uno.d1s.pulseq.testUtils.INVALID_STUB
-import uno.d1s.pulseq.testUtils.VALID_STUB
-import uno.d1s.pulseq.testUtils.testDevice
-import uno.d1s.pulseq.testUtils.testDevices
+import uno.d1s.pulseq.testUtils.*
 import java.util.*
 import kotlin.properties.Delegates
 
@@ -37,6 +34,9 @@ internal class DeviceServiceImplTest {
 
     @MockkBean
     private lateinit var deviceRepository: DeviceRepository
+
+    @MockkBean
+    private lateinit var beatService: BeatService
 
     private val optionalTestDevice = Optional.of(testDevice)
 
@@ -67,6 +67,10 @@ internal class DeviceServiceImplTest {
         every {
             deviceRepository.save(savedDevice)
         } returns savedDevice
+
+        every {
+            beatService.findAllByDevice(any())
+        } returns testBeats
     }
 
     @Test

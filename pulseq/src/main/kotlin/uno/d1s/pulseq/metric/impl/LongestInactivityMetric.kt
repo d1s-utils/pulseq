@@ -19,7 +19,7 @@ class LongestInactivityMetric : Metric {
 
     override val description
         get() = runCatching {
-            activityService.getLongestInactivity().duration.pretty()
+            activityService.getLongestTimeSpan().duration.pretty()
         }.getOrMessage()
 
     override val shortDescription

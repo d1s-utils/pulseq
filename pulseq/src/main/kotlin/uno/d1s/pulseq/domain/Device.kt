@@ -1,7 +1,6 @@
 package uno.d1s.pulseq.domain
 
 import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.DBRef
 import org.springframework.data.mongodb.core.mapping.Document
 
 @Document
@@ -11,7 +10,6 @@ class Device(
     @Id
     var id: String? = null
 
-    @DBRef
     var beats: List<Beat>? = null
 
     override fun equals(other: Any?): Boolean {
@@ -30,6 +28,6 @@ class Device(
     }
 
     override fun toString(): String {
-        return "Device(name='$name', id=$id, beats=$beats)"
+        return "Device(name='$name', id=$id)"
     }
 }

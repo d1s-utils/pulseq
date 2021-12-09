@@ -9,20 +9,15 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.MockMvcResultMatchersDsl
 import org.springframework.test.web.servlet.get
-import uno.d1s.pulseq.controller.advice.ExceptionHandlerControllerAdvice
 import uno.d1s.pulseq.controller.impl.BadgeControllerImpl
 import uno.d1s.pulseq.core.constant.mapping.BadgeMappingConstants
 import uno.d1s.pulseq.core.util.replacePathPlaceholder
-import uno.d1s.pulseq.exception.impl.MetricNotFoundException
 import uno.d1s.pulseq.service.BadgeService
-import uno.d1s.pulseq.testUtils.INVALID_STUB
 import uno.d1s.pulseq.testUtils.VALID_STUB
-import uno.d1s.pulseq.util.HttpServletResponseUtil
 
 @WebMvcTest(useDefaultFilters = false, controllers = [BadgeControllerImpl::class])
-@ContextConfiguration(classes = [BadgeControllerImpl::class, ExceptionHandlerControllerAdvice::class, HttpServletResponseUtil::class])
+@ContextConfiguration(classes = [BadgeControllerImpl::class])
 internal class BadgeControllerImplTest {
 
     @Autowired
@@ -36,15 +31,14 @@ internal class BadgeControllerImplTest {
         every {
             badgeService.createBadge(VALID_STUB, any(), any(), any(), any())
         }.returns(byteArrayOf())
-
-        every {
-            badgeService.createBadge(INVALID_STUB, any(), any(), any(), any())
-        } throws MetricNotFoundException()
     }
 
     @Test
     fun `should return the badge on getBadge and 200`() {
-        getAndExpect(VALID_STUB) {
+        mockMvc.get(BadgeMappingConstants.GET_BADGE.replacePathPlaceholder("metricId", VALID_STUB)) {
+            param("color", "red")
+            param("title", "redefined title")
+        }.andExpect {
             content {
                 contentType("image/svg+xml")
             }
@@ -57,25 +51,5 @@ internal class BadgeControllerImplTest {
         verify {
             badgeService.createBadge(VALID_STUB, any(), any(), any(), any())
         }
-    }
-
-    @Test
-    fun `should return 400 on invalid metric id`() {
-        getAndExpect(INVALID_STUB) {
-            status {
-                isNotFound()
-            }
-        }
-
-        verify {
-            badgeService.createBadge(INVALID_STUB, any(), any(), any(), any())
-        }
-    }
-
-    private fun getAndExpect(metricId: String, block: MockMvcResultMatchersDsl.() -> Unit) {
-        mockMvc.get(BadgeMappingConstants.GET_BADGE.replacePathPlaceholder("metricId", metricId)) {
-            param("color", "red")
-            param("title", "redefined title")
-        }.andExpect(block)
     }
 }

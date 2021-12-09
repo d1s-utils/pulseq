@@ -10,23 +10,18 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.MockMvcResultMatchersDsl
 import org.springframework.test.web.servlet.get
-import uno.d1s.pulseq.controller.advice.ExceptionHandlerControllerAdvice
 import uno.d1s.pulseq.controller.impl.MetricControllerImpl
 import uno.d1s.pulseq.core.constant.mapping.MetricMappingConstants
 import uno.d1s.pulseq.core.util.replacePathPlaceholder
-import uno.d1s.pulseq.exception.impl.MetricNotFoundException
 import uno.d1s.pulseq.service.MetricService
-import uno.d1s.pulseq.testUtils.INVALID_STUB
 import uno.d1s.pulseq.testUtils.VALID_STUB
 import uno.d1s.pulseq.testUtils.testMetric
 import uno.d1s.pulseq.testUtils.testMetrics
-import uno.d1s.pulseq.util.HttpServletResponseUtil
 import uno.d1s.pulseq.util.expectJsonContentType
 
 @WebMvcTest(useDefaultFilters = false, controllers = [MetricControllerImpl::class])
-@ContextConfiguration(classes = [MetricControllerImpl::class, ExceptionHandlerControllerAdvice::class, HttpServletResponseUtil::class])
+@ContextConfiguration(classes = [MetricControllerImpl::class])
 internal class MetricControllerImplTest {
 
     @Autowired
@@ -47,10 +42,6 @@ internal class MetricControllerImplTest {
         every {
             metricService.getMetricByIdentify(VALID_STUB)
         } returns testMetric
-
-        every {
-            metricService.getMetricByIdentify(INVALID_STUB)
-        } throws MetricNotFoundException()
     }
 
     @Test
@@ -74,38 +65,21 @@ internal class MetricControllerImplTest {
 
     @Test
     fun `should return 200 and valid metric on getting metric by identify`() {
-        getMetricByIdentifyAndExpect(VALID_STUB) {
-            status {
-                isOk()
-            }
+        mockMvc.get(MetricMappingConstants.GET_METRIC_BY_IDENTIFY.replacePathPlaceholder("identify", VALID_STUB))
+            .andExpect {
+                status {
+                    isOk()
+                }
 
-            content {
-                json(objectMapper.writeValueAsString(testMetric))
-            }
+                content {
+                    json(objectMapper.writeValueAsString(testMetric))
+                }
 
-            expectJsonContentType()
-        }
+                expectJsonContentType()
+            }
 
         verify {
             metricService.getMetricByIdentify(VALID_STUB)
         }
-    }
-
-    @Test
-    fun `should return 404 on getting metric by invalid identify`() {
-        getMetricByIdentifyAndExpect(INVALID_STUB) {
-            status {
-                isNotFound()
-            }
-        }
-
-        verify {
-            metricService.getMetricByIdentify(INVALID_STUB)
-        }
-    }
-
-    private fun getMetricByIdentifyAndExpect(identify: String, block: MockMvcResultMatchersDsl.() -> Unit) {
-        mockMvc.get(MetricMappingConstants.GET_METRIC_BY_IDENTIFY.replacePathPlaceholder("identify", identify))
-            .andExpect(block)
     }
 }

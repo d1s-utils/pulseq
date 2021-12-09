@@ -14,5 +14,9 @@ interface DeviceService {
 
     fun registerNewDevice(name: String): Device
 
+    fun updateDevice(strategy: DeviceFindingStrategy, device: Device): Device
+
+    fun deleteDevice(strategy: DeviceFindingStrategy)
+
     fun findDeviceBeats(strategy: DeviceFindingStrategy): List<Beat>
 }
