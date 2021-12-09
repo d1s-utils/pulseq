@@ -1,8 +1,10 @@
 package uno.d1s.pulseq.service.impl
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.cache.annotation.CacheEvict
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uno.d1s.pulseq.constant.cache.CacheNameConstants
 import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.domain.Device
 import uno.d1s.pulseq.exception.impl.DeviceAlreadyExistsException
@@ -61,9 +63,18 @@ class DeviceServiceImpl : DeviceService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = [CacheNameConstants.BEAT, CacheNameConstants.BEATS], allEntries = true)
     override fun deleteDevice(strategy: DeviceFindingStrategy) {
+        val device = this.findDevice(strategy)
+
+        beatService.findAllBeats().forEach {
+            if (it.device == device) {
+                beatService.deleteBeat(it.id!!)
+            }
+        }
+
         deviceRepository.delete(
-            this.findDevice(strategy)
+            device
         )
     }
 

@@ -82,7 +82,7 @@ internal class DeviceControllerImplTest {
         } returns testDevicesDto
 
         every {
-            devicePatchDtoConverter.convertToDomain(any())
+            devicePatchDtoConverter.convertToDomain(testDevicePatchDto)
         } returns testDeviceUpdate
 
         every {
@@ -188,7 +188,7 @@ internal class DeviceControllerImplTest {
         mockMvc.patch(DeviceMappingConstants.GET_DEVICE_BY_IDENTIFY.replaceIdentify()) {
             content = objectMapper.writeValueAsString(testDevicePatchDto)
             contentType = MediaType.APPLICATION_JSON
-        }.andDo { print() }.andExpect {
+        }.andExpect {
             status {
                 isAccepted()
             }
@@ -205,7 +205,7 @@ internal class DeviceControllerImplTest {
         }
 
         verify {
-            devicePatchDtoConverter.convertToDomain(any())
+            devicePatchDtoConverter.convertToDomain(testDevicePatchDto)
         }
     }
 

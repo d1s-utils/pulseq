@@ -3,7 +3,7 @@ package uno.d1s.pulseq.dto.device
 import javax.validation.constraints.NotEmpty
 
 class DevicePatchDto(
-    @NotEmpty val deviceName: String?
+    @NotEmpty val deviceName: String
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

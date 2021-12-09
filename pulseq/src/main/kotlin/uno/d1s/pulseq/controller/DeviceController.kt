@@ -36,7 +36,7 @@ interface DeviceController {
     fun patchDevice(
         @PathVariable @NotEmpty identify: String,
         findingStrategy: DeviceFindingStrategyType?,
-        @Valid patch: DevicePatchDto
+        @RequestBody @Valid patch: DevicePatchDto
     ): ResponseEntity<DeviceDto>
 
     @DeleteMapping(DeviceMappingConstants.GET_DEVICE_BY_IDENTIFY)

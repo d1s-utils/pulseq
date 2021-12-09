@@ -13,6 +13,6 @@ class DevicePatchDtoConverter : DtoConverterAdapter<Device, DevicePatchDto>() {
     )
 
     override fun convertToDomain(dto: DevicePatchDto): Device = Device(
-        dto.deviceName!!
+        dto.deviceName
     )
 }
