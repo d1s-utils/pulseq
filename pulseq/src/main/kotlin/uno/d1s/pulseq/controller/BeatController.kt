@@ -1,6 +1,7 @@
 package uno.d1s.pulseq.controller
 
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import uno.d1s.pulseq.core.constant.mapping.BeatMappingConstants
@@ -15,6 +16,7 @@ interface BeatController {
     fun getBeatBtId(@PathVariable @NotEmpty id: String): ResponseEntity<BeatDto>
 
     @PostMapping(BeatMappingConstants.BASE)
+    @PreAuthorize("@authenticationService.authenticatedRequest")
     fun registerNewBeatWithDeviceIdentify(
         @RequestParam("device", required = false) deviceParam: String?,
         @RequestHeader("Device", required = false) deviceHeader: String?,
@@ -28,5 +30,6 @@ interface BeatController {
     fun getLastBeat(): ResponseEntity<BeatDto>
 
     @DeleteMapping(BeatMappingConstants.GET_BEAT_BY_ID)
+    @PreAuthorize("@authenticationService.authenticatedRequest")
     fun deleteBeat(@PathVariable @NotEmpty id: String): ResponseEntity<Any>
 }

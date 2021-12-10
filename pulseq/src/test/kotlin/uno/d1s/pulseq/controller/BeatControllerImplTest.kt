@@ -8,6 +8,7 @@ import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.*
@@ -22,8 +23,9 @@ import uno.d1s.pulseq.strategy.device.byAll
 import uno.d1s.pulseq.testUtils.*
 import uno.d1s.pulseq.util.expectJsonContentType
 
-@WebMvcTest(useDefaultFilters = false, controllers = [BeatControllerImpl::class])
+@AutoConfigureMockMvc(addFilters = false)
 @ContextConfiguration(classes = [BeatControllerImpl::class])
+@WebMvcTest(useDefaultFilters = false, controllers = [BeatControllerImpl::class])
 internal class BeatControllerImplTest {
 
     @Autowired

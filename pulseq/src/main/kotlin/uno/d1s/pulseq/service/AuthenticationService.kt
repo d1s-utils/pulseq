@@ -5,4 +5,6 @@ interface AuthenticationService {
     fun isSecuredPath(path: String): Boolean
 
     fun validateSecret(secret: String): Boolean
+
+    fun isAuthenticatedRequest(): Boolean
 }

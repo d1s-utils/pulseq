@@ -1,6 +1,7 @@
 package uno.d1s.pulseq.controller
 
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import uno.d1s.pulseq.core.constant.mapping.DeviceMappingConstants
@@ -24,6 +25,7 @@ interface DeviceController {
     ): ResponseEntity<DeviceDto>
 
     @PostMapping(DeviceMappingConstants.REGISTER_DEVICE)
+    @PreAuthorize("@authenticationService.authenticatedRequest")
     fun registerNewDevice(@RequestParam @NotEmpty deviceName: String): ResponseEntity<DeviceDto>
 
     @GetMapping(DeviceMappingConstants.GET_BEATS)
@@ -32,6 +34,7 @@ interface DeviceController {
         @RequestParam(required = false, name = "strategy") findingStrategy: DeviceFindingStrategyType?
     ): ResponseEntity<List<BeatDto>>
 
+    @PreAuthorize("@authenticationService.authenticatedRequest")
     @PatchMapping(DeviceMappingConstants.GET_DEVICE_BY_IDENTIFY)
     fun patchDevice(
         @PathVariable @NotEmpty identify: String,
@@ -39,6 +42,7 @@ interface DeviceController {
         @RequestBody @Valid patch: DevicePatchDto
     ): ResponseEntity<DeviceDto>
 
+    @PreAuthorize("@authenticationService.authenticatedRequest")
     @DeleteMapping(DeviceMappingConstants.GET_DEVICE_BY_IDENTIFY)
     fun deleteDevice(
         @PathVariable @NotEmpty identify: String,

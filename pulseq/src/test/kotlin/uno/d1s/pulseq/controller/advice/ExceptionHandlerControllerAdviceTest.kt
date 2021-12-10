@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
 import org.springframework.mock.web.MockHttpServletResponse
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.test.context.ContextConfiguration
 import uno.d1s.pulseq.exception.AbstractHttpStatusException
 import uno.d1s.pulseq.testUtils.VALID_STUB
@@ -27,26 +28,41 @@ class ExceptionHandlerControllerAdviceTest {
     private lateinit var httpServletResponseUtil: HttpServletResponseUtil
 
     private val response = MockHttpServletResponse()
-    private val expectedStatus = 404
+    private val expectedStatus = HttpStatus.NOT_FOUND
+    private val expectedUnauthorizedStatus = HttpStatus.FORBIDDEN
 
     @BeforeEach
     fun setup() {
         every {
             httpServletResponseUtil.sendErrorDto(response, any())
         } answers {
-            response.status = expectedStatus
+            response.status = expectedStatus.value()
+        } andThen {
+            response.status = expectedUnauthorizedStatus.value()
         }
     }
 
     @Test
     fun `should return valid response on error`() {
-        val exception = object : AbstractHttpStatusException(HttpStatus.valueOf(expectedStatus), VALID_STUB) {}
+        val exception = object : AbstractHttpStatusException(expectedStatus, VALID_STUB) {}
 
         assertDoesNotThrow {
             exceptionHandlerControllerAdvice.handle(exception, response)
         }
 
-        Assertions.assertEquals(expectedStatus, response.status)
+        Assertions.assertEquals(expectedStatus.value(), response.status)
+
+        verify {
+            httpServletResponseUtil.sendErrorDto(response, any())
+        }
+
+        val accessDeniedException = AccessDeniedException("Access denied.")
+
+        assertDoesNotThrow {
+            exceptionHandlerControllerAdvice.handle(accessDeniedException, response)
+        }
+
+        Assertions.assertEquals(expectedUnauthorizedStatus.value(), response.status)
 
         verify {
             httpServletResponseUtil.sendErrorDto(response, any())

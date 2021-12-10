@@ -6,6 +6,7 @@ import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
@@ -16,8 +17,9 @@ import uno.d1s.pulseq.core.util.replacePathPlaceholder
 import uno.d1s.pulseq.service.BadgeService
 import uno.d1s.pulseq.testUtils.VALID_STUB
 
-@WebMvcTest(useDefaultFilters = false, controllers = [BadgeControllerImpl::class])
+@AutoConfigureMockMvc(addFilters = false)
 @ContextConfiguration(classes = [BadgeControllerImpl::class])
+@WebMvcTest(useDefaultFilters = false, controllers = [BadgeControllerImpl::class])
 internal class BadgeControllerImplTest {
 
     @Autowired

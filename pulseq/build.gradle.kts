@@ -12,6 +12,7 @@ configurations {
 
 dependencies {
     implementation(project(":pulseq-core-starter"))
+    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-actuator")

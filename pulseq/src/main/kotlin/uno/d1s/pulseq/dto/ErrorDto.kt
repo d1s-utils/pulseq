@@ -8,5 +8,5 @@ class ErrorDto(
     var status: Int = HttpStatus.INTERNAL_SERVER_ERROR.value(),
     var message: String = "Something went wrong.",
     var timestamp: Instant = Instant.now(),
-    var path: String = ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString()
+    var url: String = ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString()
 )

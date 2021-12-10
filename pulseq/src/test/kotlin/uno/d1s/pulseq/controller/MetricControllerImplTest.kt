@@ -7,6 +7,7 @@ import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
@@ -20,8 +21,9 @@ import uno.d1s.pulseq.testUtils.testMetric
 import uno.d1s.pulseq.testUtils.testMetrics
 import uno.d1s.pulseq.util.expectJsonContentType
 
-@WebMvcTest(useDefaultFilters = false, controllers = [MetricControllerImpl::class])
+@AutoConfigureMockMvc(addFilters = false)
 @ContextConfiguration(classes = [MetricControllerImpl::class])
+@WebMvcTest(useDefaultFilters = false, controllers = [MetricControllerImpl::class])
 internal class MetricControllerImplTest {
 
     @Autowired
