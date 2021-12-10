@@ -5,10 +5,12 @@ import uno.d1s.pulseq.domain.Device
 import uno.d1s.pulseq.domain.activity.TimeSpan
 import uno.d1s.pulseq.domain.activity.TimeSpanType
 import uno.d1s.pulseq.dto.BeatDto
-import uno.d1s.pulseq.dto.DeviceDto
+import uno.d1s.pulseq.dto.TimeSpanDto
+import uno.d1s.pulseq.dto.device.DeviceDto
+import uno.d1s.pulseq.dto.device.DevicePatchDto
 import uno.d1s.pulseq.event.AbstractNotifiableEvent
 import uno.d1s.pulseq.event.impl.inactivity.InactivityRelevanceLevel
-import uno.d1s.pulseq.statistic.Statistic
+import uno.d1s.pulseq.metric.Metric
 import java.time.Duration
 import java.time.Instant
 
@@ -27,6 +29,17 @@ internal val testDeviceDto = DeviceDto(VALID_STUB).apply {
     beats = listOf(VALID_STUB)
 }
 internal val testDevicesDto = listOf(testDeviceDto)
+internal val testDeviceUpdate = Device("new-name").apply {
+    id = testDevice.id
+    beats = testDevice.beats
+}
+internal val testDeviceUpdates = listOf(testDeviceUpdate)
+internal val testDeviceUpdateDto = DeviceDto(testDeviceUpdate.name).apply {
+    id = testDeviceUpdate.id
+    beats = listOf(VALID_STUB)
+}
+internal val testDevicePatchDto = DevicePatchDto("new-name")
+internal val testDevicePatchesDto = listOf(testDevicePatchDto)
 
 
 // beats
@@ -41,14 +54,14 @@ internal val testBeatDto = BeatDto(VALID_STUB, Instant.EPOCH, Duration.ZERO).app
 }
 internal val testBeatsDto = listOf(testBeatDto)
 
-// statistics
-internal val testStatistic = object : Statistic {
+// metrics
+internal val testMetric = object : Metric {
     override val identify = VALID_STUB
     override val title = VALID_STUB
     override val description = VALID_STUB
     override val shortDescription = VALID_STUB
 }
-internal val testStatistics = listOf(testStatistic)
+internal val testMetrics = listOf(testMetric)
 
 
 // events
@@ -59,6 +72,15 @@ internal val testEvent = object : AbstractNotifiableEvent(VALID_STUB) {
 // time spans
 internal val testTimeSpan =
     TimeSpan(Duration.ZERO, TimeSpanType.ACTIVITY, InactivityRelevanceLevel.COMMON, testBeat, testBeat)
+internal val testTimeSpans = listOf(testTimeSpan)
+internal val testTimeSpanDto = TimeSpanDto(
+    testTimeSpan.duration,
+    testTimeSpan.type,
+    testTimeSpan.inactivityLevel,
+    testTimeSpan.startBeat.id!!,
+    testTimeSpan.endBeat!!.id!!
+)
+internal val testTimeSpansDto = listOf(testTimeSpanDto)
 
 // collections
 internal val testCollection = listOf(1, 2, 3)

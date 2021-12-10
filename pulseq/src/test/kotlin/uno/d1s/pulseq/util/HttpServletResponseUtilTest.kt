@@ -13,7 +13,7 @@ import uno.d1s.pulseq.dto.ErrorDto
 
 @SpringBootTest
 @ContextConfiguration(classes = [HttpServletResponseUtil::class, JacksonAutoConfiguration::class])
-class HttpServletResponseUtilTest {
+internal class HttpServletResponseUtilTest {
 
     @Autowired
     private lateinit var httpServletResponseUtil: HttpServletResponseUtil

@@ -13,9 +13,8 @@ spring:
       port: 27017
 
 server:
-  error:
-    whitelabel:
-      enabled: false
+  servlet:
+    context-path: /api
 
 pulseq:
   version: "0.2.1-alpha.0"
@@ -23,10 +22,4 @@ pulseq:
   server-name: "my pulseq instance"
 
   security:
-    secured-paths:
-      - "/api/beat/"
-      - "/api/device/new/"
     secret: "change-this"
-
-  view:
-    enabled: true

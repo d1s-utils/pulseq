@@ -3,10 +3,14 @@ package uno.d1s.pulseq.controller.impl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import uno.d1s.pulseq.controller.DeviceController
 import uno.d1s.pulseq.converter.DtoConverter
+import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.domain.Device
-import uno.d1s.pulseq.dto.DeviceDto
+import uno.d1s.pulseq.dto.BeatDto
+import uno.d1s.pulseq.dto.device.DeviceDto
+import uno.d1s.pulseq.dto.device.DevicePatchDto
 import uno.d1s.pulseq.service.DeviceService
 import uno.d1s.pulseq.strategy.device.DeviceFindingStrategyType
 import uno.d1s.pulseq.strategy.device.byStrategyType
@@ -20,6 +24,12 @@ class DeviceControllerImpl : DeviceController {
     @Autowired
     private lateinit var deviceDtoConverter: DtoConverter<Device, DeviceDto>
 
+    @Autowired
+    private lateinit var devicePatchDtoConverter: DtoConverter<Device, DevicePatchDto>
+
+    @Autowired
+    private lateinit var beatDtoConverter: DtoConverter<Beat, BeatDto>
+
     override fun getAllDevices(): ResponseEntity<List<DeviceDto>> = ResponseEntity.ok(
         deviceDtoConverter.convertToDtoList(
             deviceService.findAllRegisteredDevices()
@@ -31,16 +41,44 @@ class DeviceControllerImpl : DeviceController {
     ): ResponseEntity<DeviceDto> = ResponseEntity.ok(
         deviceDtoConverter.convertToDto(
             deviceService.findDevice(
-                byStrategyType(
-                    identify, findingStrategy ?: DeviceFindingStrategyType.BY_ALL
-                )
+                findingStrategy.thisStrategyOrAll(identify)
             )
         )
     )
 
-    override fun registerNewDevice(deviceName: String): ResponseEntity<DeviceDto> = ResponseEntity.ok(
-        deviceDtoConverter.convertToDto(
+    override fun registerNewDevice(deviceName: String): ResponseEntity<DeviceDto> {
+        val createdDevice = deviceDtoConverter.convertToDto(
             deviceService.registerNewDevice(deviceName)
         )
+
+        return ResponseEntity.created(
+            ServletUriComponentsBuilder.fromCurrentRequestUri().buildAndExpand(createdDevice.id!!).toUri()
+        ).body(createdDevice)
+    }
+
+    override fun getDeviceBeats(
+        identify: String, findingStrategy: DeviceFindingStrategyType?
+    ): ResponseEntity<List<BeatDto>> = ResponseEntity.ok(
+        beatDtoConverter.convertToDtoList(
+            deviceService.findDeviceBeats(findingStrategy.thisStrategyOrAll(identify))
+        )
     )
+
+    override fun patchDevice(
+        identify: String, findingStrategy: DeviceFindingStrategyType?, patch: DevicePatchDto
+    ): ResponseEntity<DeviceDto> = ResponseEntity.accepted().body(
+        deviceDtoConverter.convertToDto(
+            deviceService.updateDevice(
+                findingStrategy.thisStrategyOrAll(identify), devicePatchDtoConverter.convertToDomain(patch)
+            )
+        )
+    )
+
+    override fun deleteDevice(identify: String, findingStrategy: DeviceFindingStrategyType?): ResponseEntity<Any> {
+        deviceService.deleteDevice(findingStrategy.thisStrategyOrAll(identify))
+        return ResponseEntity.noContent().build()
+    }
+
+    private fun DeviceFindingStrategyType?.thisStrategyOrAll(identify: String) =
+        byStrategyType(identify, this ?: DeviceFindingStrategyType.BY_ALL)
 }

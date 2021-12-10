@@ -1,4 +1,4 @@
-package uno.d1s.pulseq.util
+package uno.d1s.pulseq.testUtils
 
 import org.junit.jupiter.api.Assertions
 
