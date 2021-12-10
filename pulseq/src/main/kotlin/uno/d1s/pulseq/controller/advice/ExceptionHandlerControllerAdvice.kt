@@ -24,6 +24,7 @@ class ExceptionHandlerControllerAdvice {
             when (ex) {
                 is AbstractHttpStatusException -> {
                     status = ex.status.value()
+                    message = ex.message!!
                 }
 
                 is AccessDeniedException -> {
