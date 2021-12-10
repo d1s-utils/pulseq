@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ContextConfiguration
 import uno.d1s.pulseq.configuration.property.SecurityConfigurationProperties
-import uno.d1s.pulseq.core.util.withSlash
 import uno.d1s.pulseq.service.impl.AuthenticationServiceImpl
 import uno.d1s.pulseq.testUtils.INVALID_STUB
 import uno.d1s.pulseq.testUtils.VALID_STUB
@@ -27,22 +26,8 @@ internal class AuthenticationServiceImplTest {
     @BeforeEach
     fun setup() {
         every {
-            securityConfigurationProperties.securedPaths
-        } returns listOf(VALID_STUB.withSlash())
-
-        every {
             securityConfigurationProperties.secret
         } returns VALID_STUB
-    }
-
-    @Test
-    fun `the path should be secured`() {
-        Assertions.assertTrue(authenticationService.isSecuredPath(VALID_STUB))
-    }
-
-    @Test
-    fun `the path should not be secured`() {
-        Assertions.assertFalse(authenticationService.isSecuredPath(INVALID_STUB))
     }
 
     @Test

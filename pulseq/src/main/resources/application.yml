@@ -22,7 +22,4 @@ pulseq:
   server-name: "my pulseq instance"
 
   security:
-    secured-paths:
-      - "/api/beat/"
-      - "/api/device/new/"
     secret: "change-this"

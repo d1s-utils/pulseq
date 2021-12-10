@@ -6,8 +6,7 @@ import javax.annotation.PostConstruct
 
 @ConfigurationProperties("pulseq.security")
 class SecurityConfigurationProperties(
-    var secret: String?,
-    var securedPaths: List<String> = listOf()
+    var secret: String?
 ) {
     @PostConstruct
     private fun checkSecret() {
