@@ -13,7 +13,7 @@ class BadgeControllerImpl : BadgeController {
     private lateinit var badgeService: BadgeService
 
     override fun getBadge(
-        statisticId: String,
+        metricId: String,
         color: String?,
         title: String?,
         style: String?,
@@ -23,7 +23,7 @@ class BadgeControllerImpl : BadgeController {
         response.run {
             contentType = "image/svg+xml"
 
-            val badge = badgeService.createBadge(statisticId, color, title, style, logoUrl)
+            val badge = badgeService.createBadge(metricId, color, title, style, logoUrl)
             writer.println(String(badge))
         }
     }

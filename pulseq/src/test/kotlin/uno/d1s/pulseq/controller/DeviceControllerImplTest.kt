@@ -7,29 +7,28 @@ import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.http.MediaType
 import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.MockMvcResultMatchersDsl
-import org.springframework.test.web.servlet.get
-import org.springframework.test.web.servlet.post
-import uno.d1s.pulseq.controller.advice.ExceptionHandlerControllerAdvice
+import org.springframework.test.web.servlet.*
 import uno.d1s.pulseq.controller.impl.DeviceControllerImpl
 import uno.d1s.pulseq.converter.DtoConverter
 import uno.d1s.pulseq.core.constant.mapping.DeviceMappingConstants
 import uno.d1s.pulseq.core.util.replacePathPlaceholder
+import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.domain.Device
-import uno.d1s.pulseq.dto.DeviceDto
-import uno.d1s.pulseq.exception.impl.DeviceAlreadyExistsException
-import uno.d1s.pulseq.exception.impl.DeviceNotFoundException
+import uno.d1s.pulseq.dto.BeatDto
+import uno.d1s.pulseq.dto.device.DeviceDto
+import uno.d1s.pulseq.dto.device.DevicePatchDto
 import uno.d1s.pulseq.service.DeviceService
 import uno.d1s.pulseq.strategy.device.byAll
 import uno.d1s.pulseq.testUtils.*
-import uno.d1s.pulseq.util.HttpServletResponseUtil
-import uno.d1s.pulseq.util.expectJsonContentType
+import uno.d1s.pulseq.testUtils.expectJsonContentType
 
+@AutoConfigureMockMvc(addFilters = false)
+@ContextConfiguration(classes = [DeviceControllerImpl::class])
 @WebMvcTest(useDefaultFilters = false, controllers = [DeviceControllerImpl::class])
-@ContextConfiguration(classes = [DeviceControllerImpl::class, ExceptionHandlerControllerAdvice::class, HttpServletResponseUtil::class])
 internal class DeviceControllerImplTest {
 
     @Autowired
@@ -44,6 +43,12 @@ internal class DeviceControllerImplTest {
     @MockkBean
     private lateinit var deviceDtoConverter: DtoConverter<Device, DeviceDto>
 
+    @MockkBean
+    private lateinit var devicePatchDtoConverter: DtoConverter<Device, DevicePatchDto>
+
+    @MockkBean
+    private lateinit var beatDtoConverter: DtoConverter<Beat, BeatDto>
+
     @BeforeEach
     fun setup() {
         every {
@@ -55,24 +60,36 @@ internal class DeviceControllerImplTest {
         } returns testDevice
 
         every {
-            deviceService.findDevice(byAll(INVALID_STUB))
-        } throws DeviceNotFoundException()
-
-        every {
             deviceService.registerNewDevice(VALID_STUB)
         } returns testDevice
 
         every {
-            deviceService.registerNewDevice(INVALID_STUB)
-        } throws DeviceAlreadyExistsException()
+            deviceService.findDeviceBeats(byAll(VALID_STUB))
+        } returns testBeats
+
+        every {
+            deviceService.updateDevice(byAll(VALID_STUB), testDeviceUpdate)
+        } returns testDeviceUpdate
 
         every {
             deviceDtoConverter.convertToDto(testDevice)
         } returns testDeviceDto
 
         every {
+            deviceDtoConverter.convertToDto(testDeviceUpdate)
+        } returns testDeviceUpdateDto
+
+        every {
             deviceDtoConverter.convertToDtoList(testDevices)
         } returns testDevicesDto
+
+        every {
+            devicePatchDtoConverter.convertToDomain(testDevicePatchDto)
+        } returns testDeviceUpdate
+
+        every {
+            beatDtoConverter.convertToDtoList(testBeats)
+        } returns testBeatsDto
     }
 
     @Test
@@ -93,20 +110,23 @@ internal class DeviceControllerImplTest {
             deviceService.findAllRegisteredDevices()
         }
 
-        verifyDevicesConversion()
+        verify {
+            deviceDtoConverter.convertToDtoList(testDevices)
+        }
     }
 
     @Test
     fun `should return 200 and valid device on getting device by identify`() {
-        getByIdentifyAndExpect(VALID_STUB) {
-            status {
-                isOk()
+        mockMvc.get(DeviceMappingConstants.GET_DEVICE_BY_IDENTIFY.replaceIdentify())
+            .andExpect {
+                status {
+                    isOk()
+                }
+
+                expectDeviceDto()
+
+                expectJsonContentType()
             }
-
-            expectDeviceDto()
-
-            expectJsonContentType()
-        }
 
         verify {
             deviceService.findDevice(byAll(VALID_STUB))
@@ -116,23 +136,12 @@ internal class DeviceControllerImplTest {
     }
 
     @Test
-    fun `should return 400 on getting device with invalid identify`() {
-        getByIdentifyAndExpect(INVALID_STUB) {
+    fun `should return 201 and valid device on device registration`() {
+        mockMvc.post(DeviceMappingConstants.REGISTER_DEVICE) {
+            param("deviceName", VALID_STUB)
+        }.andExpect {
             status {
-                isNotFound()
-            }
-        }
-
-        verify {
-            deviceService.findDevice(byAll(INVALID_STUB))
-        }
-    }
-
-    @Test
-    fun `should return 200 and valid device on device registration`() {
-        registerDeviceAndExpect(VALID_STUB) {
-            status {
-                isOk()
+                isCreated()
             }
 
             expectDeviceDto()
@@ -147,34 +156,59 @@ internal class DeviceControllerImplTest {
         verifyDeviceConversion()
     }
 
-    @Test
-    fun `should return 400 on device registration with existing name`() {
-        registerDeviceAndExpect(INVALID_STUB) {
-            status {
-                isConflict()
-            }
-        }
-
-        verify {
-            deviceService.registerNewDevice(INVALID_STUB)
-        }
-    }
-
     private fun MockMvcResultMatchersDsl.expectDeviceDto() {
         content {
             json(objectMapper.writeValueAsString(testDeviceDto))
         }
     }
 
-    private fun getByIdentifyAndExpect(identify: String, block: MockMvcResultMatchersDsl.() -> Unit) {
-        mockMvc.get(DeviceMappingConstants.GET_DEVICE_BY_IDENTIFY.replacePathPlaceholder("identify", identify))
-            .andExpect(block)
+    @Test
+    fun `should return 200 and valid list on getting beats by device identify`() {
+        mockMvc.get(DeviceMappingConstants.GET_BEATS.replaceIdentify()).andExpect {
+            status {
+                isOk()
+            }
+
+            content {
+                json(objectMapper.writeValueAsString(testBeatsDto))
+            }
+
+            expectJsonContentType()
+        }
+
+        verify {
+            deviceService.findDeviceBeats(byAll(VALID_STUB))
+        }
+
+        verify {
+            beatDtoConverter.convertToDtoList(testBeats)
+        }
     }
 
-    private fun registerDeviceAndExpect(name: String, block: MockMvcResultMatchersDsl.() -> Unit) {
-        mockMvc.post(DeviceMappingConstants.REGISTER_DEVICE) {
-            param("deviceName", name)
-        }.andExpect(block)
+    @Test
+    fun `should return 202 and patch the device`() {
+        mockMvc.patch(DeviceMappingConstants.GET_DEVICE_BY_IDENTIFY.replaceIdentify()) {
+            content = objectMapper.writeValueAsString(testDevicePatchDto)
+            contentType = MediaType.APPLICATION_JSON
+        }.andExpect {
+            status {
+                isAccepted()
+            }
+
+            expectJsonContentType()
+
+            content {
+                json(objectMapper.writeValueAsString(testDeviceUpdateDto))
+            }
+        }
+
+        verify {
+            deviceService.updateDevice(byAll(VALID_STUB), testDeviceUpdate)
+        }
+
+        verify {
+            devicePatchDtoConverter.convertToDomain(testDevicePatchDto)
+        }
     }
 
     private fun verifyDeviceConversion() {
@@ -183,9 +217,6 @@ internal class DeviceControllerImplTest {
         }
     }
 
-    private fun verifyDevicesConversion() {
-        verify {
-            deviceDtoConverter.convertToDtoList(testDevices)
-        }
-    }
+    private fun String.replaceIdentify() =
+        this.replacePathPlaceholder("identify", VALID_STUB)
 }

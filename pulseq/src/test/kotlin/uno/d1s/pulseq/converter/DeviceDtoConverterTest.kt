@@ -52,22 +52,4 @@ internal class DeviceDtoConverterTest {
     fun `should return valid domain on conversion to domain`() {
         Assertions.assertEquals(testDevice, deviceDtoConverter.convertToDomain(testDeviceDto))
     }
-
-    @Test
-    fun `should return valid list on conversion to dto list`() {
-        Assertions.assertEquals(testDevicesDto, deviceDtoConverter.convertToDtoList(testDevices))
-
-        verify {
-            deviceDtoConverter.convertToDto(any())
-        }
-    }
-
-    @Test
-    fun `should return valid list on conversion to domain list`() {
-        Assertions.assertEquals(testDevices, deviceDtoConverter.convertToDomainList(testDevicesDto))
-
-        verify {
-            deviceDtoConverter.convertToDomain(any())
-        }
-    }
 }

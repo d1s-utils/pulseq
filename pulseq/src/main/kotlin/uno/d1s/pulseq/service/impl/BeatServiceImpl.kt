@@ -75,10 +75,18 @@ class BeatServiceImpl : BeatService {
         }
     }
 
-    override fun findAllByDevice(strategy: DeviceFindingStrategy): List<Beat> =
-        deviceService.findDevice(strategy).beats!!
+    // this is absolutely bullshit, see https://stackoverflow.com/questions/47439247/spring-data-mongodb-dbref-list
+    override fun findAllByDevice(strategy: DeviceFindingStrategy): List<Beat> = beatService.findAllBeats().filter {
+        when (strategy) {
+            is DeviceFindingStrategy.ById -> strategy.identify == it.device.id
+            is DeviceFindingStrategy.ByName -> strategy.identify == it.device.name
+            else -> strategy.identify == it.device.name || strategy.identify == it.device.id
+        }
+    }
 
-    override fun findAllBeats(): List<Beat> = beatRepository.findAll()
+    override fun findAllBeats(): List<Beat> = beatRepository.findAll().sortedBy {
+        it.beatTime
+    }
 
     override fun totalBeats(): Int = beatService.findAllBeats().size
 
@@ -108,5 +116,11 @@ class BeatServiceImpl : BeatService {
                 it.beatTime
             } == beat.beatTime
         } ?: throw NoBeatsReceivedException
+    }
+
+    override fun deleteBeat(id: String) {
+        beatRepository.delete(
+            beatService.findBeatById(id)
+        )
     }
 }

@@ -14,7 +14,7 @@ import org.springframework.web.client.getForObject
 import uno.d1s.pulseq.configuration.property.BadgeConfigurationProperties
 import uno.d1s.pulseq.service.impl.BadgeServiceImpl
 import uno.d1s.pulseq.testUtils.VALID_STUB
-import uno.d1s.pulseq.testUtils.testStatistic
+import uno.d1s.pulseq.testUtils.testMetric
 
 @SpringBootTest
 @ContextConfiguration(classes = [BadgeServiceImpl::class])
@@ -30,7 +30,7 @@ internal class BadgeServiceImplTest {
     private lateinit var badgeConfigurationProperties: BadgeConfigurationProperties
 
     @MockkBean
-    private lateinit var statisticService: StatisticService
+    private lateinit var metricService: MetricService
 
     @BeforeEach
     fun setup() {
@@ -39,8 +39,8 @@ internal class BadgeServiceImplTest {
         } returns byteArrayOf()
 
         every {
-            statisticService.getStatisticByIdentify(VALID_STUB)
-        } returns testStatistic
+            metricService.getMetricByIdentify(VALID_STUB)
+        } returns testMetric
     }
 
     @Test
@@ -50,7 +50,7 @@ internal class BadgeServiceImplTest {
         }
 
         verify {
-            statisticService.getStatisticByIdentify(VALID_STUB)
+            metricService.getMetricByIdentify(VALID_STUB)
         }
 
         verify {

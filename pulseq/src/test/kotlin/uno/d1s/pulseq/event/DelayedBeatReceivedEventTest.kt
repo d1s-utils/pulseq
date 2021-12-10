@@ -15,7 +15,7 @@ import java.time.Duration
 
 @SpringBootTest
 @ContextConfiguration(classes = [DelayedBeatReceivedEventTest::class])
-final class DelayedBeatReceivedEventTest {
+internal final class DelayedBeatReceivedEventTest {
 
     private val mockBeat: Beat = mockk(relaxed = true)
 

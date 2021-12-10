@@ -17,7 +17,7 @@ import uno.d1s.pulseq.event.impl.inactivity.InactivityRelevanceLevel
 import uno.d1s.pulseq.exception.impl.NoBeatsReceivedException
 import uno.d1s.pulseq.exception.impl.TimeSpansNotAvailableException
 import uno.d1s.pulseq.service.impl.ActivityServiceImpl
-import uno.d1s.pulseq.util.buildBeat
+import uno.d1s.pulseq.testUtils.buildBeat
 import java.time.Duration
 import java.time.Instant
 import kotlin.properties.Delegates
@@ -103,7 +103,7 @@ internal class ActivityServiceImplTest {
         var inactivity: TimeSpan by Delegates.notNull()
 
         assertDoesNotThrow {
-            inactivity = activityService.getLongestInactivity()
+            inactivity = activityService.getLongestTimeSpan()
         }
 
         verify {
@@ -125,7 +125,7 @@ internal class ActivityServiceImplTest {
         } returns listOf()
 
         Assertions.assertThrows(TimeSpansNotAvailableException::class.java) {
-            activityService.getLongestInactivity(processCurrent = false)
+            activityService.getLongestTimeSpan(processCurrent = false)
         }
     }
 
