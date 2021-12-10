@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
 import uno.d1s.pulseq.exception.AbstractHttpStatusException
 import uno.d1s.pulseq.util.HttpServletResponseUtil
 import javax.servlet.http.HttpServletResponse
@@ -21,15 +22,19 @@ class ExceptionHandlerControllerAdvice {
     @ExceptionHandler(Exception::class)
     fun handle(ex: Exception, response: HttpServletResponse) {
         httpServletResponseUtil.sendErrorDto(response) {
+            message = ex.message ?: message
+
             when (ex) {
                 is AbstractHttpStatusException -> {
                     status = ex.status.value()
-                    message = ex.message!!
                 }
 
                 is AccessDeniedException -> {
                     status = HttpStatus.FORBIDDEN.value()
-                    message = ex.message!!
+                }
+
+                is MethodArgumentTypeMismatchException -> {
+                    status = HttpStatus.BAD_REQUEST.value()
                 }
 
                 else -> {
