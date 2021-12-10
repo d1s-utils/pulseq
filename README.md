@@ -1,4 +1,4 @@
-[![pulseq](https://raw.githubusercontent.com/d1snin-dev/pulseq/master/pulseq/src/main/resources/static/pulseq.png)](https://pq.d1s.uno/)
+[![pulseq](https://github.com/d1snin-dev/pulseq/blob/master/img/pulseq.png?raw=true)](https://pq.d1s.uno/)
 [![CircleCI](https://circleci.com/gh/d1snin-dev/pulseq/tree/master.svg?style=shield)](https://circleci.com/gh/d1snin-dev/pulseq/tree/master)
 [![wakatime](https://wakatime.com/badge/user/e4446807-0aa6-4ba9-92ea-2a7632bc44c9/project/46213356-3912-4014-96a6-4aa34d768a68.svg)](https://github.com/d1snin-dev/pulseq)
 [![CodeFactor](https://www.codefactor.io/repository/github/d1snin-dev/pulseq/badge)](https://www.codefactor.io/repository/github/d1snin-dev/pulseq)
