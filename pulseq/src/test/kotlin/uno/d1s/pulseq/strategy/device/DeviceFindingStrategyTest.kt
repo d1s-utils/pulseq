@@ -8,7 +8,7 @@ import uno.d1s.pulseq.testUtils.VALID_STUB
 
 @SpringBootTest
 @ContextConfiguration(classes = [DeviceFindingStrategyTest::class])
-class DeviceFindingStrategyTest {
+internal class DeviceFindingStrategyTest {
 
     @Test
     fun `should return ById device finding strategy`() {

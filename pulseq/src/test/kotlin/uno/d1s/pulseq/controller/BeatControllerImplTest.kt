@@ -21,7 +21,7 @@ import uno.d1s.pulseq.dto.BeatDto
 import uno.d1s.pulseq.service.BeatService
 import uno.d1s.pulseq.strategy.device.byAll
 import uno.d1s.pulseq.testUtils.*
-import uno.d1s.pulseq.util.expectJsonContentType
+import uno.d1s.pulseq.testUtils.expectJsonContentType
 
 @AutoConfigureMockMvc(addFilters = false)
 @ContextConfiguration(classes = [BeatControllerImpl::class])

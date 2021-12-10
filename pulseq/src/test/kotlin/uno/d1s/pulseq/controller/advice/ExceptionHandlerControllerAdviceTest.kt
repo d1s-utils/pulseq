@@ -19,7 +19,7 @@ import uno.d1s.pulseq.util.HttpServletResponseUtil
 
 @SpringBootTest
 @ContextConfiguration(classes = [ExceptionHandlerControllerAdvice::class])
-class ExceptionHandlerControllerAdviceTest {
+internal class ExceptionHandlerControllerAdviceTest {
 
     @Autowired
     private lateinit var exceptionHandlerControllerAdvice: ExceptionHandlerControllerAdvice

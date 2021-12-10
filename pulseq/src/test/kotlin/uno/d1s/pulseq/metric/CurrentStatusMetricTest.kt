@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ContextConfiguration
 import uno.d1s.pulseq.service.ActivityService
 import uno.d1s.pulseq.metric.impl.CurrentStatusMetric
-import uno.d1s.pulseq.util.assertNoWhitespace
+import uno.d1s.pulseq.testUtils.assertNoWhitespace
 import uno.d1s.pulseq.testUtils.testTimeSpan
 
 @SpringBootTest

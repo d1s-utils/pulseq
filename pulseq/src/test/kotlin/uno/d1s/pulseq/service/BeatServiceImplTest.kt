@@ -22,7 +22,7 @@ import uno.d1s.pulseq.service.impl.BeatServiceImpl
 import uno.d1s.pulseq.strategy.device.*
 import uno.d1s.pulseq.testUtils.*
 import uno.d1s.pulseq.testlistener.ApplicationEventTestListener
-import uno.d1s.pulseq.util.buildBeat
+import uno.d1s.pulseq.testUtils.buildBeat
 import java.time.Duration
 import java.time.Instant
 import java.util.*

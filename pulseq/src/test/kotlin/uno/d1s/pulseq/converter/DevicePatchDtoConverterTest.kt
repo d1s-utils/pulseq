@@ -14,7 +14,7 @@ import uno.d1s.pulseq.testUtils.testDeviceUpdates
 
 @SpringBootTest
 @ContextConfiguration(classes = [DevicePatchDtoConverter::class])
-class DevicePatchDtoConverterTest {
+internal class DevicePatchDtoConverterTest {
 
     @SpykBean
     private lateinit var devicePatchDtoConverter: DevicePatchDtoConverter

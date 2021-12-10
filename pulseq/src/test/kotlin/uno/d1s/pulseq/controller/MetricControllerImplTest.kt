@@ -19,7 +19,7 @@ import uno.d1s.pulseq.service.MetricService
 import uno.d1s.pulseq.testUtils.VALID_STUB
 import uno.d1s.pulseq.testUtils.testMetric
 import uno.d1s.pulseq.testUtils.testMetrics
-import uno.d1s.pulseq.util.expectJsonContentType
+import uno.d1s.pulseq.testUtils.expectJsonContentType
 
 @AutoConfigureMockMvc(addFilters = false)
 @ContextConfiguration(classes = [MetricControllerImpl::class])

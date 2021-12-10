@@ -1,8 +1,7 @@
-package uno.d1s.pulseq.util
+package uno.d1s.pulseq.testUtils
 
 import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.domain.Device
-import uno.d1s.pulseq.testUtils.testBeat
 import java.time.Duration
 import java.time.Instant
 
