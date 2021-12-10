@@ -13,11 +13,6 @@ spring:
       port: 27017
 
 server:
-
-  error:
-    whitelabel:
-      enabled: false
-
   servlet:
     context-path: /api
 
