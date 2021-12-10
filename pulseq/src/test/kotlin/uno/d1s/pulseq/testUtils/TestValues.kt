@@ -5,6 +5,7 @@ import uno.d1s.pulseq.domain.Device
 import uno.d1s.pulseq.domain.activity.TimeSpan
 import uno.d1s.pulseq.domain.activity.TimeSpanType
 import uno.d1s.pulseq.dto.BeatDto
+import uno.d1s.pulseq.dto.TimeSpanDto
 import uno.d1s.pulseq.dto.device.DeviceDto
 import uno.d1s.pulseq.dto.device.DevicePatchDto
 import uno.d1s.pulseq.event.AbstractNotifiableEvent
@@ -32,11 +33,11 @@ internal val testDeviceUpdate = Device("new-name").apply {
     id = testDevice.id
     beats = testDevice.beats
 }
+internal val testDeviceUpdates = listOf(testDeviceUpdate)
 internal val testDeviceUpdateDto = DeviceDto(testDeviceUpdate.name).apply {
     id = testDeviceUpdate.id
     beats = listOf(VALID_STUB)
 }
-internal val testDeviceUpdates = listOf(testDeviceUpdate)
 internal val testDevicePatchDto = DevicePatchDto("new-name")
 internal val testDevicePatchesDto = listOf(testDevicePatchDto)
 
@@ -71,6 +72,15 @@ internal val testEvent = object : AbstractNotifiableEvent(VALID_STUB) {
 // time spans
 internal val testTimeSpan =
     TimeSpan(Duration.ZERO, TimeSpanType.ACTIVITY, InactivityRelevanceLevel.COMMON, testBeat, testBeat)
+internal val testTimeSpans = listOf(testTimeSpan)
+internal val testTimeSpanDto = TimeSpanDto(
+    testTimeSpan.duration,
+    testTimeSpan.type,
+    testTimeSpan.inactivityLevel,
+    testTimeSpan.startBeat.id!!,
+    testTimeSpan.endBeat!!.id!!
+)
+internal val testTimeSpansDto = listOf(testTimeSpanDto)
 
 // collections
 internal val testCollection = listOf(1, 2, 3)

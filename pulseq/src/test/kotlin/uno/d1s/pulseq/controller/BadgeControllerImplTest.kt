@@ -41,12 +41,12 @@ internal class BadgeControllerImplTest {
             param("color", "red")
             param("title", "redefined title")
         }.andExpect {
-            content {
-                contentType("image/svg+xml")
-            }
-
             status {
                 isOk()
+            }
+
+            content {
+                contentType("image/svg+xml")
             }
         }
 

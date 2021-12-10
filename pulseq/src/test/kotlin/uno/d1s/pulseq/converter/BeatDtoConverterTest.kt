@@ -3,7 +3,6 @@ package uno.d1s.pulseq.converter
 import com.ninjasquad.springmockk.MockkBean
 import com.ninjasquad.springmockk.SpykBean
 import io.mockk.every
-import io.mockk.verify
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -14,7 +13,10 @@ import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.domain.Device
 import uno.d1s.pulseq.service.DeviceService
 import uno.d1s.pulseq.strategy.device.byId
-import uno.d1s.pulseq.testUtils.*
+import uno.d1s.pulseq.testUtils.VALID_STUB
+import uno.d1s.pulseq.testUtils.testBeat
+import uno.d1s.pulseq.testUtils.testBeatDto
+import uno.d1s.pulseq.testUtils.testDevice
 
 @SpringBootTest
 @ContextConfiguration(classes = [BeatDtoConverter::class])
@@ -47,24 +49,6 @@ internal class BeatDtoConverterTest {
             )
 
             beatDtoConverter.convertToDto(nullDeviceIdBeat)
-        }
-    }
-
-    @Test
-    fun `should return valid list on conversion to dto list`() {
-        Assertions.assertEquals(testBeatsDto, beatDtoConverter.convertToDtoList(testBeats))
-
-        verify {
-            beatDtoConverter.convertToDto(any())
-        }
-    }
-
-    @Test
-    fun `should return valid list on conversion to domain list`() {
-        Assertions.assertEquals(testBeats, beatDtoConverter.convertToDomainList(testBeatsDto))
-
-        verify {
-            beatDtoConverter.convertToDomain(any())
         }
     }
 }
