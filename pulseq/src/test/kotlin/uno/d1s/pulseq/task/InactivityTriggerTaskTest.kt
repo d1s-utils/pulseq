@@ -1,7 +1,6 @@
 package uno.d1s.pulseq.task
 
 import com.ninjasquad.springmockk.MockkBean
-import io.mockk.called
 import io.mockk.every
 import io.mockk.verify
 import org.junit.jupiter.api.*
@@ -17,8 +16,7 @@ import uno.d1s.pulseq.testlistener.ApplicationEventTestListener
 
 @SpringBootTest
 @ContextConfiguration(
-    classes = [InactivityTriggerTask::class,
-        ApplicationEventTestListener::class]
+    classes = [InactivityTriggerTask::class, ApplicationEventTestListener::class]
 )
 internal class InactivityTriggerTaskTest {
 
@@ -42,7 +40,7 @@ internal class InactivityTriggerTaskTest {
 
         every {
             activityService.getCurrentInactivityRelevanceLevel()
-        } returns InactivityRelevanceLevel.COMMON
+        } returns InactivityRelevanceLevel.LONG
 
         every {
             activityService.getCurrentTimeSpan()
@@ -51,34 +49,28 @@ internal class InactivityTriggerTaskTest {
 
     @Test
     @Order(0)
-    fun `should trigger an event`() {
-        assertDoesNotThrow {
-            inactivityTriggerTask.inactivityTrigger()
-        }
-
-        Assertions.assertTrue(
-            applicationEventTestListener.isLastEventWas<InactivityDurationPointExceededEvent>()
-        )
-
-        verify {
-            activityService.isInactivityRelevanceLevelNotCommon()
-        }
-
-        verify {
-            activityService.getCurrentTimeSpan()
-        }
+    fun `should not trigger an event when inactivity level is just assigned`() {
+        verifyPipeline(false)
     }
 
     @Test
     @Order(1)
+    fun `should trigger an event`() {
+        makeWarningRelevanceLevel()
+        verifyPipeline(true)
+    }
+
+    @Test
+    @Order(2)
     fun `should not trigger an event if it was already triggered`() {
+        makeWarningRelevanceLevel()
+        verifyPipeline(false)
+    }
+
+    private fun verifyPipeline(shouldSend: Boolean) {
         assertDoesNotThrow {
             inactivityTriggerTask.inactivityTrigger()
         }
-
-        Assertions.assertFalse(
-            applicationEventTestListener.isLastEventWas<InactivityDurationPointExceededEvent>()
-        )
 
         verify {
             activityService.isInactivityRelevanceLevelNotCommon()
@@ -88,8 +80,20 @@ internal class InactivityTriggerTaskTest {
             activityService.getCurrentInactivityRelevanceLevel()
         }
 
-        verify {
-            activityService.getCurrentTimeSpan() wasNot called
+        if (shouldSend) {
+            Assertions.assertTrue(applicationEventTestListener.isLastEventWas<InactivityDurationPointExceededEvent>())
+
+            verify {
+                activityService.getCurrentTimeSpan()
+            }
+        } else {
+            Assertions.assertFalse(applicationEventTestListener.isLastEventWas<InactivityDurationPointExceededEvent>())
         }
+    }
+
+    private fun makeWarningRelevanceLevel() {
+        every {
+            activityService.getCurrentInactivityRelevanceLevel()
+        } returns InactivityRelevanceLevel.WARNING
     }
 }

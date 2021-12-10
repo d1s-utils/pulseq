@@ -28,8 +28,7 @@ class InactivityTriggerTask {
                 if (!this.isEventSent()) {
                     applicationEventPublisher.publishEvent(
                         InactivityDurationPointExceededEvent(
-                            this,
-                            activityService.getCurrentTimeSpan()
+                            this, activityService.getCurrentTimeSpan()
                         )
                     )
                 }
@@ -43,9 +42,10 @@ class InactivityTriggerTask {
     private fun isEventSent(): Boolean {
         val relevanceLevel = activityService.getCurrentInactivityRelevanceLevel()
 
-        return if (!this::inactivityRelevanceLevel.isInitialized
-            || inactivityRelevanceLevel != relevanceLevel
-        ) {
+        return if (!this::inactivityRelevanceLevel.isInitialized) {
+            inactivityRelevanceLevel = relevanceLevel
+            true // it's fine, we won't send an event when application is just started
+        } else if (inactivityRelevanceLevel != relevanceLevel) {
             inactivityRelevanceLevel = relevanceLevel
             false
         } else {
