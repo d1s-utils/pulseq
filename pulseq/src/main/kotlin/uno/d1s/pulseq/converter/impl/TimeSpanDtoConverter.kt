@@ -2,13 +2,13 @@ package uno.d1s.pulseq.converter.impl
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import uno.d1s.pulseq.converter.DtoConverterAdapter
+import uno.d1s.pulseq.converter.DtoConverterFacade
 import uno.d1s.pulseq.domain.activity.TimeSpan
 import uno.d1s.pulseq.dto.TimeSpanDto
 import uno.d1s.pulseq.service.BeatService
 
 @Component
-class TimeSpanDtoConverter : DtoConverterAdapter<TimeSpan, TimeSpanDto>() {
+class TimeSpanDtoConverter : DtoConverterFacade<TimeSpan, TimeSpanDto>() {
 
     @Autowired
     private lateinit var beatService: BeatService

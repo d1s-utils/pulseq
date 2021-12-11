@@ -13,7 +13,7 @@ import uno.d1s.pulseq.testUtils.testDeviceUpdates
 
 @SpringBootTest
 @ContextConfiguration(classes = [DevicePatchDtoConverter::class])
-class DtoConverterAdapterTest {
+class DtoConverterFacadeTest {
 
     // it doesn't really matter which dto converter do I use, need to test the adapter logic
     // devicePatchDtoConverter is mostly independent.

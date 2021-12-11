@@ -2,14 +2,14 @@ package uno.d1s.pulseq.converter.impl
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import uno.d1s.pulseq.converter.DtoConverterAdapter
+import uno.d1s.pulseq.converter.DtoConverterFacade
 import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.dto.BeatDto
 import uno.d1s.pulseq.service.DeviceService
 import uno.d1s.pulseq.strategy.device.byId
 
 @Component
-class BeatDtoConverter : DtoConverterAdapter<Beat, BeatDto>() {
+class BeatDtoConverter : DtoConverterFacade<Beat, BeatDto>() {
 
     @Autowired
     private lateinit var deviceService: DeviceService
