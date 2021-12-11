@@ -41,9 +41,9 @@ interface DeviceController {
     @Operation(summary = "Get the device by specified identify.")
     @ApiResponses(
         ApiResponse(
-            description = "Found the device.",
-            responseCode = "200",
-            content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)]
+            description = "Found the device.", responseCode = "200", content = [Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = DeviceDto::class)
+            )]
         ), ApiResponse(
             description = "The device was not found.", responseCode = "404", content = [Content(
                 mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = ErrorDto::class)
@@ -63,9 +63,9 @@ interface DeviceController {
     @Operation(summary = "Register new device.")
     @ApiResponses(
         ApiResponse(
-            description = "Registered the device",
-            responseCode = "201",
-            content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)]
+            description = "Registered the device", responseCode = "201", content = [Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = DeviceDto::class)
+            )]
         ), ApiResponse(
             description = "The device with the same name already exists.", responseCode = "409", content = [Content(
                 mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = ErrorDto::class)
@@ -89,9 +89,10 @@ interface DeviceController {
     @Operation(summary = "Get device beats.")
     @ApiResponses(
         ApiResponse(
-            description = "Found the device beats.",
-            responseCode = "200",
-            content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)]
+            description = "Found the device beats.", responseCode = "200", content = [Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                array = ArraySchema(schema = Schema(implementation = ErrorDto::class))
+            )]
         ), ApiResponse(
             description = "The device was not found.", responseCode = "404", content = [Content(
                 schema = Schema(implementation = ErrorDto::class), mediaType = MediaType.APPLICATION_JSON_VALUE
