@@ -23,3 +23,7 @@ pulseq:
 
   security:
     secret: "change-this"
+
+springdoc:
+  api-docs:
+    path: /docs
