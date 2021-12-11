@@ -31,10 +31,14 @@ class ActivityServiceImpl : ActivityService {
         beatService.findLastBeat().beatTime, Instant.now()
     ).abs()
 
-    override fun getLongestTimeSpan(excludeActivity: Boolean, processCurrent: Boolean): TimeSpan =
+    override fun getLongestTimeSpan(type: TimeSpanType?, processCurrent: Boolean): TimeSpan =
         this.getAllTimeSpans(processCurrent).let { all ->
             all.firstOrNull {
-                (excludeActivity && it.type == TimeSpanType.INACTIVITY) && it.duration == (all.maxOfOrNull { timeSpan ->
+                (if (type == null) {
+                    true
+                } else {
+                    type == it.type
+                }) && it.duration == (all.maxOfOrNull { timeSpan ->
                     timeSpan.duration
                 } ?: throw TimeSpansNotAvailableException())
             } ?: throw TimeSpansNotAvailableException()
