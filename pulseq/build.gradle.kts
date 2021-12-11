@@ -14,6 +14,7 @@ configurations {
 dependencies {
     implementation(project(":pulseq-core-starter"))
     implementation("org.springdoc:springdoc-openapi-ui:${property("springdocVersion")}")
+    implementation("org.springdoc:springdoc-openapi-kotlin:${property("springdocVersion")}")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("org.springframework.boot:spring-boot-starter-validation")

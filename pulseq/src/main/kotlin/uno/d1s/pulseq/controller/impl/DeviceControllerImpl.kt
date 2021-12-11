@@ -2,6 +2,7 @@ package uno.d1s.pulseq.controller.impl
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import uno.d1s.pulseq.controller.DeviceController
@@ -14,6 +15,7 @@ import uno.d1s.pulseq.dto.device.DevicePatchDto
 import uno.d1s.pulseq.service.DeviceService
 import uno.d1s.pulseq.strategy.device.DeviceFindingStrategyType
 import uno.d1s.pulseq.strategy.device.byStrategyType
+import javax.validation.Valid
 
 @RestController
 class DeviceControllerImpl : DeviceController {
@@ -46,9 +48,9 @@ class DeviceControllerImpl : DeviceController {
         )
     )
 
-    override fun registerNewDevice(deviceName: String): ResponseEntity<DeviceDto> {
+    override fun registerNewDevice(@RequestParam @Valid device: DevicePatchDto): ResponseEntity<DeviceDto> {
         val createdDevice = deviceDtoConverter.convertToDto(
-            deviceService.registerNewDevice(deviceName)
+            deviceService.registerNewDevice(device.deviceName)
         )
 
         return ResponseEntity.created(

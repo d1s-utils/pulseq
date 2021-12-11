@@ -26,4 +26,7 @@ pulseq:
 
 springdoc:
   api-docs:
+    path: /docs-specifications
+
+  swagger-ui:
     path: /docs
