@@ -59,7 +59,7 @@ internal class DeviceControllerImplTest {
         } returns testDevice
 
         every {
-            deviceService.registerNewDevice(VALID_STUB)
+            deviceService.registerNewDevice(any())
         } returns testDevice
 
         every {
@@ -138,6 +138,7 @@ internal class DeviceControllerImplTest {
     fun `should return 201 and valid device on device registration`() {
         mockMvc.post(DeviceMappingConstants.REGISTER_DEVICE) {
             content = objectMapper.writeValueAsString(testDevicePatchDto)
+            contentType = MediaType.APPLICATION_JSON
         }.andExpect {
             status {
                 isCreated()
@@ -149,7 +150,7 @@ internal class DeviceControllerImplTest {
         }
 
         verify {
-            deviceService.registerNewDevice(VALID_STUB)
+            deviceService.registerNewDevice(any())
         }
 
         verifyDeviceConversion()
