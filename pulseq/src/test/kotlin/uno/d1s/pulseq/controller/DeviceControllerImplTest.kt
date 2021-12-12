@@ -24,7 +24,6 @@ import uno.d1s.pulseq.dto.device.DevicePatchDto
 import uno.d1s.pulseq.service.DeviceService
 import uno.d1s.pulseq.strategy.device.byAll
 import uno.d1s.pulseq.testUtils.*
-import uno.d1s.pulseq.testUtils.expectJsonContentType
 
 @AutoConfigureMockMvc(addFilters = false)
 @ContextConfiguration(classes = [DeviceControllerImpl::class])
@@ -60,7 +59,7 @@ internal class DeviceControllerImplTest {
         } returns testDevice
 
         every {
-            deviceService.registerNewDevice(VALID_STUB)
+            deviceService.registerNewDevice(any())
         } returns testDevice
 
         every {
@@ -138,7 +137,8 @@ internal class DeviceControllerImplTest {
     @Test
     fun `should return 201 and valid device on device registration`() {
         mockMvc.post(DeviceMappingConstants.REGISTER_DEVICE) {
-            param("deviceName", VALID_STUB)
+            content = objectMapper.writeValueAsString(testDevicePatchDto)
+            contentType = MediaType.APPLICATION_JSON
         }.andExpect {
             status {
                 isCreated()
@@ -150,7 +150,7 @@ internal class DeviceControllerImplTest {
         }
 
         verify {
-            deviceService.registerNewDevice(VALID_STUB)
+            deviceService.registerNewDevice(any())
         }
 
         verifyDeviceConversion()
