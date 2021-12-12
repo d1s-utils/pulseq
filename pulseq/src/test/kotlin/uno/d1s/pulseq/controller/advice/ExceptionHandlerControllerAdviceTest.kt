@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
 import org.springframework.mock.web.MockHttpServletResponse
-import org.springframework.security.access.AccessDeniedException
 import org.springframework.test.context.ContextConfiguration
 import uno.d1s.pulseq.exception.AbstractHttpStatusException
 import uno.d1s.pulseq.testUtils.VALID_STUB
@@ -47,22 +46,10 @@ internal class ExceptionHandlerControllerAdviceTest {
         val exception = object : AbstractHttpStatusException(expectedStatus, VALID_STUB) {}
 
         assertDoesNotThrow {
-            exceptionHandlerControllerAdvice.handle(exception, response)
+            exceptionHandlerControllerAdvice.handleAbstractHttpStatusException(exception, response)
         }
 
         Assertions.assertEquals(expectedStatus.value(), response.status)
-
-        verify {
-            httpServletResponseUtil.sendErrorDto(response, any())
-        }
-
-        val accessDeniedException = AccessDeniedException("Access denied.")
-
-        assertDoesNotThrow {
-            exceptionHandlerControllerAdvice.handle(accessDeniedException, response)
-        }
-
-        Assertions.assertEquals(expectedUnauthorizedStatus.value(), response.status)
 
         verify {
             httpServletResponseUtil.sendErrorDto(response, any())

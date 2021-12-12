@@ -14,6 +14,7 @@ import uno.d1s.pulseq.dto.device.DevicePatchDto
 import uno.d1s.pulseq.service.DeviceService
 import uno.d1s.pulseq.strategy.device.DeviceFindingStrategyType
 import uno.d1s.pulseq.strategy.device.byStrategyType
+import javax.validation.Valid
 
 @RestController
 class DeviceControllerImpl : DeviceController {
@@ -46,9 +47,9 @@ class DeviceControllerImpl : DeviceController {
         )
     )
 
-    override fun registerNewDevice(deviceName: String): ResponseEntity<DeviceDto> {
+    override fun registerNewDevice(@Valid device: DevicePatchDto): ResponseEntity<DeviceDto> {
         val createdDevice = deviceDtoConverter.convertToDto(
-            deviceService.registerNewDevice(deviceName)
+            deviceService.registerNewDevice(device.deviceName)
         )
 
         return ResponseEntity.created(

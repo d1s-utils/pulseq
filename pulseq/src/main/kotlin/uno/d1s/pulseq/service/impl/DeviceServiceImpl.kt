@@ -14,6 +14,7 @@ import uno.d1s.pulseq.service.BeatService
 import uno.d1s.pulseq.service.DeviceService
 import uno.d1s.pulseq.strategy.device.DeviceFindingStrategy
 import uno.d1s.pulseq.strategy.device.DeviceFindingStrategy.*
+import uno.d1s.pulseq.strategy.device.byName
 
 @Service
 class DeviceServiceImpl : DeviceService {
@@ -56,10 +57,16 @@ class DeviceServiceImpl : DeviceService {
     override fun updateDevice(strategy: DeviceFindingStrategy, device: Device): Device {
         val exisingDevice =
             this.findDevice(strategy) // verify that the device exists, nothing to do with the returned value
-        return deviceRepository.save(Device(device.name).apply {
-            id = exisingDevice.id
-            beats = exisingDevice.beats
-        })
+
+        try {
+            this.findDevice(byName(device.name))
+            throw DeviceAlreadyExistsException()
+        } catch (_: DeviceNotFoundException) {
+            return deviceRepository.save(Device(device.name).apply {
+                id = exisingDevice.id
+                beats = exisingDevice.beats
+            })
+        }
     }
 
     @Transactional
