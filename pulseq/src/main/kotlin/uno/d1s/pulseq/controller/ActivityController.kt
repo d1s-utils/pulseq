@@ -37,7 +37,7 @@ interface ActivityController {
 
     )
     @GetMapping(ActivityMappingConstants.GET_TIMESPANS)
-    fun getAllTimeSpans(@RequestParam(required = false) @Parameter(description = "Include current time span or not. True by default.") includeCurrent: Boolean?): ResponseEntity<List<TimeSpanDto>>
+    fun getAllTimeSpans(@RequestParam(required = false) @Parameter(description = "Whether to include current time span or not. True by default.") includeCurrent: Boolean?): ResponseEntity<List<TimeSpanDto>>
 
     @Operation(summary = "Get longest time span.")
     @ApiResponses(
@@ -54,7 +54,7 @@ interface ActivityController {
     @GetMapping(ActivityMappingConstants.GET_LONGEST_TIME_SPAN)
     fun getLongestTimeSpan(
         @RequestParam(required = false) @Parameter(description = "The type of the longest time span to search for.") type: TimeSpanType?,
-        @RequestParam(required = false) @Parameter(description = "Process current time span or not. True by default.") processCurrent: Boolean?
+        @RequestParam(required = false) @Parameter(description = "Whether to process current time span or not. True by default.") processCurrent: Boolean?
     ): ResponseEntity<TimeSpanDto>
 
     @Operation(summary = "Get current time span.")

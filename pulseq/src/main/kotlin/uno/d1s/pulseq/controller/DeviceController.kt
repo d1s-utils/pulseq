@@ -60,7 +60,7 @@ interface DeviceController {
     ): ResponseEntity<DeviceDto>
 
 
-    @Operation(summary = "Register new device.")
+    @Operation(summary = "Register new device.", description = "This operation requires server secret to be set as a header (Authorization) or request parameter (auth).")
     @ApiResponses(
         ApiResponse(
             description = "Registered the device", responseCode = "201", content = [Content(
@@ -69,6 +69,10 @@ interface DeviceController {
         ), ApiResponse(
             description = "The device with the same name already exists.", responseCode = "409", content = [Content(
                 mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = ErrorDto::class)
+            )]
+        ), ApiResponse(
+            description = "The request was not authorized.", responseCode = "403", content = [Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE
             )]
         )
     )
@@ -108,7 +112,7 @@ interface DeviceController {
         ) findingStrategy: DeviceFindingStrategyType?
     ): ResponseEntity<List<BeatDto>>
 
-    @Operation(summary = "Edit the device.")
+    @Operation(summary = "Edit the device.", description = "This operation requires server secret to be set as a header (Authorization) or request parameter (auth).")
     @ApiResponses(
         ApiResponse(
             description = "Edited the device",
@@ -121,6 +125,10 @@ interface DeviceController {
         ), ApiResponse(
             description = "The device with the same name already exists.", responseCode = "409", content = [Content(
                 schema = Schema(implementation = ErrorDto::class), mediaType = MediaType.APPLICATION_JSON_VALUE
+            )]
+        ), ApiResponse(
+            description = "The request was not authorized.", responseCode = "403", content = [Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE
             )]
         )
     )
@@ -138,7 +146,7 @@ interface DeviceController {
 
     @Operation(
         summary = "Delete the device.",
-        description = "Note: this operation will delete all the beats associated with the device to be deleted."
+        description = "Note: this operation will delete all the beats associated with the device to be deleted. This operation requires server secret to be set as a header (Authorization) or request parameter (auth)."
     )
     @ApiResponses(
         ApiResponse(
@@ -146,6 +154,10 @@ interface DeviceController {
         ), ApiResponse(
             description = "The device was not found.", responseCode = "404", content = [Content(
                 schema = Schema(implementation = ErrorDto::class), mediaType = MediaType.APPLICATION_JSON_VALUE
+            )]
+        ), ApiResponse(
+            description = "The request was not authorized.", responseCode = "403", content = [Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE
             )]
         )
     )
