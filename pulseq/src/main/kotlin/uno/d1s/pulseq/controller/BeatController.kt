@@ -90,7 +90,10 @@ interface BeatController {
     @GetMapping(BeatMappingConstants.LAST_BEAT)
     fun getLastBeat(): ResponseEntity<BeatDto>
 
-    @Operation(summary = "Delete the beat. This operation requires server secret to be set as a header (Authorization) or request parameter (auth) as a header (Authorization) or request parameter (auth).")
+    @Operation(
+        summary = "Delete the beat.",
+        description = "This operation requires server secret to be set as a header (Authorization) or request parameter (auth) as a header (Authorization) or request parameter (auth)."
+    )
     @ApiResponses(
         ApiResponse(
             description = "Deleted the beat.", responseCode = "204"
