@@ -12,7 +12,7 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
-import uno.d1s.pulseq.core.constant.mapping.ActivityMappingConstants
+import uno.d1s.pulseq.constant.mapping.ActivityMappingConstants
 import uno.d1s.pulseq.domain.activity.TimeSpanType
 import uno.d1s.pulseq.dto.ErrorDto
 import uno.d1s.pulseq.dto.TimeSpanDto

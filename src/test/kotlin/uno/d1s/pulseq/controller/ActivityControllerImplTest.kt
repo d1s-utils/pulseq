@@ -13,9 +13,9 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.MockMvcResultMatchersDsl
 import org.springframework.test.web.servlet.get
+import uno.d1s.pulseq.constant.mapping.ActivityMappingConstants
 import uno.d1s.pulseq.controller.impl.ActivityControllerImpl
 import uno.d1s.pulseq.converter.DtoConverter
-import uno.d1s.pulseq.core.constant.mapping.ActivityMappingConstants
 import uno.d1s.pulseq.domain.activity.TimeSpan
 import uno.d1s.pulseq.dto.TimeSpanDto
 import uno.d1s.pulseq.service.ActivityService
