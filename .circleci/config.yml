@@ -53,7 +53,7 @@ jobs:
           name: Creating the sha512 checksum
           command: |
             mkdir ./checksums &&\
-            sha512sum ./pulseq/build/libs/$(ls ./pulseq/build/libs) >> ./checksums/pulseq.sha512 &&\
+            sha512sum ./pulseq/build/libs/$(ls ./pulseq/build/libs) >> ./checksums/pulseq.sha512
 
       - store_artifacts:
               path: ./checksums
