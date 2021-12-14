@@ -8,4 +8,5 @@ class NotificationsConfigurationProperties(
     var enabled: Boolean = true,
     var discord: DiscordWebhooksConfigurationModel
     = DiscordWebhooksConfigurationModel(true, listOf()),
+    var excludeEvents: String = ""
 )
