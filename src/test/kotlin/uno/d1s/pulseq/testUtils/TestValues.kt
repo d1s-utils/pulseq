@@ -2,6 +2,7 @@ package uno.d1s.pulseq.testUtils
 
 import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.domain.Device
+import uno.d1s.pulseq.domain.InactivityRelevanceLevel
 import uno.d1s.pulseq.domain.activity.TimeSpan
 import uno.d1s.pulseq.domain.activity.TimeSpanType
 import uno.d1s.pulseq.dto.BeatDto
@@ -9,7 +10,6 @@ import uno.d1s.pulseq.dto.TimeSpanDto
 import uno.d1s.pulseq.dto.device.DeviceDto
 import uno.d1s.pulseq.dto.device.DevicePatchDto
 import uno.d1s.pulseq.event.AbstractNotifiableEvent
-import uno.d1s.pulseq.event.impl.inactivity.InactivityRelevanceLevel
 import uno.d1s.pulseq.metric.Metric
 import java.time.Duration
 import java.time.Instant
@@ -65,8 +65,8 @@ internal val testMetrics = listOf(testMetric)
 
 
 // events
-internal val testEvent = object : AbstractNotifiableEvent(VALID_STUB) {
-    override val notificationMessage = VALID_STUB
+internal val testEvent = object : AbstractNotifiableEvent(VALID_STUB, VALID_STUB) {
+    override val identify = VALID_STUB
 }
 
 // time spans

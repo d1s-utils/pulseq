@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
-import uno.d1s.pulseq.event.impl.inactivity.InactivityDurationPointExceededEvent
-import uno.d1s.pulseq.event.impl.inactivity.InactivityRelevanceLevel
+import uno.d1s.pulseq.event.impl.InactivityPointExceededEvent
+import uno.d1s.pulseq.domain.InactivityRelevanceLevel
 import uno.d1s.pulseq.exception.impl.NoBeatsReceivedException
 import uno.d1s.pulseq.service.ActivityService
 import java.util.concurrent.TimeUnit
@@ -27,7 +27,7 @@ class InactivityTriggerTask {
             if (activityService.isInactivityRelevanceLevelNotCommon()) {
                 if (!this.isEventSent()) {
                     applicationEventPublisher.publishEvent(
-                        InactivityDurationPointExceededEvent(
+                        InactivityPointExceededEvent(
                             this, activityService.getCurrentTimeSpan()
                         )
                     )

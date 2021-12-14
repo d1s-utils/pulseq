@@ -1,7 +1,7 @@
 package uno.d1s.pulseq.domain.activity
 
 import uno.d1s.pulseq.domain.Beat
-import uno.d1s.pulseq.event.impl.inactivity.InactivityRelevanceLevel
+import uno.d1s.pulseq.domain.InactivityRelevanceLevel
 import java.time.Duration
 
 data class TimeSpan(

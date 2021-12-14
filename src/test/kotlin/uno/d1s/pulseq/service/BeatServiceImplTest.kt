@@ -2,6 +2,7 @@ package uno.d1s.pulseq.service
 
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
+import io.mockk.justRun
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -13,7 +14,8 @@ import org.springframework.test.context.ContextConfiguration
 import uno.d1s.pulseq.configuration.ApplicationEventTestListenerConfiguration
 import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.domain.Device
-import uno.d1s.pulseq.event.impl.DelayedBeatReceivedEvent
+import uno.d1s.pulseq.event.impl.beat.BeatDeletedEvent
+import uno.d1s.pulseq.event.impl.beat.BeatReceivedEvent
 import uno.d1s.pulseq.exception.impl.BeatNotFoundException
 import uno.d1s.pulseq.exception.impl.DeviceNotFoundException
 import uno.d1s.pulseq.exception.impl.NoBeatsReceivedException
@@ -101,6 +103,10 @@ internal class BeatServiceImplTest {
         every {
             beatRepository.findAll()
         } returns testBeats
+
+        justRun {
+            beatRepository.delete(testBeat)
+        }
     }
 
     @Test
@@ -233,6 +239,21 @@ internal class BeatServiceImplTest {
         }
     }
 
+    @Test
+    fun `should delete the beat`() {
+        assertDoesNotThrow {
+            beatService.deleteBeat(VALID_STUB)
+        }
+
+//        verify {
+//            beatService.findBeatById(VALID_STUB)
+//        }
+
+        Assertions.assertTrue(
+            applicationEventTestListener.isLastEventWas<BeatDeletedEvent>()
+        )
+    }
+
     private fun verifyBeatRegistrationPipelineCalls(deviceName: String, registerDevice: Boolean) {
         every {
             beatRepository.save(any())
@@ -270,7 +291,7 @@ internal class BeatServiceImplTest {
         }
 
         Assertions.assertTrue(
-            applicationEventTestListener.isLastEventWas<DelayedBeatReceivedEvent>()
+            applicationEventTestListener.isLastEventWas<BeatReceivedEvent>()
         )
 
         Assertions.assertEquals(testBeat.id, beat.id)

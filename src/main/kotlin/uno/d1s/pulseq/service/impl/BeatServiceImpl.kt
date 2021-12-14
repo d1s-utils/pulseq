@@ -8,7 +8,8 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uno.d1s.pulseq.constant.cache.CacheNameConstants
 import uno.d1s.pulseq.domain.Beat
-import uno.d1s.pulseq.event.impl.DelayedBeatReceivedEvent
+import uno.d1s.pulseq.event.impl.beat.BeatDeletedEvent
+import uno.d1s.pulseq.event.impl.beat.BeatReceivedEvent
 import uno.d1s.pulseq.exception.impl.BeatNotFoundException
 import uno.d1s.pulseq.exception.impl.NoBeatsReceivedException
 import uno.d1s.pulseq.repository.BeatRepository
@@ -47,31 +48,28 @@ class BeatServiceImpl : BeatService {
     @Transactional
     @CacheEvict(cacheNames = [CacheNameConstants.BEAT, CacheNameConstants.BEATS], allEntries = true)
     override fun registerNewBeatWithDeviceIdentify(identify: String): Beat {
-        Beat(runCatching {
-            deviceService.findDevice(byAll(identify))
+        val inactivityStatus = runCatching {
+            activityService.isInactivityRelevanceLevelNotCommon()
         }.getOrElse {
-            deviceService.registerNewDevice(identify)
-        }, runCatching {
-            activityService.getCurrentInactivityDuration()
-        }.getOrElse {
-            null
-        }).let { unsavedBeat ->
-            return runCatching {
-                if (activityService.isInactivityRelevanceLevelNotCommon()) {
-                    beatRepository.save(unsavedBeat).let { savedBeat ->
-                        eventPublisher.publishEvent(
-                            DelayedBeatReceivedEvent(
-                                this, savedBeat
-                            )
-                        )
-                        savedBeat
-                    }
-                } else {
-                    beatRepository.save(unsavedBeat)
-                }
+            false
+        }
+
+        return beatRepository.save(
+            Beat(runCatching {
+                deviceService.findDevice(byAll(identify))
             }.getOrElse {
-                beatRepository.save(unsavedBeat)
-            }
+                deviceService.registerNewDevice(identify)
+            }, runCatching {
+                activityService.getCurrentInactivityDuration()
+            }.getOrElse {
+                null
+            })
+        ).also {
+            eventPublisher.publishEvent(
+                BeatReceivedEvent(
+                    this, it, inactivityStatus
+                )
+            )
         }
     }
 
@@ -118,9 +116,19 @@ class BeatServiceImpl : BeatService {
         } ?: throw NoBeatsReceivedException
     }
 
-    override fun deleteBeat(id: String) {
+    override fun deleteBeat(id: String, sendEvent: Boolean) {
+        val beatForRemoval = beatService.findBeatById(id)
+
         beatRepository.delete(
-            beatService.findBeatById(id)
+            beatForRemoval
         )
+
+        if (sendEvent) {
+            eventPublisher.publishEvent(
+                BeatDeletedEvent(
+                    this, beatForRemoval
+                )
+            )
+        }
     }
 }

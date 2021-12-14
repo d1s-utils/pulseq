@@ -2,11 +2,14 @@ package uno.d1s.pulseq.service.impl
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.annotation.CacheEvict
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uno.d1s.pulseq.constant.cache.CacheNameConstants
 import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.domain.Device
+import uno.d1s.pulseq.event.impl.device.DeviceDeletedEvent
+import uno.d1s.pulseq.event.impl.device.DeviceUpdatedEvent
 import uno.d1s.pulseq.exception.impl.DeviceAlreadyExistsException
 import uno.d1s.pulseq.exception.impl.DeviceNotFoundException
 import uno.d1s.pulseq.repository.DeviceRepository
@@ -24,6 +27,9 @@ class DeviceServiceImpl : DeviceService {
 
     @Autowired
     private lateinit var beatService: BeatService
+
+    @Autowired
+    private lateinit var applicationEventPublisher: ApplicationEventPublisher
 
     @Transactional(readOnly = true)
     override fun findAllRegisteredDevices(): List<Device> = deviceRepository.findAll()
@@ -56,7 +62,7 @@ class DeviceServiceImpl : DeviceService {
     @Transactional
     override fun updateDevice(strategy: DeviceFindingStrategy, device: Device): Device {
         val exisingDevice =
-            this.findDevice(strategy) // verify that the device exists, nothing to do with the returned value
+            this.findDevice(strategy)
 
         try {
             this.findDevice(byName(device.name))
@@ -65,7 +71,11 @@ class DeviceServiceImpl : DeviceService {
             return deviceRepository.save(Device(device.name).apply {
                 id = exisingDevice.id
                 beats = exisingDevice.beats
-            })
+            }).also {
+                applicationEventPublisher.publishEvent(
+                    DeviceUpdatedEvent(this, exisingDevice, it)
+                )
+            }
         }
     }
 
@@ -76,12 +86,18 @@ class DeviceServiceImpl : DeviceService {
 
         beatService.findAllBeats().forEach {
             if (it.device == device) {
-                beatService.deleteBeat(it.id!!)
+                beatService.deleteBeat(it.id!!, false)
             }
         }
 
         deviceRepository.delete(
             device
+        )
+
+        applicationEventPublisher.publishEvent(
+            DeviceDeletedEvent(
+                this, device
+            )
         )
     }
 

@@ -7,8 +7,8 @@ import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ContextConfiguration
-import uno.d1s.pulseq.event.impl.inactivity.InactivityDurationPointExceededEvent
-import uno.d1s.pulseq.event.impl.inactivity.InactivityRelevanceLevel
+import uno.d1s.pulseq.event.impl.InactivityPointExceededEvent
+import uno.d1s.pulseq.domain.InactivityRelevanceLevel
 import uno.d1s.pulseq.service.ActivityService
 import uno.d1s.pulseq.service.BeatService
 import uno.d1s.pulseq.testUtils.testTimeSpan
@@ -81,13 +81,13 @@ internal class InactivityTriggerTaskTest {
         }
 
         if (shouldSend) {
-            Assertions.assertTrue(applicationEventTestListener.isLastEventWas<InactivityDurationPointExceededEvent>())
+            Assertions.assertTrue(applicationEventTestListener.isLastEventWas<InactivityPointExceededEvent>())
 
             verify {
                 activityService.getCurrentTimeSpan()
             }
         } else {
-            Assertions.assertFalse(applicationEventTestListener.isLastEventWas<InactivityDurationPointExceededEvent>())
+            Assertions.assertFalse(applicationEventTestListener.isLastEventWas<InactivityPointExceededEvent>())
         }
     }
 

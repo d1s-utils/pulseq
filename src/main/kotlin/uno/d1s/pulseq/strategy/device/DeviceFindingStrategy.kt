@@ -1,6 +1,8 @@
 package uno.d1s.pulseq.strategy.device
 
-sealed class DeviceFindingStrategy(val identify: String) {
+import uno.d1s.pulseq.util.Identifiable
+
+sealed class DeviceFindingStrategy(override val identify: String) : Identifiable {
     class ByName(name: String) : DeviceFindingStrategy(name)
     class ById(id: String) : DeviceFindingStrategy(id)
     class ByAll(identify: String) : DeviceFindingStrategy(identify)

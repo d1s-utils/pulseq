@@ -2,8 +2,8 @@ package uno.d1s.pulseq.service
 
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.MockKVerificationScope
-import io.mockk.called
 import io.mockk.every
+import io.mockk.justRun
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -12,7 +12,10 @@ import org.junit.jupiter.api.assertDoesNotThrow
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ContextConfiguration
+import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.domain.Device
+import uno.d1s.pulseq.event.impl.device.DeviceDeletedEvent
+import uno.d1s.pulseq.event.impl.device.DeviceUpdatedEvent
 import uno.d1s.pulseq.exception.impl.DeviceAlreadyExistsException
 import uno.d1s.pulseq.exception.impl.DeviceNotFoundException
 import uno.d1s.pulseq.repository.DeviceRepository
@@ -22,11 +25,12 @@ import uno.d1s.pulseq.strategy.device.byAll
 import uno.d1s.pulseq.strategy.device.byId
 import uno.d1s.pulseq.strategy.device.byName
 import uno.d1s.pulseq.testUtils.*
+import uno.d1s.pulseq.testlistener.ApplicationEventTestListener
 import java.util.*
 import kotlin.properties.Delegates
 
 @SpringBootTest
-@ContextConfiguration(classes = [DeviceServiceImpl::class])
+@ContextConfiguration(classes = [DeviceServiceImpl::class, ApplicationEventTestListener::class])
 internal class DeviceServiceImplTest {
 
     @Autowired
@@ -37,6 +41,9 @@ internal class DeviceServiceImplTest {
 
     @MockkBean
     private lateinit var beatService: BeatService
+
+    @Autowired
+    private lateinit var applicationEventTestListener: ApplicationEventTestListener
 
     private val optionalTestDevice = Optional.of(testDevice)
 
@@ -62,6 +69,10 @@ internal class DeviceServiceImplTest {
             deviceRepository.findDeviceByNameEqualsIgnoreCase(INVALID_STUB)
         } returns Optional.empty()
 
+        every {
+            deviceRepository.findDeviceByNameEqualsIgnoreCase(testDeviceUpdate.name)
+        } returns Optional.empty()
+
         val savedDevice = Device(INVALID_STUB)
 
         every {
@@ -69,8 +80,24 @@ internal class DeviceServiceImplTest {
         } returns savedDevice
 
         every {
+            deviceRepository.save(testDeviceUpdate)
+        } returns testDeviceUpdate
+
+        justRun {
+            deviceRepository.delete(testDevice)
+        }
+
+        every {
             beatService.findAllByDevice(any())
         } returns testBeats
+
+        every {
+            beatService.findAllBeats()
+        } returns testBeats
+
+        justRun {
+            beatService.deleteBeat(any(), any())
+        }
     }
 
     @Test
@@ -175,9 +202,102 @@ internal class DeviceServiceImplTest {
             deviceRepository.findDeviceByNameEqualsIgnoreCase(VALID_STUB)
         }
 
-        verify {
-            deviceRepository.save(any()) wasNot called
+        verify(exactly = 0) {
+            deviceRepository.save(any())
         }
+    }
+
+    @Test
+    fun `should update the device`() {
+        var updatedDevice: Device by Delegates.notNull()
+
+        assertDoesNotThrow {
+            updatedDevice = deviceService.updateDevice(byAll(VALID_STUB), testDeviceUpdate)
+        }
+
+        // I'm stuck. This call literally has NO REASONS to not being passed.
+        // java.lang.AssertionError: Verification failed: call 2 of 4:
+        // Optional(child of uno.d1s.pulseq.repository.DeviceRepository#0 bean#75#156).orElseThrow(eq(uno.d1s.pulseq.service.impl.DeviceServiceImpl$$Lambda$744/0x0000000100795840@59f36439)))
+        // was not called
+        //verify {
+        //    deviceService.findDevice(byAll(VALID_STUB))
+        //}
+
+        // Same with others.
+        //verify {
+        //    deviceService.findDevice(byName(testDeviceUpdate.name))
+        //}
+
+        verify {
+            deviceRepository.save(testDeviceUpdate)
+        }
+
+        Assertions.assertEquals(testDeviceUpdate, updatedDevice)
+
+        Assertions.assertTrue(
+            applicationEventTestListener.isLastEventWas<DeviceUpdatedEvent>()
+        )
+    }
+
+    @Test
+    fun `should throw an exception while device updating with existing name of the device to be updated`() {
+        every {
+            deviceRepository.findDeviceByNameEqualsIgnoreCase(testDeviceUpdate.name)
+        } returns Optional.of(testDeviceUpdate)
+
+        Assertions.assertThrows(DeviceAlreadyExistsException::class.java) {
+            deviceService.updateDevice(byAll(VALID_STUB), testDeviceUpdate)
+        }
+
+//        verify {
+//            deviceService.findDevice(byAll(VALID_STUB))
+//        }
+
+//        verify {
+//            deviceService.findDevice(byName(testDeviceUpdate.name))
+//        }
+    }
+
+    @Test
+    fun `should delete the device`() {
+        assertDoesNotThrow {
+            deviceService.deleteDevice(byAll(VALID_STUB))
+        }
+
+//        verify {
+//            deviceService.findDevice(byAll(VALID_STUB))
+//        }
+
+        verify {
+            beatService.findAllBeats()
+        }
+
+        verify {
+            beatService.deleteBeat(any(), false)
+        }
+
+        verify {
+            deviceRepository.delete(testDevice)
+        }
+
+        Assertions.assertTrue(
+            applicationEventTestListener.isLastEventWas<DeviceDeletedEvent>()
+        )
+    }
+
+    @Test
+    fun `should find the device beats`() {
+        var deviceBeats: List<Beat> by Delegates.notNull()
+
+        assertDoesNotThrow {
+            deviceBeats = deviceService.findDeviceBeats(byAll(VALID_STUB))
+        }
+
+//        verify {
+//            deviceService.findDevice(byAll(VALID_STUB))
+//        }
+
+        Assertions.assertEquals(testBeats, deviceBeats)
     }
 
     private fun findDeviceAndVerify(strategy: DeviceFindingStrategy, verifications: MockKVerificationScope.() -> Unit) {

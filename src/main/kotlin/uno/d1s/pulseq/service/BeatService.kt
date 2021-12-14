@@ -23,5 +23,5 @@ interface BeatService {
 
     fun findFirstBeat(): Beat
 
-    fun deleteBeat(id: String)
+    fun deleteBeat(id: String, sendEvent: Boolean = true)
 }
