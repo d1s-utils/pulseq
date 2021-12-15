@@ -2,7 +2,6 @@ package uno.d1s.pulseq.testUtils
 
 import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.domain.Device
-import uno.d1s.pulseq.domain.InactivityRelevanceLevel
 import uno.d1s.pulseq.domain.activity.TimeSpan
 import uno.d1s.pulseq.domain.activity.TimeSpanType
 import uno.d1s.pulseq.dto.BeatDto
@@ -64,12 +63,11 @@ internal val testMetrics = listOf(testMetric)
 
 // time spans
 internal val testTimeSpan =
-    TimeSpan(Duration.ZERO, TimeSpanType.ACTIVITY, InactivityRelevanceLevel.COMMON, testBeat, testBeat)
+    TimeSpan(Duration.ZERO, TimeSpanType.ACTIVITY, testBeat, testBeat)
 internal val testTimeSpans = listOf(testTimeSpan)
 internal val testTimeSpanDto = TimeSpanDto(
     testTimeSpan.duration,
     testTimeSpan.type,
-    testTimeSpan.inactivityLevel,
     testTimeSpan.startBeat.id!!,
     testTimeSpan.endBeat!!.id!!
 )

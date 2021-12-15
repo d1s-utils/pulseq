@@ -6,6 +6,5 @@ import uno.d1s.pulseq.domain.Beat
 @Suppress("UNUSED_PARAMETER")
 class BeatReceivedEvent(
     source: Any,
-    beat: Beat,
-    delayed: Boolean
+    beat: Beat
 ) : ApplicationEvent(source)

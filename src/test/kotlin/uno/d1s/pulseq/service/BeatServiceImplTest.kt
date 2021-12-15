@@ -89,10 +89,6 @@ internal class BeatServiceImplTest {
         } throws DeviceNotFoundException() andThen Device(INVALID_STUB)
 
         every {
-            activityService.isInactivityRelevanceLevelNotCommon()
-        } returns true
-
-        every {
             activityService.getCurrentInactivityDuration()
         } returns Duration.ZERO
 
@@ -284,10 +280,6 @@ internal class BeatServiceImplTest {
 
         verify {
             beatRepository.save(any())
-        }
-
-        verify {
-            activityService.isInactivityRelevanceLevelNotCommon()
         }
 
         Assertions.assertTrue(

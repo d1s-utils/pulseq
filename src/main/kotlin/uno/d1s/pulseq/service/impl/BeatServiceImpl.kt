@@ -47,14 +47,8 @@ class BeatServiceImpl : BeatService {
 
     @Transactional
     @CacheEvict(cacheNames = [CacheNameConstants.BEAT, CacheNameConstants.BEATS], allEntries = true)
-    override fun registerNewBeatWithDeviceIdentify(identify: String): Beat {
-        val inactivityStatus = runCatching {
-            activityService.isInactivityRelevanceLevelNotCommon()
-        }.getOrElse {
-            false
-        }
-
-        return beatRepository.save(
+    override fun registerNewBeatWithDeviceIdentify(identify: String): Beat =
+        beatRepository.save(
             Beat(runCatching {
                 deviceService.findDevice(byAll(identify))
             }.getOrElse {
@@ -67,11 +61,10 @@ class BeatServiceImpl : BeatService {
         ).also {
             eventPublisher.publishEvent(
                 BeatReceivedEvent(
-                    this, it, inactivityStatus
+                    this, it
                 )
             )
         }
-    }
 
     // this is absolutely bullshit, see https://stackoverflow.com/questions/47439247/spring-data-mongodb-dbref-list
     override fun findAllByDevice(strategy: DeviceFindingStrategy): List<Beat> = beatService.findAllBeats().filter {

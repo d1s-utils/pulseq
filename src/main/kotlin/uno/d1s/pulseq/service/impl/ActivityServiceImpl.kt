@@ -6,7 +6,6 @@ import uno.d1s.pulseq.configuration.property.ActivityConfigurationProperties
 import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.domain.activity.TimeSpan
 import uno.d1s.pulseq.domain.activity.TimeSpanType
-import uno.d1s.pulseq.domain.InactivityRelevanceLevel
 import uno.d1s.pulseq.exception.impl.TimeSpansNotAvailableException
 import uno.d1s.pulseq.service.ActivityService
 import uno.d1s.pulseq.service.BeatService
@@ -46,12 +45,6 @@ class ActivityServiceImpl : ActivityService {
 
     override fun getCurrentInactivityPretty(): String = this.getCurrentInactivityDuration().pretty()
 
-    override fun getCurrentInactivityRelevanceLevel(): InactivityRelevanceLevel =
-        this.getCurrentInactivityDuration().getInactivityRelevanceLevel()
-
-    override fun isInactivityRelevanceLevelNotCommon(): Boolean =
-        this.getCurrentInactivityRelevanceLevel() != InactivityRelevanceLevel.COMMON
-
     override fun getCurrentTimeSpanType(): TimeSpanType = this.getCurrentTimeSpan().type
 
     override fun getCurrentTimeSpan(): TimeSpan = runCatching {
@@ -59,7 +52,7 @@ class ActivityServiceImpl : ActivityService {
             val duration = Duration.between(lastBeat.beatTime, Instant.now()).abs()
 
             TimeSpan(
-                duration, getTypeByDuration(duration), this.getCurrentInactivityRelevanceLevel(), lastBeat
+                duration, getTypeByDuration(duration), lastBeat
             )
         }
     }.getOrElse {
@@ -86,7 +79,6 @@ class ActivityServiceImpl : ActivityService {
                         TimeSpan(
                             duration,
                             TimeSpanType.INACTIVITY,
-                            duration.getInactivityRelevanceLevel(),
                             allBeats.previousBeforeOrNull(this)!!,
                             this
                         )
@@ -97,13 +89,10 @@ class ActivityServiceImpl : ActivityService {
 
                 if (nextBeat.isActivityDelimiterExceeded() && !activityHandling) {
                     if (this != nextBeat) {
-                        val duration = nextBeat.inactivityBeforeBeat!!
-
                         add(
                             TimeSpan(
-                                duration,
+                                nextBeat.inactivityBeforeBeat!!,
                                 TimeSpanType.INACTIVITY,
-                                duration.getInactivityRelevanceLevel(),
                                 this,
                                 nextBeat
                             )
@@ -122,13 +111,10 @@ class ActivityServiceImpl : ActivityService {
                     // The duration is being calculated between two beats,
                     // but if collection contains only one beat, startBeat will be lastBeat
                     if (nextBeat.isActivityDelimiterExceeded() || this == partition.last()) {
-                        val duration = Duration.between(firstActivityBeat.beatTime, this.beatTime).abs()
-
                         add(
                             TimeSpan(
-                                duration,
+                                Duration.between(firstActivityBeat.beatTime, this.beatTime).abs(),
                                 TimeSpanType.ACTIVITY,
-                                duration.getInactivityRelevanceLevel(),
                                 firstActivityBeat,
                                 this
                             )
@@ -157,14 +143,6 @@ class ActivityServiceImpl : ActivityService {
     }
 
     override fun getLastRegisteredTimeSpan(): TimeSpan = this.getAllTimeSpans(false).last()
-
-    private fun Duration.getInactivityRelevanceLevel() = if (this >= activityConfigurationProperties.warning) {
-        InactivityRelevanceLevel.WARNING
-    } else if (this >= activityConfigurationProperties.long) {
-        InactivityRelevanceLevel.LONG
-    } else {
-        InactivityRelevanceLevel.COMMON
-    }
 
     private fun getTypeByDuration(duration: Duration): TimeSpanType =
         if (duration >= activityConfigurationProperties.activityDelimiter) {

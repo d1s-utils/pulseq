@@ -16,13 +16,12 @@ class TimeSpanDtoConverter : DtoConverterFacade<TimeSpan, TimeSpanDto>() {
     override fun convertToDto(domain: TimeSpan): TimeSpanDto = TimeSpanDto(
         domain.duration,
         domain.type,
-        domain.inactivityLevel,
         domain.startBeat.id ?: throw IllegalArgumentException("Start beat id could not be null."),
         domain.endBeat?.id
     )
 
     override fun convertToDomain(dto: TimeSpanDto): TimeSpan = TimeSpan(
-        dto.duration, dto.type, dto.inactivityLevel, beatService.findBeatById(dto.startBeat), if (dto.endBeat != null) {
+        dto.duration, dto.type, beatService.findBeatById(dto.startBeat), if (dto.endBeat != null) {
             beatService.findBeatById(dto.endBeat)
         } else {
             null

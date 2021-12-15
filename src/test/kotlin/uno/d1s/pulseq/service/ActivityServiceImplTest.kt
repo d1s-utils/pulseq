@@ -13,7 +13,6 @@ import org.springframework.test.context.ContextConfiguration
 import uno.d1s.pulseq.configuration.property.ActivityConfigurationProperties
 import uno.d1s.pulseq.domain.activity.TimeSpan
 import uno.d1s.pulseq.domain.activity.TimeSpanType
-import uno.d1s.pulseq.domain.InactivityRelevanceLevel
 import uno.d1s.pulseq.exception.impl.NoBeatsReceivedException
 import uno.d1s.pulseq.exception.impl.TimeSpansNotAvailableException
 import uno.d1s.pulseq.service.impl.ActivityServiceImpl
@@ -144,36 +143,6 @@ internal class ActivityServiceImplTest {
     }
 
     @Test
-    fun `should return valid current inactivity relevance level`() {
-        var level: InactivityRelevanceLevel by Delegates.notNull()
-
-        assertDoesNotThrow {
-            level = activityService.getCurrentInactivityRelevanceLevel()
-        }
-
-        verify {
-            activityService.getCurrentInactivityDuration()
-        }
-
-        Assertions.assertEquals(InactivityRelevanceLevel.WARNING, level)
-    }
-
-    @Test
-    fun `should return valid decision if inactivity relevance is common or not`() {
-        var decision: Boolean by Delegates.notNull()
-
-        assertDoesNotThrow {
-            decision = activityService.isInactivityRelevanceLevelNotCommon()
-        }
-
-        verify {
-            activityService.getCurrentInactivityRelevanceLevel()
-        }
-
-        Assertions.assertTrue(decision)
-    }
-
-    @Test
     fun `should return valid current time span type`() {
         var timeSpanType: TimeSpanType by Delegates.notNull()
 
@@ -202,10 +171,6 @@ internal class ActivityServiceImplTest {
         )
         Assertions.assertEquals(TimeSpanType.INACTIVITY, timeSpan.type)
         Assertions.assertEquals(null, timeSpan.endBeat)
-
-        verify {
-            activityService.getCurrentInactivityRelevanceLevel()
-        }
 
         verify {
             beatService.findLastBeat()
@@ -239,13 +204,11 @@ internal class ActivityServiceImplTest {
                 TimeSpan(
                     testInactivities[1],
                     TimeSpanType.ACTIVITY,
-                    InactivityRelevanceLevel.COMMON,
                     testBeats[0],
                     testBeats[2]
                 ), TimeSpan(
                     testInactivities[2],
                     TimeSpanType.INACTIVITY,
-                    InactivityRelevanceLevel.COMMON,
                     testBeats[2],
                     testBeats[3]
                 )
