@@ -10,6 +10,7 @@ import uno.d1s.pulseq.util.WebhookEmbedBuilderHelper
 
 @Component
 @ConditionalOnProperty("pulseq.notifications.discord.enabled")
+@Deprecated("Notifications are deprecated.")
 class DiscordNotificationSender : NotificationSender {
 
     @Autowired
