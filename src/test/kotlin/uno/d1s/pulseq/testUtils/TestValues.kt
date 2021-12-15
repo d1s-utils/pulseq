@@ -8,7 +8,6 @@ import uno.d1s.pulseq.dto.BeatDto
 import uno.d1s.pulseq.dto.TimeSpanDto
 import uno.d1s.pulseq.dto.device.DeviceDto
 import uno.d1s.pulseq.dto.device.DevicePatchDto
-import uno.d1s.pulseq.metric.Metric
 import java.time.Duration
 import java.time.Instant
 
@@ -51,15 +50,6 @@ internal val testBeatDto = BeatDto(VALID_STUB, Instant.EPOCH, Duration.ZERO).app
     id = VALID_STUB
 }
 internal val testBeatsDto = listOf(testBeatDto)
-
-// metrics
-internal val testMetric = object : Metric {
-    override val identify = VALID_STUB
-    override val title = VALID_STUB
-    override val description = VALID_STUB
-    override val shortDescription = VALID_STUB
-}
-internal val testMetrics = listOf(testMetric)
 
 // time spans
 internal val testTimeSpan =
