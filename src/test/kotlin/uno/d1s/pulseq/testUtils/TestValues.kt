@@ -9,7 +9,6 @@ import uno.d1s.pulseq.dto.BeatDto
 import uno.d1s.pulseq.dto.TimeSpanDto
 import uno.d1s.pulseq.dto.device.DeviceDto
 import uno.d1s.pulseq.dto.device.DevicePatchDto
-import uno.d1s.pulseq.event.AbstractNotifiableEvent
 import uno.d1s.pulseq.metric.Metric
 import java.time.Duration
 import java.time.Instant
@@ -62,12 +61,6 @@ internal val testMetric = object : Metric {
     override val shortDescription = VALID_STUB
 }
 internal val testMetrics = listOf(testMetric)
-
-
-// events
-internal val testEvent = object : AbstractNotifiableEvent(VALID_STUB, VALID_STUB) {
-    override val identify = VALID_STUB
-}
 
 // time spans
 internal val testTimeSpan =

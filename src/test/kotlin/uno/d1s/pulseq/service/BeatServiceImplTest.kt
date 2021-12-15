@@ -14,8 +14,8 @@ import org.springframework.test.context.ContextConfiguration
 import uno.d1s.pulseq.configuration.ApplicationEventTestListenerConfiguration
 import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.domain.Device
-import uno.d1s.pulseq.event.impl.beat.BeatDeletedEvent
-import uno.d1s.pulseq.event.impl.beat.BeatReceivedEvent
+import uno.d1s.pulseq.event.beat.BeatDeletedEvent
+import uno.d1s.pulseq.event.beat.BeatReceivedEvent
 import uno.d1s.pulseq.exception.impl.BeatNotFoundException
 import uno.d1s.pulseq.exception.impl.DeviceNotFoundException
 import uno.d1s.pulseq.exception.impl.NoBeatsReceivedException

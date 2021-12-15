@@ -7,7 +7,7 @@ import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ContextConfiguration
-import uno.d1s.pulseq.event.impl.InactivityPointExceededEvent
+import uno.d1s.pulseq.event.activity.InactivityPointExceededEvent
 import uno.d1s.pulseq.domain.InactivityRelevanceLevel
 import uno.d1s.pulseq.service.ActivityService
 import uno.d1s.pulseq.service.BeatService

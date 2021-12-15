@@ -14,8 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ContextConfiguration
 import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.domain.Device
-import uno.d1s.pulseq.event.impl.device.DeviceDeletedEvent
-import uno.d1s.pulseq.event.impl.device.DeviceUpdatedEvent
+import uno.d1s.pulseq.event.device.DeviceDeletedEvent
+import uno.d1s.pulseq.event.device.DeviceUpdatedEvent
 import uno.d1s.pulseq.exception.impl.DeviceAlreadyExistsException
 import uno.d1s.pulseq.exception.impl.DeviceNotFoundException
 import uno.d1s.pulseq.repository.DeviceRepository

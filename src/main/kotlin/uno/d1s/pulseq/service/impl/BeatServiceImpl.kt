@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uno.d1s.pulseq.constant.cache.CacheNameConstants
 import uno.d1s.pulseq.domain.Beat
-import uno.d1s.pulseq.event.impl.beat.BeatDeletedEvent
-import uno.d1s.pulseq.event.impl.beat.BeatReceivedEvent
+import uno.d1s.pulseq.event.beat.BeatDeletedEvent
+import uno.d1s.pulseq.event.beat.BeatReceivedEvent
 import uno.d1s.pulseq.exception.impl.BeatNotFoundException
 import uno.d1s.pulseq.exception.impl.NoBeatsReceivedException
 import uno.d1s.pulseq.repository.BeatRepository
