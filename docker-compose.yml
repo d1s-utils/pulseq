@@ -21,7 +21,7 @@ services:
       - mongo-config:/data/configdb
 
   pulseq:
-    image: pulseq:0.2.1-alpha.0
+    image: pulseq:0.3.0-alpha.0
     container_name: pulseq
     networks:
       - pulseq-net

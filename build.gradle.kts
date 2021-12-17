@@ -14,7 +14,7 @@ extra["caffeineVersion"] = "3.0.4"
 extra["springdocVersion"] = "1.5.13"
 
 group = "uno.d1s"
-version = "0.2.1-alpha.0"
+version = "0.3.0-alpha.0"
 
 repositories {
     maven {
