@@ -13,6 +13,7 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.MockMvcResultMatchersDsl
 import org.springframework.test.web.servlet.get
+import uno.d1s.pulseq.configuration.property.PaginationConfigurationProperties
 import uno.d1s.pulseq.constant.mapping.ActivityMappingConstants
 import uno.d1s.pulseq.controller.impl.ActivityControllerImpl
 import uno.d1s.pulseq.converter.DtoConverter
@@ -38,8 +39,13 @@ internal class ActivityControllerImplTest {
     @MockkBean
     private lateinit var timeSpanDtoConverter: DtoConverter<TimeSpan, TimeSpanDto>
 
+    @MockkBean
+    private lateinit var paginationConfigurationProperties: PaginationConfigurationProperties
+
     @BeforeEach
     fun setup() {
+        paginationConfigurationProperties.setupTestStub()
+
         every {
             activityService.getAllTimeSpans()
         } returns testTimeSpans
@@ -65,7 +71,6 @@ internal class ActivityControllerImplTest {
         } returns testTimeSpansDto
     }
 
-
     @Test
     fun `should return 200 and all time spans`() {
         mockMvc.get(ActivityMappingConstants.GET_TIMESPANS).andExpect {
@@ -74,7 +79,7 @@ internal class ActivityControllerImplTest {
             }
 
             content {
-                json(objectMapper.writeValueAsString(testTimeSpansDto))
+                json(objectMapper.writeValueAsString(testTimeSpansDto.toPage()))
             }
 
             expectJsonContentType()

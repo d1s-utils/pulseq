@@ -12,10 +12,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.MediaType
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.*
+import uno.d1s.pulseq.configuration.property.PaginationConfigurationProperties
+import uno.d1s.pulseq.constant.mapping.SourceMappingConstants
 import uno.d1s.pulseq.controller.impl.SourceControllerImpl
 import uno.d1s.pulseq.converter.DtoConverter
-import uno.d1s.pulseq.constant.mapping.SourceMappingConstants
-import uno.d1s.pulseq.util.replacePathPlaceholder
 import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.domain.Source
 import uno.d1s.pulseq.dto.BeatDto
@@ -24,6 +24,7 @@ import uno.d1s.pulseq.dto.source.SourcePatchDto
 import uno.d1s.pulseq.service.SourceService
 import uno.d1s.pulseq.strategy.source.byAll
 import uno.d1s.pulseq.testUtils.*
+import uno.d1s.pulseq.util.replacePathPlaceholder
 
 @AutoConfigureMockMvc(addFilters = false)
 @ContextConfiguration(classes = [SourceControllerImpl::class])
@@ -48,8 +49,13 @@ internal class SourceControllerImplTest {
     @MockkBean
     private lateinit var beatDtoConverter: DtoConverter<Beat, BeatDto>
 
+    @MockkBean
+    private lateinit var paginationConfigurationProperties: PaginationConfigurationProperties
+
     @BeforeEach
     fun setup() {
+        paginationConfigurationProperties.setupTestStub()
+
         every {
             sourceService.findAllRegisteredSources()
         } returns testSources
@@ -99,7 +105,7 @@ internal class SourceControllerImplTest {
             }
 
             content {
-                json(objectMapper.writeValueAsString(testSourcesDto))
+                json(objectMapper.writeValueAsString(testSourcesDto.toPage()))
             }
 
             expectJsonContentType()
@@ -122,7 +128,7 @@ internal class SourceControllerImplTest {
                     isOk()
                 }
 
-                epectSourceDto()
+                expectSourceDto()
 
                 expectJsonContentType()
             }
@@ -144,7 +150,7 @@ internal class SourceControllerImplTest {
                 isCreated()
             }
 
-            epectSourceDto()
+            expectSourceDto()
 
             expectJsonContentType()
         }
@@ -156,12 +162,6 @@ internal class SourceControllerImplTest {
         verifySourceConversion()
     }
 
-    private fun MockMvcResultMatchersDsl.epectSourceDto() {
-        content {
-            json(objectMapper.writeValueAsString(testSourceDto))
-        }
-    }
-
     @Test
     fun `should return 200 and valid list on getting beats by source identify`() {
         mockMvc.get(SourceMappingConstants.GET_BEATS.replaceIdentify()).andExpect {
@@ -170,7 +170,7 @@ internal class SourceControllerImplTest {
             }
 
             content {
-                json(objectMapper.writeValueAsString(testBeatsDto))
+                json(objectMapper.writeValueAsString(testBeatsDto.toPage()))
             }
 
             expectJsonContentType()
@@ -208,6 +208,12 @@ internal class SourceControllerImplTest {
 
         verify {
             sourcePatchDtoConverter.convertToDomain(testSourcePatchDto)
+        }
+    }
+
+    private fun MockMvcResultMatchersDsl.expectSourceDto() {
+        content {
+            json(objectMapper.writeValueAsString(testSourceDto))
         }
     }
 

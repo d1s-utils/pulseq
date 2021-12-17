@@ -9,8 +9,6 @@ import uno.d1s.pulseq.testUtils.testCollection
 import java.util.concurrent.ThreadLocalRandom
 
 @SpringBootTest
-// temporal solution to make spring not throwing unexpected
-// mongodb autoconfiguration exceptions at the end of testing
 @ContextConfiguration(classes = [CollectionExtTest::class])
 internal class CollectionExtTest {
 
@@ -59,6 +57,11 @@ internal class CollectionExtTest {
         Assertions.assertEquals(null, testCollection.getElementFromCurrentIndex(3) {
             it + 1
         })
+    }
+
+    @Test
+    fun `should return valid page`() {
+        Assertions.assertEquals(listOf(testCollection[0]), testCollection.page(0, 1).content)
     }
 
     @Test

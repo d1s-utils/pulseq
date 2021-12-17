@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
+import org.springframework.data.domain.Page
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -73,7 +74,10 @@ interface BeatController {
         )
     )
     @GetMapping(BeatMappingConstants.GET_BEATS)
-    fun getBeats(): ResponseEntity<List<BeatDto>>
+    fun getBeats(
+        @RequestParam(required = false) page: Int?,
+        @RequestParam(required = false) pageSize: Int?
+    ): ResponseEntity<Page<BeatDto>>
 
     @Operation(summary = "Get last received beat.")
     @ApiResponses(

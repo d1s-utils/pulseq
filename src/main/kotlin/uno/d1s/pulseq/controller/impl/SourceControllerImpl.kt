@@ -1,10 +1,12 @@
 package uno.d1s.pulseq.controller.impl
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
 import org.springframework.http.ResponseEntity
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
+import uno.d1s.pulseq.configuration.property.PaginationConfigurationProperties
 import uno.d1s.pulseq.controller.SourceController
 import uno.d1s.pulseq.converter.DtoConverter
 import uno.d1s.pulseq.domain.Beat
@@ -15,6 +17,7 @@ import uno.d1s.pulseq.dto.source.SourcePatchDto
 import uno.d1s.pulseq.service.SourceService
 import uno.d1s.pulseq.strategy.source.SourceFindingStrategyType
 import uno.d1s.pulseq.strategy.source.byStrategyType
+import uno.d1s.pulseq.util.page
 import javax.validation.Valid
 
 @RestController
@@ -32,11 +35,17 @@ class SourceControllerImpl : SourceController {
     @Autowired
     private lateinit var beatDtoConverter: DtoConverter<Beat, BeatDto>
 
+    @Autowired
+    private lateinit var paginationConfigurationProperties: PaginationConfigurationProperties
+
     @Transactional(readOnly = true)
-    override fun getAllSources(): ResponseEntity<List<SourceDto>> = ResponseEntity.ok(
+    override fun getAllSources(
+        page: Int?,
+        pageSize: Int?
+    ): ResponseEntity<Page<SourceDto>> = ResponseEntity.ok(
         sourceDtoConverter.convertToDtoList(
             sourceService.findAllRegisteredSources()
-        )
+        ).page(page ?: 0, pageSize ?: paginationConfigurationProperties.defaultPageSize),
     )
 
     @Transactional(readOnly = true)
@@ -63,11 +72,14 @@ class SourceControllerImpl : SourceController {
 
     @Transactional
     override fun getSourceBeats(
-        identify: String, findingStrategy: SourceFindingStrategyType?
-    ): ResponseEntity<List<BeatDto>> = ResponseEntity.ok(
+        identify: String,
+        findingStrategy: SourceFindingStrategyType?,
+        page: Int?,
+        pageSize: Int?
+    ): ResponseEntity<Page<BeatDto>> = ResponseEntity.ok(
         beatDtoConverter.convertToDtoList(
             sourceService.findSourceBeats(findingStrategy.thisStrategyOrAll(identify))
-        )
+        ).page(page ?: 0, pageSize ?: paginationConfigurationProperties.defaultPageSize)
     )
 
     @Transactional
