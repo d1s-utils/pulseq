@@ -2,6 +2,7 @@ package uno.d1s.pulseq.controller.impl
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import uno.d1s.pulseq.controller.SourceController
@@ -31,12 +32,14 @@ class SourceControllerImpl : SourceController {
     @Autowired
     private lateinit var beatDtoConverter: DtoConverter<Beat, BeatDto>
 
+    @Transactional(readOnly = true)
     override fun getAllSources(): ResponseEntity<List<SourceDto>> = ResponseEntity.ok(
         sourceDtoConverter.convertToDtoList(
             sourceService.findAllRegisteredSources()
         )
     )
 
+    @Transactional(readOnly = true)
     override fun getSourceByIdentify(
         identify: String, findingStrategy: SourceFindingStrategyType?
     ): ResponseEntity<SourceDto> = ResponseEntity.ok(
@@ -47,6 +50,7 @@ class SourceControllerImpl : SourceController {
         )
     )
 
+    @Transactional
     override fun registerNewSource(@Valid source: SourcePatchDto): ResponseEntity<SourceDto> {
         val createdSource = sourceDtoConverter.convertToDto(
             sourceService.registerNewSource(source.sourceName)
@@ -57,6 +61,7 @@ class SourceControllerImpl : SourceController {
         ).body(createdSource)
     }
 
+    @Transactional
     override fun getSourceBeats(
         identify: String, findingStrategy: SourceFindingStrategyType?
     ): ResponseEntity<List<BeatDto>> = ResponseEntity.ok(
@@ -65,6 +70,7 @@ class SourceControllerImpl : SourceController {
         )
     )
 
+    @Transactional
     override fun patchSource(
         identify: String, findingStrategy: SourceFindingStrategyType?, patch: SourcePatchDto
     ): ResponseEntity<SourceDto> = ResponseEntity.accepted().body(
@@ -75,6 +81,7 @@ class SourceControllerImpl : SourceController {
         )
     )
 
+    @Transactional
     override fun deleteSource(identify: String, findingStrategy: SourceFindingStrategyType?): ResponseEntity<Any> {
         sourceService.deleteSource(findingStrategy.thisStrategyOrAll(identify))
         return ResponseEntity.noContent().build()
