@@ -15,9 +15,9 @@ import uno.d1s.pulseq.exception.impl.NoBeatsReceivedException
 import uno.d1s.pulseq.repository.BeatRepository
 import uno.d1s.pulseq.service.ActivityService
 import uno.d1s.pulseq.service.BeatService
-import uno.d1s.pulseq.service.DeviceService
-import uno.d1s.pulseq.strategy.device.DeviceFindingStrategy
-import uno.d1s.pulseq.strategy.device.byAll
+import uno.d1s.pulseq.service.SourceService
+import uno.d1s.pulseq.strategy.source.SourceFindingStrategy
+import uno.d1s.pulseq.strategy.source.byAll
 import uno.d1s.pulseq.util.findClosestInstantToCurrent
 
 @Service
@@ -27,7 +27,7 @@ class BeatServiceImpl : BeatService {
     private lateinit var beatRepository: BeatRepository
 
     @Autowired
-    private lateinit var deviceService: DeviceService
+    private lateinit var sourceService: SourceService
 
     @Autowired
     private lateinit var activityService: ActivityService
@@ -47,12 +47,12 @@ class BeatServiceImpl : BeatService {
 
     @Transactional
     @CacheEvict(cacheNames = [CacheNameConstants.BEAT, CacheNameConstants.BEATS], allEntries = true)
-    override fun registerNewBeatWithDeviceIdentify(identify: String): Beat =
+    override fun registerNewBeatWithSourceIdentify(identify: String): Beat =
         beatRepository.save(
             Beat(runCatching {
-                deviceService.findDevice(byAll(identify))
+                sourceService.findSource(byAll(identify))
             }.getOrElse {
-                deviceService.registerNewDevice(identify)
+                sourceService.registerNewSource(identify)
             }, runCatching {
                 activityService.getCurrentInactivityDuration()
             }.getOrElse {
@@ -67,11 +67,11 @@ class BeatServiceImpl : BeatService {
         }
 
     // this is absolutely bullshit, see https://stackoverflow.com/questions/47439247/spring-data-mongodb-dbref-list
-    override fun findAllByDevice(strategy: DeviceFindingStrategy): List<Beat> = beatService.findAllBeats().filter {
+    override fun findAllBySource(strategy: SourceFindingStrategy): List<Beat> = beatService.findAllBeats().filter {
         when (strategy) {
-            is DeviceFindingStrategy.ById -> strategy.identify == it.device.id
-            is DeviceFindingStrategy.ByName -> strategy.identify == it.device.name
-            else -> strategy.identify == it.device.name || strategy.identify == it.device.id
+            is SourceFindingStrategy.ById -> strategy.identify == it.source.id
+            is SourceFindingStrategy.ByName -> strategy.identify == it.source.name
+            else -> strategy.identify == it.source.name || strategy.identify == it.source.id
         }
     }
 
@@ -81,11 +81,11 @@ class BeatServiceImpl : BeatService {
 
     override fun totalBeats(): Int = beatService.findAllBeats().size
 
-    override fun totalBeatsByDevices(): Map<String, Int> = HashMap<String, Int>().apply {
-        // It would be easier to use Device's beats DBRef but this will hurt the performance,
+    override fun totalBeatsBySources(): Map<String, Int> = HashMap<String, Int>().apply {
+        // It would be easier to use Source's beats DBRef but this will hurt the performance,
         // because this data is not cached (So, I should figure out how to cache it easier)
         beatService.findAllBeats().forEach {
-            put(it.device.name, (get(it.device.name) ?: 0) + 1)
+            put(it.source.name, (get(it.source.name) ?: 0) + 1)
         }
     }
 

@@ -13,15 +13,15 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ContextConfiguration
 import uno.d1s.pulseq.configuration.ApplicationEventTestListenerConfiguration
 import uno.d1s.pulseq.domain.Beat
-import uno.d1s.pulseq.domain.Device
+import uno.d1s.pulseq.domain.Source
 import uno.d1s.pulseq.event.beat.BeatDeletedEvent
 import uno.d1s.pulseq.event.beat.BeatReceivedEvent
 import uno.d1s.pulseq.exception.impl.BeatNotFoundException
-import uno.d1s.pulseq.exception.impl.DeviceNotFoundException
+import uno.d1s.pulseq.exception.impl.SourceNotFoundException
 import uno.d1s.pulseq.exception.impl.NoBeatsReceivedException
 import uno.d1s.pulseq.repository.BeatRepository
 import uno.d1s.pulseq.service.impl.BeatServiceImpl
-import uno.d1s.pulseq.strategy.device.*
+import uno.d1s.pulseq.strategy.source.*
 import uno.d1s.pulseq.testUtils.*
 import uno.d1s.pulseq.testlistener.ApplicationEventTestListener
 import java.time.Duration
@@ -45,7 +45,7 @@ internal class BeatServiceImplTest {
     private lateinit var beatRepository: BeatRepository
 
     @MockkBean
-    private lateinit var deviceService: DeviceService
+    private lateinit var sourceService: SourceService
 
     @MockkBean
     private lateinit var activityService: ActivityService
@@ -61,32 +61,32 @@ internal class BeatServiceImplTest {
         } returns Optional.empty()
 
         every {
-            deviceService.registerNewDevice(VALID_STUB)
-        } returns testDevice
+            sourceService.registerNewSource(VALID_STUB)
+        } returns testSource
 
         every {
-            deviceService.registerNewDevice(INVALID_STUB)
-        } returns Device(INVALID_STUB)
+            sourceService.registerNewSource(INVALID_STUB)
+        } returns Source(INVALID_STUB)
 
         every {
-            deviceService.findDevice(byAll(VALID_STUB))
-        } returns testDevice
+            sourceService.findSource(byAll(VALID_STUB))
+        } returns testSource
 
         every {
-            deviceService.findDevice(byAll(INVALID_STUB))
-        } throws DeviceNotFoundException()
+            sourceService.findSource(byAll(INVALID_STUB))
+        } throws SourceNotFoundException()
 
         every {
-            deviceService.findDevice(byId(VALID_STUB))
-        } returns testDevice
+            sourceService.findSource(byId(VALID_STUB))
+        } returns testSource
 
         every {
-            deviceService.findDevice(byName(VALID_STUB))
-        } returns testDevice
+            sourceService.findSource(byName(VALID_STUB))
+        } returns testSource
 
         every {
-            deviceService.findDevice(byName(INVALID_STUB))
-        } throws DeviceNotFoundException() andThen Device(INVALID_STUB)
+            sourceService.findSource(byName(INVALID_STUB))
+        } throws SourceNotFoundException() andThen Source(INVALID_STUB)
 
         every {
             activityService.getCurrentInactivityDuration()
@@ -128,28 +128,28 @@ internal class BeatServiceImplTest {
     }
 
     @Test
-    fun `should register the beat with non existent device`() {
+    fun `should register the beat with non existent source`() {
         this.verifyBeatRegistrationPipelineCalls(INVALID_STUB, true)
     }
 
     @Test
-    fun `should register the beat with existing device`() {
+    fun `should register the beat with existing source`() {
         this.verifyBeatRegistrationPipelineCalls(VALID_STUB, false)
     }
 
     @Test
-    fun `should find all beats by device id`() {
-        this.findAllByDeviceAndAssert(DeviceFindingStrategyType.BY_ID)
+    fun `should find all beats by source id`() {
+        this.findAllBySourceAndAssert(SourceFindingStrategyType.BY_ID)
     }
 
     @Test
-    fun `should find all beats by device name`() {
-        this.findAllByDeviceAndAssert(DeviceFindingStrategyType.BY_NAME)
+    fun `should find all beats by source name`() {
+        this.findAllBySourceAndAssert(SourceFindingStrategyType.BY_NAME)
     }
 
     @Test
-    fun `should find all beats by device identify`() {
-        this.findAllByDeviceAndAssert(DeviceFindingStrategyType.BY_ALL)
+    fun `should find all beats by source identify`() {
+        this.findAllBySourceAndAssert(SourceFindingStrategyType.BY_ALL)
     }
 
     @Test
@@ -179,18 +179,18 @@ internal class BeatServiceImplTest {
     }
 
     @Test
-    fun `should find total beats numbers by devices`() {
-        var beatsByDevices: Map<String, Int> by Delegates.notNull()
+    fun `should find total beats numbers by sources`() {
+        var beatsBySources: Map<String, Int> by Delegates.notNull()
 
         assertDoesNotThrow {
-            beatsByDevices = beatService.totalBeatsByDevices()
+            beatsBySources = beatService.totalBeatsBySources()
         }
 
         Assertions.assertEquals(
             mapOf(
                 VALID_STUB to 1
             ),
-            beatsByDevices
+            beatsBySources
         )
     }
 
@@ -250,28 +250,28 @@ internal class BeatServiceImplTest {
         )
     }
 
-    private fun verifyBeatRegistrationPipelineCalls(deviceName: String, registerDevice: Boolean) {
+    private fun verifyBeatRegistrationPipelineCalls(sourceName: String, registerSource: Boolean) {
         every {
             beatRepository.save(any())
         } returns buildBeat {
             beatTime = Instant.now()
-            device = Device(deviceName)
+            source = Source(sourceName)
         }
 
         var beat: Beat by Delegates.notNull()
 
         assertDoesNotThrow {
-            beat = beatService.registerNewBeatWithDeviceIdentify(deviceName)
+            beat = beatService.registerNewBeatWithSourceIdentify(sourceName)
         }
 
-        if (registerDevice) {
+        if (registerSource) {
             verify {
-                deviceService.registerNewDevice(deviceName)
+                sourceService.registerNewSource(sourceName)
             }
         }
 
         verify {
-            deviceService.findDevice(byAll(deviceName))
+            sourceService.findSource(byAll(sourceName))
         }
 
         verify {
@@ -288,18 +288,18 @@ internal class BeatServiceImplTest {
 
         Assertions.assertEquals(testBeat.id, beat.id)
         Assertions.assertEquals(Instant.now().epochSecond, beat.beatTime.epochSecond)
-        Assertions.assertEquals(deviceName, beat.device.name)
+        Assertions.assertEquals(sourceName, beat.source.name)
         Assertions.assertEquals(activityService.getCurrentInactivityDuration(), beat.inactivityBeforeBeat)
     }
 
-    private fun findAllByDeviceAndAssert(
-        strategyType: DeviceFindingStrategyType
+    private fun findAllBySourceAndAssert(
+        strategyType: SourceFindingStrategyType
     ) {
         var all: List<Beat> by Delegates.notNull()
         val strategy = byStrategyType(VALID_STUB, strategyType)
 
         assertDoesNotThrow {
-            all = beatService.findAllByDevice(strategy)
+            all = beatService.findAllBySource(strategy)
         }
 
         verify {

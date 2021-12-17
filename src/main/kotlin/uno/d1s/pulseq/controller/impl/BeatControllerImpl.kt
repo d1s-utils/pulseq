@@ -8,7 +8,7 @@ import uno.d1s.pulseq.controller.BeatController
 import uno.d1s.pulseq.converter.DtoConverter
 import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.dto.BeatDto
-import uno.d1s.pulseq.exception.impl.DeviceNotFoundException
+import uno.d1s.pulseq.exception.impl.SourceNotFoundException
 import uno.d1s.pulseq.service.BeatService
 import javax.servlet.http.HttpServletResponse
 
@@ -28,12 +28,12 @@ class BeatControllerImpl : BeatController {
         )
     )
 
-    override fun registerNewBeatWithDeviceIdentify(
-        deviceParam: String?, deviceHeader: String?, response: HttpServletResponse
+    override fun registerNewBeatWithSourceIdentify(
+        sourceParam: String?, sourceHeader: String?, response: HttpServletResponse
     ): ResponseEntity<BeatDto>? {
         val createdBeat = beatDtoConverter.convertToDto(
-            beatService.registerNewBeatWithDeviceIdentify(
-                deviceParam ?: (deviceHeader ?: throw DeviceNotFoundException("Device definition must be present."))
+            beatService.registerNewBeatWithSourceIdentify(
+                sourceParam ?: (sourceHeader ?: throw SourceNotFoundException("Source definition must be present."))
             )
         )
 

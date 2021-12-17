@@ -9,18 +9,18 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ContextConfiguration
-import uno.d1s.pulseq.converter.impl.DeviceDtoConverter
+import uno.d1s.pulseq.converter.impl.SourceDtoConverter
 import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.dto.BeatDto
 import uno.d1s.pulseq.service.BeatService
 import uno.d1s.pulseq.testUtils.*
 
 @SpringBootTest
-@ContextConfiguration(classes = [DeviceDtoConverter::class])
-internal class DeviceDtoConverterTest {
+@ContextConfiguration(classes = [SourceDtoConverter::class])
+internal class SourceDtoConverterTest {
 
     @SpykBean
-    private lateinit var deviceDtoConverter: DeviceDtoConverter
+    private lateinit var sourceDtoConverter: SourceDtoConverter
 
     @MockkBean
     private lateinit var beatDtoConverter: DtoConverter<Beat, BeatDto>
@@ -41,7 +41,7 @@ internal class DeviceDtoConverterTest {
 
     @Test
     fun `should return valid dto on conversion to dto`() {
-        Assertions.assertEquals(testDeviceDto, deviceDtoConverter.convertToDto(testDevice))
+        Assertions.assertEquals(testSourceDto, sourceDtoConverter.convertToDto(testSource))
 
         verify {
             beatDtoConverter.convertToDtoList(testBeats)
@@ -50,6 +50,6 @@ internal class DeviceDtoConverterTest {
 
     @Test
     fun `should return valid domain on conversion to domain`() {
-        Assertions.assertEquals(testDevice, deviceDtoConverter.convertToDomain(testDeviceDto))
+        Assertions.assertEquals(testSource, sourceDtoConverter.convertToDomain(testSourceDto))
     }
 }

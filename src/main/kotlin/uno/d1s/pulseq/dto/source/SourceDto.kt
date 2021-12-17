@@ -1,7 +1,7 @@
-package uno.d1s.pulseq.dto.device
+package uno.d1s.pulseq.dto.source
 
-class DeviceDto(
-    val deviceName: String
+class SourceDto(
+    val sourceName: String
 ) {
     var id: String? = null
     var beats: List<String>? = null
@@ -10,21 +10,21 @@ class DeviceDto(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as DeviceDto
+        other as SourceDto
 
-        if (deviceName != other.deviceName) return false
+        if (sourceName != other.sourceName) return false
         if (beats != other.beats) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        var result = deviceName.hashCode()
+        var result = sourceName.hashCode()
         result = 31 * result + (beats?.hashCode() ?: 0)
         return result
     }
 
     override fun toString(): String {
-        return "DeviceDto(deviceName='$deviceName', id=$id, beats=$beats)"
+        return "SourceDto(sourceName='$sourceName', id=$id, beats=$beats)"
     }
 }

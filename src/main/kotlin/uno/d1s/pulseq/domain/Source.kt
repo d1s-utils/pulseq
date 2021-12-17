@@ -4,7 +4,7 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 
 @Document
-class Device(
+class Source(
     val name: String
 ) {
     @Id
@@ -16,7 +16,7 @@ class Device(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as Device
+        other as Source
 
         if (name != other.name) return false
 
@@ -28,6 +28,6 @@ class Device(
     }
 
     override fun toString(): String {
-        return "Device(name='$name', id=$id)"
+        return "Source(name='$name', id=$id)"
     }
 }

@@ -19,7 +19,7 @@ import uno.d1s.pulseq.util.replacePathPlaceholder
 import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.dto.BeatDto
 import uno.d1s.pulseq.service.BeatService
-import uno.d1s.pulseq.strategy.device.byAll
+import uno.d1s.pulseq.strategy.source.byAll
 import uno.d1s.pulseq.testUtils.*
 import uno.d1s.pulseq.testUtils.expectJsonContentType
 
@@ -47,11 +47,11 @@ internal class BeatControllerImplTest {
         } returns testBeat
 
         every {
-            beatService.registerNewBeatWithDeviceIdentify(VALID_STUB)
+            beatService.registerNewBeatWithSourceIdentify(VALID_STUB)
         } returns testBeat
 
         every {
-            beatService.findAllByDevice(byAll(VALID_STUB))
+            beatService.findAllBySource(byAll(VALID_STUB))
         } returns testBeats
 
         every {
@@ -97,7 +97,7 @@ internal class BeatControllerImplTest {
     @Test
     fun `should return 201 and valid beat on beat registration`() {
         mockMvc.post(BeatMappingConstants.BASE) {
-            header("Device", VALID_STUB)
+            header("Source", VALID_STUB)
         }.andExpect {
             status {
                 isCreated()
@@ -109,7 +109,7 @@ internal class BeatControllerImplTest {
         }
 
         verify {
-            beatService.registerNewBeatWithDeviceIdentify(VALID_STUB)
+            beatService.registerNewBeatWithSourceIdentify(VALID_STUB)
         }
 
         verifyBeatConversion()
