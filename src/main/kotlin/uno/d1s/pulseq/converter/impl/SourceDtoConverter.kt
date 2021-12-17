@@ -5,13 +5,13 @@ import org.springframework.stereotype.Component
 import uno.d1s.pulseq.converter.DtoConverter
 import uno.d1s.pulseq.converter.DtoConverterFacade
 import uno.d1s.pulseq.domain.Beat
-import uno.d1s.pulseq.domain.Device
+import uno.d1s.pulseq.domain.Source
 import uno.d1s.pulseq.dto.BeatDto
-import uno.d1s.pulseq.dto.device.DeviceDto
+import uno.d1s.pulseq.dto.source.SourceDto
 import uno.d1s.pulseq.service.BeatService
 
 @Component
-class DeviceDtoConverter : DtoConverterFacade<Device, DeviceDto>() {
+class SourceDtoConverter : DtoConverterFacade<Source, SourceDto>() {
 
     @Autowired
     private lateinit var beatDtoConverter: DtoConverter<Beat, BeatDto>
@@ -19,7 +19,7 @@ class DeviceDtoConverter : DtoConverterFacade<Device, DeviceDto>() {
     @Autowired
     private lateinit var beatService: BeatService
 
-    override fun convertToDto(domain: Device): DeviceDto = DeviceDto(domain.name).apply {
+    override fun convertToDto(domain: Source): SourceDto = SourceDto(domain.name).apply {
         domain.id?.let {
             id = it
 
@@ -31,7 +31,7 @@ class DeviceDtoConverter : DtoConverterFacade<Device, DeviceDto>() {
         }
     }
 
-    override fun convertToDomain(dto: DeviceDto): Device = Device(dto.deviceName).apply {
+    override fun convertToDomain(dto: SourceDto): Source = Source(dto.sourceName).apply {
         dto.id?.let { dtoId ->
             id = dtoId
             dto.beats?.let { beatList ->

@@ -13,64 +13,64 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
-import uno.d1s.pulseq.constant.mapping.DeviceMappingConstants
+import uno.d1s.pulseq.constant.mapping.SourceMappingConstants
 import uno.d1s.pulseq.dto.BeatDto
 import uno.d1s.pulseq.dto.ErrorDto
-import uno.d1s.pulseq.dto.device.DeviceDto
-import uno.d1s.pulseq.dto.device.DevicePatchDto
-import uno.d1s.pulseq.strategy.device.DeviceFindingStrategyType
+import uno.d1s.pulseq.dto.source.SourceDto
+import uno.d1s.pulseq.dto.source.SourcePatchDto
+import uno.d1s.pulseq.strategy.source.SourceFindingStrategyType
 import javax.validation.Valid
 import javax.validation.constraints.NotEmpty
 
 @Validated
-@Tag(name = "Devices", description = "Manage registered devices.")
-interface DeviceController {
+@Tag(name = "Sources", description = "Manage registered sources.")
+interface SourceController {
 
-    @Operation(summary = "Get all registered devices.")
+    @Operation(summary = "Get all registered sources.")
     @ApiResponses(
         ApiResponse(
-            description = "Found devices.", responseCode = "200", content = [Content(
+            description = "Found sources.", responseCode = "200", content = [Content(
                 mediaType = MediaType.APPLICATION_JSON_VALUE,
-                array = ArraySchema(schema = Schema(implementation = DeviceDto::class))
+                array = ArraySchema(schema = Schema(implementation = SourceDto::class))
             )]
         )
     )
-    @GetMapping(DeviceMappingConstants.GET_ALL_DEVICES)
-    fun getAllDevices(): ResponseEntity<List<DeviceDto>>
+    @GetMapping(SourceMappingConstants.GET_ALL_SOURCES)
+    fun getAllSources(): ResponseEntity<List<SourceDto>>
 
-    @Operation(summary = "Get the device by specified identify.")
+    @Operation(summary = "Get the source by specified identify.")
     @ApiResponses(
         ApiResponse(
-            description = "Found the device.", responseCode = "200", content = [Content(
-                mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = DeviceDto::class)
+            description = "Found the source.", responseCode = "200", content = [Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = SourceDto::class)
             )]
         ), ApiResponse(
-            description = "The device was not found.", responseCode = "404", content = [Content(
+            description = "The source was not found.", responseCode = "404", content = [Content(
                 mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = ErrorDto::class)
             )]
         )
     )
-    @GetMapping(DeviceMappingConstants.GET_DEVICE_BY_IDENTIFY)
-    fun getDeviceByIdentify(
+    @GetMapping(SourceMappingConstants.GET_SOURCE_BY_IDENTIFY)
+    fun getSourceByIdentify(
         @PathVariable @Parameter(
-            description = "Device identify associated with device to search for."
+            description = "Source identify associated with source to search for."
         ) @NotEmpty identify: String, @RequestParam(required = false, name = "strategy") @Parameter(
-            description = "The device finding strategy to use."
-        ) findingStrategy: DeviceFindingStrategyType?
-    ): ResponseEntity<DeviceDto>
+            description = "The source finding strategy to use."
+        ) findingStrategy: SourceFindingStrategyType?
+    ): ResponseEntity<SourceDto>
 
 
     @Operation(
-        summary = "Register new device.",
+        summary = "Register new source.",
         description = "This operation requires server secret to be set as a header (Authorization) or request parameter (auth)."
     )
     @ApiResponses(
         ApiResponse(
-            description = "Registered the device", responseCode = "201", content = [Content(
-                mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = DeviceDto::class)
+            description = "Registered the source.", responseCode = "201", content = [Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = SourceDto::class)
             )]
         ), ApiResponse(
-            description = "The device with the same name already exists.", responseCode = "409", content = [Content(
+            description = "The source with the same name already exists.", responseCode = "409", content = [Content(
                 mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = ErrorDto::class)
             )]
         ), ApiResponse(
@@ -80,56 +80,56 @@ interface DeviceController {
         )
     )
     @PostMapping(
-        DeviceMappingConstants.REGISTER_DEVICE,
+        SourceMappingConstants.REGISTER_SOURCE,
         produces = [MediaType.APPLICATION_JSON_VALUE],
         consumes = [MediaType.APPLICATION_JSON_VALUE]
     )
     @PreAuthorize("@authenticationService.authenticatedRequest")
-    fun registerNewDevice(
+    fun registerNewSource(
         @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
-            description = "The device information for the new device to be registered.", content = [Content(
-                schema = Schema(implementation = DeviceDto::class)
+            description = "The source information for the new source to be registered.", content = [Content(
+                schema = Schema(implementation = SourceDto::class)
             )]
-        ) @Valid device: DevicePatchDto
-    ): ResponseEntity<DeviceDto>
+        ) @Valid source: SourcePatchDto
+    ): ResponseEntity<SourceDto>
 
-    @Operation(summary = "Get device beats.")
+    @Operation(summary = "Get source beats.")
     @ApiResponses(
         ApiResponse(
-            description = "Found the device beats.", responseCode = "200", content = [Content(
+            description = "Found the source beats.", responseCode = "200", content = [Content(
                 mediaType = MediaType.APPLICATION_JSON_VALUE,
                 array = ArraySchema(schema = Schema(implementation = ErrorDto::class))
             )]
         ), ApiResponse(
-            description = "The device was not found.", responseCode = "404", content = [Content(
+            description = "The source was not found.", responseCode = "404", content = [Content(
                 schema = Schema(implementation = ErrorDto::class), mediaType = MediaType.APPLICATION_JSON_VALUE
             )]
         )
     )
-    @GetMapping(DeviceMappingConstants.GET_BEATS)
-    fun getDeviceBeats(
+    @GetMapping(SourceMappingConstants.GET_BEATS)
+    fun getSourceBeats(
         @PathVariable @Parameter(
-            description = "Device identify associated with device to search for."
+            description = "Source identify associated with source to search for."
         ) @NotEmpty identify: String, @RequestParam(required = false, name = "strategy") @Parameter(
-            description = "The device finding strategy to use."
-        ) findingStrategy: DeviceFindingStrategyType?
+            description = "The source finding strategy to use."
+        ) findingStrategy: SourceFindingStrategyType?
     ): ResponseEntity<List<BeatDto>>
 
     @Operation(
-        summary = "Edit the device.",
+        summary = "Edit the source.",
         description = "This operation requires server secret to be set as a header (Authorization) or request parameter (auth)."
     )
     @ApiResponses(
         ApiResponse(
-            description = "Edited the device",
+            description = "Edited the source",
             responseCode = "202",
             content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)]
         ), ApiResponse(
-            description = "The device was not found.", responseCode = "404", content = [Content(
+            description = "The source was not found.", responseCode = "404", content = [Content(
                 schema = Schema(implementation = ErrorDto::class), mediaType = MediaType.APPLICATION_JSON_VALUE
             )]
         ), ApiResponse(
-            description = "The device with the same name already exists.", responseCode = "409", content = [Content(
+            description = "The source with the same name already exists.", responseCode = "409", content = [Content(
                 schema = Schema(implementation = ErrorDto::class), mediaType = MediaType.APPLICATION_JSON_VALUE
             )]
         ), ApiResponse(
@@ -139,26 +139,26 @@ interface DeviceController {
         )
     )
     @PreAuthorize("@authenticationService.authenticatedRequest")
-    @PatchMapping(DeviceMappingConstants.GET_DEVICE_BY_IDENTIFY)
-    fun patchDevice(
+    @PatchMapping(SourceMappingConstants.GET_SOURCE_BY_IDENTIFY)
+    fun patchSource(
         @PathVariable @Parameter(
-            description = "Device identify associated with device to edit for."
+            description = "Source identify associated with source to edit for."
         ) @NotEmpty identify: String,
         @RequestParam(required = false, name = "strategy") @Parameter(
-            description = "The device finding strategy to use."
-        ) findingStrategy: DeviceFindingStrategyType?,
-        @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "The device information for the new device to be edited.") @Valid patch: DevicePatchDto
-    ): ResponseEntity<DeviceDto>
+            description = "The source finding strategy to use."
+        ) findingStrategy: SourceFindingStrategyType?,
+        @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "The source information for the new source to be edited.") @Valid patch: SourcePatchDto
+    ): ResponseEntity<SourceDto>
 
     @Operation(
-        summary = "Delete the device.",
-        description = "Note: this operation will delete all the beats associated with the device to be deleted. This operation requires server secret to be set as a header (Authorization) or request parameter (auth)."
+        summary = "Delete the source.",
+        description = "Note: this operation will delete all the beats associated with the source to be deleted. This operation requires server secret to be set as a header (Authorization) or request parameter (auth)."
     )
     @ApiResponses(
         ApiResponse(
-            description = "Deleted the device.", responseCode = "200"
+            description = "Deleted the source.", responseCode = "200"
         ), ApiResponse(
-            description = "The device was not found.", responseCode = "404", content = [Content(
+            description = "The source was not found.", responseCode = "404", content = [Content(
                 schema = Schema(implementation = ErrorDto::class), mediaType = MediaType.APPLICATION_JSON_VALUE
             )]
         ), ApiResponse(
@@ -168,12 +168,12 @@ interface DeviceController {
         )
     )
     @PreAuthorize("@authenticationService.authenticatedRequest")
-    @DeleteMapping(DeviceMappingConstants.GET_DEVICE_BY_IDENTIFY)
-    fun deleteDevice(
+    @DeleteMapping(SourceMappingConstants.GET_SOURCE_BY_IDENTIFY)
+    fun deleteSource(
         @PathVariable @Parameter(
-            description = "Device identify associated with device to delete for."
+            description = "Source identify associated with source to delete for."
         ) @NotEmpty identify: String, @RequestParam(required = false, name = "strategy") @Parameter(
-            description = "The device finding strategy to use."
-        ) findingStrategy: DeviceFindingStrategyType?
+            description = "The source finding strategy to use."
+        ) findingStrategy: SourceFindingStrategyType?
     ): ResponseEntity<Any>
 }

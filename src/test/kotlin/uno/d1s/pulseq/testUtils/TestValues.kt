@@ -1,49 +1,48 @@
 package uno.d1s.pulseq.testUtils
 
 import uno.d1s.pulseq.domain.Beat
-import uno.d1s.pulseq.domain.Device
+import uno.d1s.pulseq.domain.Source
 import uno.d1s.pulseq.domain.activity.TimeSpan
 import uno.d1s.pulseq.domain.activity.TimeSpanType
 import uno.d1s.pulseq.dto.BeatDto
 import uno.d1s.pulseq.dto.TimeSpanDto
-import uno.d1s.pulseq.dto.device.DeviceDto
-import uno.d1s.pulseq.dto.device.DevicePatchDto
+import uno.d1s.pulseq.dto.source.SourceDto
+import uno.d1s.pulseq.dto.source.SourcePatchDto
 import java.time.Duration
 import java.time.Instant
-
 
 // constants
 internal const val VALID_STUB = "valid_stub"
 internal const val INVALID_STUB = "invalid_stub"
 
-// devices
-internal val testDevice = Device(VALID_STUB).apply {
+// sources
+internal val testSource = Source(VALID_STUB).apply {
     id = VALID_STUB
 }
-internal val testDevices = listOf(testDevice)
-internal val testDeviceDto = DeviceDto(VALID_STUB).apply {
+internal val testSources = listOf(testSource)
+internal val testSourceDto = SourceDto(VALID_STUB).apply {
     id = VALID_STUB
     beats = listOf(VALID_STUB)
 }
-internal val testDevicesDto = listOf(testDeviceDto)
-internal val testDeviceUpdate = Device("new-name").apply {
-    id = testDevice.id
-    beats = testDevice.beats
+internal val testSourcesDto = listOf(testSourceDto)
+internal val testSourceUpdate = Source("new-name").apply {
+    id = testSource.id
+    beats = testSource.beats
 }
-internal val testDeviceUpdates = listOf(testDeviceUpdate)
-internal val testDeviceUpdateDto = DeviceDto(testDeviceUpdate.name).apply {
-    id = testDeviceUpdate.id
+internal val testSourceUpdates = listOf(testSourceUpdate)
+internal val testSourceUpdateDto = SourceDto(testSourceUpdate.name).apply {
+    id = testSourceUpdate.id
     beats = listOf(VALID_STUB)
 }
-internal val testDevicePatchDto = DevicePatchDto("new-name")
-internal val testDevicePatchesDto = listOf(testDevicePatchDto)
+internal val testSourcePatchDto = SourcePatchDto("new-name")
+internal val testSourcePatchesDto = listOf(testSourcePatchDto)
 
 
 // beats
-internal val testBeat = Beat(testDevice, Duration.ZERO, Instant.EPOCH).apply {
+internal val testBeat = Beat(testSource, Duration.ZERO, Instant.EPOCH).apply {
     id = VALID_STUB
 
-    device.beats = listOf(this)
+    source.beats = listOf(this)
 }
 internal val testBeats = listOf(testBeat)
 internal val testBeatDto = BeatDto(VALID_STUB, Instant.EPOCH, Duration.ZERO).apply {

@@ -9,7 +9,7 @@ import java.time.Instant
 @Document(collection = "beat")
 class Beat(
     @DBRef
-    val device: Device,
+    val source: Source,
     val inactivityBeforeBeat: Duration?, // could be null if it is a first beat.
     val beatTime: Instant = Instant.now()
 ) {
@@ -22,7 +22,7 @@ class Beat(
 
         other as Beat
 
-        if (device != other.device) return false
+        if (source != other.source) return false
         if (inactivityBeforeBeat != other.inactivityBeforeBeat) return false
         if (beatTime != other.beatTime) return false
 
@@ -30,13 +30,13 @@ class Beat(
     }
 
     override fun hashCode(): Int {
-        var result = device.hashCode()
+        var result = source.hashCode()
         result = 31 * result + (inactivityBeforeBeat?.hashCode() ?: 0)
         result = 31 * result + beatTime.hashCode()
         return result
     }
 
     override fun toString(): String {
-        return "Beat(device=$device, inactivityBeforeBeat=$inactivityBeforeBeat, beatTime=$beatTime, id=$id)"
+        return "Beat(source=$source, inactivityBeforeBeat=$inactivityBeforeBeat, beatTime=$beatTime, id=$id)"
     }
 }

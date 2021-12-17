@@ -40,7 +40,7 @@ interface BeatController {
 
     @Operation(
         summary = "Register new beat.",
-        description = "Note: A new device will be created if the provided one was not found. You can use both - device ID and name. This operation requires server secret to be set as a header (Authorization) or request parameter (auth)."
+        description = "Note: A new source will be created if the provided one was not found. You can use both - source ID and name. This operation requires server secret to be set as a header (Authorization) or request parameter (auth)."
     )
     @ApiResponses(
         ApiResponse(
@@ -55,12 +55,12 @@ interface BeatController {
     )
     @PostMapping(BeatMappingConstants.BASE)
     @PreAuthorize("@authenticationService.authenticatedRequest")
-    fun registerNewBeatWithDeviceIdentify(
+    fun registerNewBeatWithSourceIdentify(
         @RequestParam(
-            "device", required = false
-        ) @Parameter(description = "The device ID or name.") deviceParam: String?, @RequestHeader(
-            "Device", required = false
-        ) @Parameter(description = "The device ID or name.") deviceHeader: String?, response: HttpServletResponse
+            "sourceParam", required = false
+        ) @Parameter(description = "The source ID or name.") sourceParam: String?, @RequestHeader(
+            "Source", required = false
+        ) @Parameter(description = "The source ID or name.") sourceHeader: String?, response: HttpServletResponse
     ): ResponseEntity<BeatDto>?
 
     @Operation(summary = "Get all beats.")

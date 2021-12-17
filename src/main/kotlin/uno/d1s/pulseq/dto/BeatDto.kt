@@ -4,7 +4,7 @@ import java.time.Duration
 import java.time.Instant
 
 class BeatDto(
-    val device: String,
+    val source: String,
     val beatTime: Instant,
     val inactivityBeforeBeat: Duration?
 ) {
@@ -16,7 +16,7 @@ class BeatDto(
 
         other as BeatDto
 
-        if (device != other.device) return false
+        if (source != other.source) return false
         if (beatTime != other.beatTime) return false
         if (inactivityBeforeBeat != other.inactivityBeforeBeat) return false
 
@@ -24,13 +24,13 @@ class BeatDto(
     }
 
     override fun hashCode(): Int {
-        var result = device.hashCode()
+        var result = source.hashCode()
         result = 31 * result + beatTime.hashCode()
         result = 31 * result + (inactivityBeforeBeat?.hashCode() ?: 0)
         return result
     }
 
     override fun toString(): String {
-        return "BeatDto(device='$device', beatTime=$beatTime, inactivityBeforeBeat=$inactivityBeforeBeat, id=$id)"
+        return "BeatDto(source='$source', beatTime=$beatTime, inactivityBeforeBeat=$inactivityBeforeBeat, id=$id)"
     }
 }
