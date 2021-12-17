@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
+import org.springframework.data.domain.Page
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -36,7 +37,10 @@ interface SourceController {
         )
     )
     @GetMapping(SourceMappingConstants.GET_ALL_SOURCES)
-    fun getAllSources(): ResponseEntity<List<SourceDto>>
+    fun getAllSources(
+        @RequestParam(required = false) @Parameter(description = "The page number.") page: Int?,
+        @RequestParam(required = false) @Parameter(description = "The page size.") pageSize: Int?
+    ): ResponseEntity<Page<SourceDto>>
 
     @Operation(summary = "Get the source by specified identify.")
     @ApiResponses(
@@ -112,8 +116,10 @@ interface SourceController {
             description = "Source identify associated with source to search for."
         ) @NotEmpty identify: String, @RequestParam(required = false, name = "strategy") @Parameter(
             description = "The source finding strategy to use."
-        ) findingStrategy: SourceFindingStrategyType?
-    ): ResponseEntity<List<BeatDto>>
+        ) findingStrategy: SourceFindingStrategyType?,
+        @RequestParam(required = false) @Parameter(description = "The page number.") page: Int?,
+        @RequestParam(required = false) @Parameter(description = "The page size.") pageSize: Int?
+    ): ResponseEntity<Page<BeatDto>>
 
     @Operation(
         summary = "Edit the source.",

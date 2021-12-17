@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
+import org.springframework.data.domain.Page
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -37,7 +38,11 @@ interface ActivityController {
 
     )
     @GetMapping(ActivityMappingConstants.GET_TIMESPANS)
-    fun getAllTimeSpans(@RequestParam(required = false) @Parameter(description = "Whether to include current time span or not. True by default.") includeCurrent: Boolean?): ResponseEntity<List<TimeSpanDto>>
+    fun getAllTimeSpans(
+        @RequestParam(required = false) @Parameter(description = "Whether to include current time span or not. True by default.") includeCurrent: Boolean?,
+        @RequestParam(required = false) @Parameter(description = "The page number.") page: Int?,
+        @RequestParam(required = false) @Parameter(description = "The page size.") pageSize: Int?
+    ): ResponseEntity<Page<TimeSpanDto>>
 
     @Operation(summary = "Get longest time span.")
     @ApiResponses(

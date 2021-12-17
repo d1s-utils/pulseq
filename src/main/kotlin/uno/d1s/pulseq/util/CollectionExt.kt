@@ -1,5 +1,9 @@
 package uno.d1s.pulseq.util
 
+import org.springframework.beans.support.PagedListHolder
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
 import org.springframework.util.StringUtils
 
 private const val EMPTY_COLLECTION_MESSAGE = "The collection is empty"
@@ -34,6 +38,11 @@ fun <T> List<T>.getElementFromCurrentIndex(current: T, indexSupplier: (current: 
             indexSupplier(index)
         }
     })
+
+fun <T> List<T>.page(page: Int, size: Int): Page<T> = PageImpl(PagedListHolder(this).apply {
+    this.pageSize = size
+    this.page = page
+}.pageList, PageRequest.of(page, size), this.size.toLong())
 
 inline fun <T : Any> Collection<T>.forEachPartition(crossinline block: T.(partition: Collection<T>) -> IntRange) {
     val list = this.toList()

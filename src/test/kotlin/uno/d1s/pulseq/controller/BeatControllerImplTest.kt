@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.*
+import uno.d1s.pulseq.configuration.property.PaginationConfigurationProperties
 import uno.d1s.pulseq.controller.impl.BeatControllerImpl
 import uno.d1s.pulseq.converter.DtoConverter
 import uno.d1s.pulseq.constant.mapping.BeatMappingConstants
@@ -40,8 +41,13 @@ internal class BeatControllerImplTest {
     @MockkBean
     private lateinit var beatDtoConverter: DtoConverter<Beat, BeatDto>
 
+    @MockkBean
+    private lateinit var paginationConfigurationProperties: PaginationConfigurationProperties
+
     @BeforeEach
     fun setup() {
+        paginationConfigurationProperties.setupTestStub()
+
         every {
             beatService.findBeatById(VALID_STUB)
         } returns testBeat
@@ -123,7 +129,7 @@ internal class BeatControllerImplTest {
             }
 
             content {
-                json(objectMapper.writeValueAsString(testBeatsDto))
+                json(objectMapper.writeValueAsString(testBeatsDto.toPage()))
             }
 
             expectJsonContentType()
