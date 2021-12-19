@@ -17,8 +17,8 @@ import uno.d1s.pulseq.domain.Source
 import uno.d1s.pulseq.event.beat.BeatDeletedEvent
 import uno.d1s.pulseq.event.beat.BeatReceivedEvent
 import uno.d1s.pulseq.exception.impl.BeatNotFoundException
-import uno.d1s.pulseq.exception.impl.SourceNotFoundException
 import uno.d1s.pulseq.exception.impl.NoBeatsReceivedException
+import uno.d1s.pulseq.exception.impl.SourceNotFoundException
 import uno.d1s.pulseq.repository.BeatRepository
 import uno.d1s.pulseq.service.impl.BeatServiceImpl
 import uno.d1s.pulseq.strategy.source.*
@@ -87,6 +87,10 @@ internal class BeatServiceImplTest {
         every {
             sourceService.findSource(byName(INVALID_STUB))
         } throws SourceNotFoundException() andThen Source(INVALID_STUB)
+
+        every {
+            sourceService.findSourceBeats(any())
+        } returns testBeats
 
         every {
             activityService.getCurrentInactivityDuration()
@@ -303,7 +307,7 @@ internal class BeatServiceImplTest {
         }
 
         verify {
-            beatService.findAllBeats()
+            sourceService.findSourceBeats(strategy)
         }
 
         Assertions.assertEquals(

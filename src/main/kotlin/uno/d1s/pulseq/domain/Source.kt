@@ -1,15 +1,19 @@
 package uno.d1s.pulseq.domain
 
-import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.Document
+import javax.persistence.Entity
+import javax.persistence.Id
+import javax.persistence.OneToMany
+import javax.persistence.Table
 
-@Document
+@Entity
+@Table(name = "source")
 class Source(
     val name: String
 ) {
     @Id
     var id: String? = null
 
+    @OneToMany(mappedBy = "source")
     var beats: List<Beat>? = null
 
     override fun equals(other: Any?): Boolean {

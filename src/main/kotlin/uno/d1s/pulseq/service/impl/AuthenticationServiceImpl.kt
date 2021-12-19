@@ -2,10 +2,9 @@ package uno.d1s.pulseq.service.impl
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import org.springframework.web.context.request.RequestContextHolder
-import org.springframework.web.context.request.ServletRequestAttributes
 import uno.d1s.pulseq.configuration.property.SecurityConfigurationProperties
 import uno.d1s.pulseq.service.AuthenticationService
+import uno.d1s.pulseq.util.currentRequest
 
 
 @Service("authenticationService")
@@ -17,7 +16,7 @@ class AuthenticationServiceImpl : AuthenticationService {
     override fun validateSecret(secret: String): Boolean = securityConfigurationProperties.secret!! == secret
 
     override fun isAuthenticatedRequest(): Boolean {
-        val request = (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes).request
+        val request = currentRequest
 
         (request.getHeader("Authorization") ?: request.getParameter("auth"))?.let {
             if (!this.validateSecret(it)) {

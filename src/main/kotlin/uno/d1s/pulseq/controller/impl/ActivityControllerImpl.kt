@@ -1,6 +1,5 @@
 package uno.d1s.pulseq.controller.impl
 
-import io.swagger.v3.oas.annotations.Parameter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.http.ResponseEntity
@@ -28,9 +27,9 @@ class ActivityControllerImpl : ActivityController {
     private lateinit var paginationConfigurationProperties: PaginationConfigurationProperties
 
     override fun getAllTimeSpans(
-        @RequestParam(required = false) @Parameter(description = "Whether to include current time span or not. True by default.") includeCurrent: Boolean?,
-        @RequestParam(required = false) page: Int?,
-        @RequestParam(required = false) pageSize: Int?
+        includeCurrent: Boolean?,
+        page: Int?,
+        pageSize: Int?
     ): ResponseEntity<Page<TimeSpanDto>> = ResponseEntity.ok(
         timeSpanDtoConverter.convertToDtoList(
             activityService.getAllTimeSpans(includeCurrent ?: true)

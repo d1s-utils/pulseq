@@ -79,7 +79,7 @@ interface SourceController {
             )]
         ), ApiResponse(
             description = "The request was not authorized.", responseCode = "403", content = [Content(
-                mediaType = MediaType.APPLICATION_JSON_VALUE
+                mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = ErrorDto::class)
             )]
         )
     )
@@ -140,7 +140,7 @@ interface SourceController {
             )]
         ), ApiResponse(
             description = "The request was not authorized.", responseCode = "403", content = [Content(
-                mediaType = MediaType.APPLICATION_JSON_VALUE
+                mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = ErrorDto::class)
             )]
         )
     )
@@ -169,7 +169,7 @@ interface SourceController {
             )]
         ), ApiResponse(
             description = "The request was not authorized.", responseCode = "403", content = [Content(
-                mediaType = MediaType.APPLICATION_JSON_VALUE
+                mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = ErrorDto::class)
             )]
         )
     )

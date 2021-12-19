@@ -17,7 +17,6 @@ import uno.d1s.pulseq.service.BeatService
 import uno.d1s.pulseq.service.SourceService
 import uno.d1s.pulseq.strategy.source.SourceFindingStrategy
 import uno.d1s.pulseq.strategy.source.SourceFindingStrategy.*
-import uno.d1s.pulseq.strategy.source.byId
 import uno.d1s.pulseq.strategy.source.byName
 
 @Service
@@ -33,9 +32,7 @@ class SourceServiceImpl : SourceService {
     private lateinit var applicationEventPublisher: ApplicationEventPublisher
 
     @Transactional(readOnly = true)
-    override fun findAllRegisteredSources(): List<Source> = sourceRepository.findAll().onEach {
-        it.beats = this.findSourceBeats(byId(it.id!!))
-    }
+    override fun findAllRegisteredSources(): List<Source> = sourceRepository.findAll()
 
     @Transactional(readOnly = true)
     override fun findSource(strategy: SourceFindingStrategy): Source = when (strategy) {
