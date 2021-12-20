@@ -1,3 +1,7 @@
+/*
+ * BSD 3-Clause License, Copyright (c) 2021, Pulseq and contributors.
+ */
+
 package uno.d1s.pulseq.strategy.source
 
 import uno.d1s.pulseq.util.Identifiable
