@@ -35,7 +35,7 @@ services:
     depends_on:
       - pulseq-postgres
     environment:
-      SPRING_DATA_MONGODB_HOST: pulseq-mongodb
+      SPRING_DATASOURCE_URL: jdbc:postgresql://pulseq-postgres:5432/pulseq-data
 
 networks:
   pulseq-net:

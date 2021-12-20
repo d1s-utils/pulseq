@@ -6,11 +6,9 @@ import java.time.Instant
 import javax.persistence.*
 
 @Entity
-@Table(name = "beat")
+@Table(name = "beat", schema = "public")
 class Beat(
-    @Column
     @ManyToOne
-    @JoinColumn(name = "beat", nullable = false)
     val source: Source,
 
     @Column

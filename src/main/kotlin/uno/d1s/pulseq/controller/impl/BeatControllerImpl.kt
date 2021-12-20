@@ -35,6 +35,7 @@ class BeatControllerImpl : BeatController {
         )
     )
 
+
     override fun registerNewBeatWithSourceIdentify(
         sourceParam: String?, sourceHeader: String?, response: HttpServletResponse
     ): ResponseEntity<BeatDto>? {

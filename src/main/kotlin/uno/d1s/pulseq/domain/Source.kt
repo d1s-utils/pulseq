@@ -1,19 +1,20 @@
 package uno.d1s.pulseq.domain
 
-import javax.persistence.Entity
-import javax.persistence.Id
-import javax.persistence.OneToMany
-import javax.persistence.Table
+import org.hibernate.annotations.GenericGenerator
+import javax.persistence.*
 
 @Entity
-@Table(name = "source")
+@Table(name = "source", schema = "public")
 class Source(
     val name: String
 ) {
     @Id
+    @Column
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid")
     var id: String? = null
 
-    @OneToMany(mappedBy = "source")
+    @OneToMany(cascade = [CascadeType.ALL], mappedBy = "source")
     var beats: List<Beat>? = null
 
     override fun equals(other: Any?): Boolean {

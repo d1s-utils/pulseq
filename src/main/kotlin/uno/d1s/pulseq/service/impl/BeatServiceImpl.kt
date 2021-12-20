@@ -54,6 +54,7 @@ class BeatServiceImpl : BeatService {
             Beat(runCatching {
                 sourceService.findSource(byAll(identify))
             }.getOrElse {
+                it.printStackTrace()
                 sourceService.registerNewSource(identify)
             }, runCatching {
                 activityService.getCurrentInactivityDuration()
@@ -71,6 +72,8 @@ class BeatServiceImpl : BeatService {
     // I dont know why do I keep this here... I'll just TODO it.
     override fun findAllBySource(strategy: SourceFindingStrategy): List<Beat> = sourceService.findSourceBeats(strategy)
 
+    @Transactional(readOnly = true)
+    @Cacheable(cacheNames = [CacheNameConstants.BEATS])
     override fun findAllBeats(): List<Beat> = beatRepository.findAll().sortedBy {
         it.beatTime
     }
