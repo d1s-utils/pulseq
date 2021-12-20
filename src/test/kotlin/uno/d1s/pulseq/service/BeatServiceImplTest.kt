@@ -21,7 +21,9 @@ import uno.d1s.pulseq.exception.impl.NoBeatsReceivedException
 import uno.d1s.pulseq.exception.impl.SourceNotFoundException
 import uno.d1s.pulseq.repository.BeatRepository
 import uno.d1s.pulseq.service.impl.BeatServiceImpl
-import uno.d1s.pulseq.strategy.source.*
+import uno.d1s.pulseq.strategy.source.byAll
+import uno.d1s.pulseq.strategy.source.byId
+import uno.d1s.pulseq.strategy.source.byName
 import uno.d1s.pulseq.testUtils.*
 import uno.d1s.pulseq.testlistener.ApplicationEventTestListener
 import java.time.Duration
@@ -139,21 +141,6 @@ internal class BeatServiceImplTest {
     @Test
     fun `should register the beat with existing source`() {
         this.verifyBeatRegistrationPipelineCalls(VALID_STUB, false)
-    }
-
-    @Test
-    fun `should find all beats by source id`() {
-        this.findAllBySourceAndAssert(SourceFindingStrategyType.BY_ID)
-    }
-
-    @Test
-    fun `should find all beats by source name`() {
-        this.findAllBySourceAndAssert(SourceFindingStrategyType.BY_NAME)
-    }
-
-    @Test
-    fun `should find all beats by source identify`() {
-        this.findAllBySourceAndAssert(SourceFindingStrategyType.BY_ALL)
     }
 
     @Test
@@ -294,25 +281,6 @@ internal class BeatServiceImplTest {
         Assertions.assertEquals(Instant.now().epochSecond, beat.beatTime.epochSecond)
         Assertions.assertEquals(sourceName, beat.source.name)
         Assertions.assertEquals(activityService.getCurrentInactivityDuration(), beat.inactivityBeforeBeat)
-    }
-
-    private fun findAllBySourceAndAssert(
-        strategyType: SourceFindingStrategyType
-    ) {
-        var all: List<Beat> by Delegates.notNull()
-        val strategy = byStrategyType(VALID_STUB, strategyType)
-
-        assertDoesNotThrow {
-            all = beatService.findAllBySource(strategy)
-        }
-
-        verify {
-            sourceService.findSourceBeats(strategy)
-        }
-
-        Assertions.assertEquals(
-            testBeats, all
-        )
     }
 
     private fun emptyRepository() {

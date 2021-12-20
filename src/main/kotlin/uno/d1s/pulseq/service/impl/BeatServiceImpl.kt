@@ -17,7 +17,6 @@ import uno.d1s.pulseq.repository.BeatRepository
 import uno.d1s.pulseq.service.ActivityService
 import uno.d1s.pulseq.service.BeatService
 import uno.d1s.pulseq.service.SourceService
-import uno.d1s.pulseq.strategy.source.SourceFindingStrategy
 import uno.d1s.pulseq.strategy.source.byAll
 import uno.d1s.pulseq.util.findClosestInstantToCurrent
 
@@ -68,9 +67,6 @@ class BeatServiceImpl : BeatService {
                 )
             )
         }
-
-    // I dont know why do I keep this here... I'll just TODO it.
-    override fun findAllBySource(strategy: SourceFindingStrategy): List<Beat> = sourceService.findSourceBeats(strategy)
 
     @Transactional(readOnly = true)
     @Cacheable(cacheNames = [CacheNameConstants.BEATS])
