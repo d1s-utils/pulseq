@@ -1,6 +1,8 @@
-package uno.d1s.pulseq.util
+/*
+ * BSD 3-Clause License, Copyright (c) 2021, Pulseq and contributors.
+ */
 
-import org.springframework.util.StringUtils
+package uno.d1s.pulseq.util
 
 fun String.pluralGrammar(number: Number) =
     if (number != 1) "${this}s" else this
@@ -17,5 +19,3 @@ fun String.withSlash() =
 
 fun String.replacePathPlaceholder(placeholder: String, replacement: String) =
     this.replace("{$placeholder}", replacement)
-
-fun String.fromCommaSeparatedString(): List<String> = StringUtils.delimitedListToStringArray(this, ",").asList()
