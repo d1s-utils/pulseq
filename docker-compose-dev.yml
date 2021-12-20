@@ -1,26 +1,31 @@
 version: '3'
 
 volumes:
-  db-data:
+  db-data-postgres:
     driver: local
 
-  mongo-config:
+  db-data-postgres-config:
     driver: local
 
 services:
-  pulseq-mongodb:
-    image: mongo:latest
-    container_name: pulseq-mongodb
+  pulseq-postgres:
+    image: postgres:9.6-bullseye
+    container_name: pulseq-postgres
+    environment:
+      POSTGRES_DB: "pulseq-data"
+      POSTGRES_USER: "pulseq-data"
+      POSTGRES_PASSWORD: "pulseq-data"
+      PGDATA: /var/lib/postgresql/data/pgdata
     restart: always
     networks:
       - pulseq-net
     ports:
-      - "27017:27017"
+      - "5432:5432"
     expose:
-      - 27017
+      - 5432
     volumes:
-      - db-data:/data/db
-      - mongo-config:/data/configdb
+      - db-data-postgres-config:/var/lib/postgresql/dataConfig
+      - db-data-postgres:/var/lib/postgresql/data
 
   pulseq:
     image: pulseq:0.3.0-alpha.0
@@ -30,11 +35,12 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - pulseq-mongodb
+      - pulseq-postgres
     environment:
-      SPRING_DATA_MONGODB_HOST: pulseq-mongodb
+      SPRING_DATASOURCE_URL: jdbc:postgresql://pulseq-postgres:5432/pulseq-data
       SPRING_PROFILES_ACTIVE: dev
 
 networks:
   pulseq-net:
     driver: bridge
+

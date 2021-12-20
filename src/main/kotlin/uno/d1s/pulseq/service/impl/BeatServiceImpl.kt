@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.ApplicationEventPublisher
+import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uno.d1s.pulseq.constant.cache.CacheNameConstants
@@ -16,7 +17,6 @@ import uno.d1s.pulseq.repository.BeatRepository
 import uno.d1s.pulseq.service.ActivityService
 import uno.d1s.pulseq.service.BeatService
 import uno.d1s.pulseq.service.SourceService
-import uno.d1s.pulseq.strategy.source.SourceFindingStrategy
 import uno.d1s.pulseq.strategy.source.byAll
 import uno.d1s.pulseq.util.findClosestInstantToCurrent
 
@@ -36,6 +36,7 @@ class BeatServiceImpl : BeatService {
     private lateinit var eventPublisher: ApplicationEventPublisher
 
     // Here we inject ourselves to work with our methods (since we use caching and inject a proxy class)
+    @Lazy // used to resolve the circular dependency
     @Autowired
     private lateinit var beatService: BeatService
 
@@ -52,6 +53,7 @@ class BeatServiceImpl : BeatService {
             Beat(runCatching {
                 sourceService.findSource(byAll(identify))
             }.getOrElse {
+                it.printStackTrace()
                 sourceService.registerNewSource(identify)
             }, runCatching {
                 activityService.getCurrentInactivityDuration()
@@ -66,15 +68,8 @@ class BeatServiceImpl : BeatService {
             )
         }
 
-    // this is absolutely bullshit, see https://stackoverflow.com/questions/47439247/spring-data-mongodb-dbref-list
-    override fun findAllBySource(strategy: SourceFindingStrategy): List<Beat> = beatService.findAllBeats().filter {
-        when (strategy) {
-            is SourceFindingStrategy.ById -> strategy.identify == it.source.id
-            is SourceFindingStrategy.ByName -> strategy.identify == it.source.name
-            else -> strategy.identify == it.source.name || strategy.identify == it.source.id
-        }
-    }
-
+    @Transactional(readOnly = true)
+    @Cacheable(cacheNames = [CacheNameConstants.BEATS])
     override fun findAllBeats(): List<Beat> = beatRepository.findAll().sortedBy {
         it.beatTime
     }

@@ -1,17 +1,19 @@
 plugins {
-    id("org.jetbrains.dokka") version "1.5.30"
-    id("org.springframework.boot") version "2.5.6"
+    id("org.jetbrains.dokka") version "1.6.0"
+    id("org.springframework.boot") version "2.6.1"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
-    kotlin("jvm") version "1.5.31"
-    kotlin("plugin.spring") version "1.5.31"
+    id("org.jetbrains.kotlin.plugin.jpa") version "1.6.10"
+    kotlin("jvm") version "1.6.10"
+    kotlin("plugin.spring") version "1.6.10"
 }
 
-extra["dokkaVersion"] = "1.5.30"
+extra["dokkaVersion"] = "1.6.0"
 extra["springMockkVersion"] = "3.0.1"
-extra["discordWebhooksVersion"] = "0.7.2"
+extra["discordWebhooksVersion"] = "0.7.4"
 extra["commonsIOVersion"] = "2.11.0"
-extra["caffeineVersion"] = "3.0.4"
-extra["springdocVersion"] = "1.5.13"
+extra["caffeineVersion"] = "3.0.5"
+extra["springdocVersion"] = "1.6.1"
+extra["liquibaseVersion"] = "4.6.2"
 
 group = "uno.d1s"
 version = "0.3.0-alpha.0"
@@ -42,7 +44,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.postgresql:postgresql")
+    implementation("org.liquibase:liquibase-core:${property("liquibaseVersion")}")
     implementation("club.minnced:discord-webhooks:${property("discordWebhooksVersion")}")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")

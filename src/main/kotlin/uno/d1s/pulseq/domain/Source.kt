@@ -1,15 +1,20 @@
 package uno.d1s.pulseq.domain
 
-import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.Document
+import org.hibernate.annotations.GenericGenerator
+import javax.persistence.*
 
-@Document
+@Entity
+@Table(name = "source", schema = "public")
 class Source(
     val name: String
 ) {
     @Id
+    @Column
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid")
     var id: String? = null
 
+    @OneToMany(cascade = [CascadeType.ALL], mappedBy = "source")
     var beats: List<Beat>? = null
 
     override fun equals(other: Any?): Boolean {

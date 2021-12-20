@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import uno.d1s.pulseq.constant.cache.CacheNameConstants
 import uno.d1s.pulseq.domain.Beat
@@ -17,7 +18,6 @@ import uno.d1s.pulseq.service.BeatService
 import uno.d1s.pulseq.service.SourceService
 import uno.d1s.pulseq.strategy.source.SourceFindingStrategy
 import uno.d1s.pulseq.strategy.source.SourceFindingStrategy.*
-import uno.d1s.pulseq.strategy.source.byId
 import uno.d1s.pulseq.strategy.source.byName
 
 @Service
@@ -33,11 +33,9 @@ class SourceServiceImpl : SourceService {
     private lateinit var applicationEventPublisher: ApplicationEventPublisher
 
     @Transactional(readOnly = true)
-    override fun findAllRegisteredSources(): List<Source> = sourceRepository.findAll().onEach {
-        it.beats = this.findSourceBeats(byId(it.id!!))
-    }
+    override fun findAllRegisteredSources(): List<Source> = sourceRepository.findAll()
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
     override fun findSource(strategy: SourceFindingStrategy): Source = when (strategy) {
         is ById -> this.findById(strategy.identify)
         is ByName -> this.findByName(strategy.identify)
@@ -50,8 +48,6 @@ class SourceServiceImpl : SourceService {
                 throw SourceNotFoundException("Could not find any source with provided name or id.")
             }
         }
-    }.apply {
-        beats = beatService.findAllBySource(strategy)
     }
 
     @Transactional
@@ -62,7 +58,7 @@ class SourceServiceImpl : SourceService {
             sourceRepository.save(Source(name))
         }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     override fun updateSource(strategy: SourceFindingStrategy, source: Source): Source {
         val exisingSource =
             this.findSource(strategy)

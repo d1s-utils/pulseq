@@ -26,12 +26,12 @@ internal class HttpServletResponseUtilTest {
         val response = MockHttpServletResponse()
         httpServletResponseUtil.sendErrorDto(response) {
             status = HttpStatus.OK.value()
-            message = "It's ok."
+            error = "It's ok."
         }
 
         Assertions.assertEquals(HttpStatus.OK.value(), response.status)
         Assertions.assertEquals(
-            "It's ok.", objectMapper.readValue(response.contentAsString, ErrorDto::class.java).message
+            "It's ok.", objectMapper.readValue(response.contentAsString, ErrorDto::class.java).error
         )
     }
 }

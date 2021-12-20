@@ -1,19 +1,26 @@
 package uno.d1s.pulseq.domain
 
-import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.DBRef
-import org.springframework.data.mongodb.core.mapping.Document
+import org.hibernate.annotations.GenericGenerator
 import java.time.Duration
 import java.time.Instant
+import javax.persistence.*
 
-@Document(collection = "beat")
+@Entity
+@Table(name = "beat", schema = "public")
 class Beat(
-    @DBRef
+    @ManyToOne
     val source: Source,
+
+    @Column
     val inactivityBeforeBeat: Duration?, // could be null if it is a first beat.
+
+    @Column
     val beatTime: Instant = Instant.now()
 ) {
     @Id
+    @Column
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid")
     var id: String? = null
 
     override fun equals(other: Any?): Boolean {

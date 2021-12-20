@@ -13,16 +13,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.*
 import uno.d1s.pulseq.configuration.property.PaginationConfigurationProperties
+import uno.d1s.pulseq.constant.mapping.BeatMappingConstants
 import uno.d1s.pulseq.controller.impl.BeatControllerImpl
 import uno.d1s.pulseq.converter.DtoConverter
-import uno.d1s.pulseq.constant.mapping.BeatMappingConstants
-import uno.d1s.pulseq.util.replacePathPlaceholder
 import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.dto.BeatDto
 import uno.d1s.pulseq.service.BeatService
-import uno.d1s.pulseq.strategy.source.byAll
 import uno.d1s.pulseq.testUtils.*
-import uno.d1s.pulseq.testUtils.expectJsonContentType
+import uno.d1s.pulseq.util.replacePathPlaceholder
 
 @AutoConfigureMockMvc(addFilters = false)
 @ContextConfiguration(classes = [BeatControllerImpl::class])
@@ -55,10 +53,6 @@ internal class BeatControllerImplTest {
         every {
             beatService.registerNewBeatWithSourceIdentify(VALID_STUB)
         } returns testBeat
-
-        every {
-            beatService.findAllBySource(byAll(VALID_STUB))
-        } returns testBeats
 
         every {
             beatService.findAllBeats()

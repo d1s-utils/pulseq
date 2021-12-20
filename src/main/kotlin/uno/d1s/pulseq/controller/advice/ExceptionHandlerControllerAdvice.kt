@@ -16,7 +16,7 @@ class ExceptionHandlerControllerAdvice {
     @ExceptionHandler
     fun handleAbstractHttpStatusException(ex: AbstractHttpStatusException, response: HttpServletResponse) {
         httpServletResponseUtil.sendErrorDto(response) {
-            message = ex.message!!
+            error = ex.message!!
             status = ex.status.value()
         }
     }

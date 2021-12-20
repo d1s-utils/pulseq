@@ -5,19 +5,29 @@ spring:
   application:
     name: "pulseq"
 
-  data:
-    mongodb:
-      database: "pulseq-data"
-      auto-index-creation: on
-      host: "localhost"
-      port: 27017
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/pulseq-data
+    username: pulseq-data
+    password: pulseq-data
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL94Dialect
+    hibernate:
+      ddl-auto: none # required for liquibase migrations
+
+  liquibase:
+    change-log: db/changelog/db.changelog-0.3.0-alpha.0.xml
+
+  main:
+    allow-circular-references: true # don't do it at home
 
 server:
   servlet:
     context-path: /api
 
 pulseq:
-  version: "0.2.1-alpha.0"
+  version: "0.3.0-alpha.0"
   repository: "https://github.com/d1snin/pulseq"
   server-name: "my pulseq instance"
 

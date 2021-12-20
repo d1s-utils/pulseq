@@ -88,10 +88,6 @@ internal class SourceServiceImplTest {
         }
 
         every {
-            beatService.findAllBySource(any())
-        } returns testBeats
-
-        every {
             beatService.findAllBeats()
         } returns testBeats
 
