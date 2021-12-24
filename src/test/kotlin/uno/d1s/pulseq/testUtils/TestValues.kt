@@ -4,6 +4,8 @@
 
 package uno.d1s.pulseq.testUtils
 
+import uno.d1s.pulseq.aspect.cache.idProvider.IdListProvider
+import uno.d1s.pulseq.aspect.cache.idProvider.IdProvider
 import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.domain.Source
 import uno.d1s.pulseq.domain.activity.TimeSpan
@@ -68,3 +70,14 @@ internal val testTimeSpansDto = listOf(testTimeSpanDto)
 
 // collections
 internal val testCollection = listOf(1, 2, 3)
+
+// id providers
+internal val testIdProvider = object : IdProvider {
+    override fun getId(any: Any) = VALID_STUB
+}
+
+// id list providers
+internal val testIdListProvider = object : IdListProvider {
+    override fun getIdList(any: Any) = listOf(VALID_STUB)
+
+}

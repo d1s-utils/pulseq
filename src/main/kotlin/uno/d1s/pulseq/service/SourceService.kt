@@ -20,7 +20,7 @@ interface SourceService {
 
     fun updateSource(strategy: SourceFindingStrategy, source: Source): Source
 
-    fun deleteSource(strategy: SourceFindingStrategy)
+    fun deleteSource(strategy: SourceFindingStrategy): Source
 
     fun findSourceBeats(strategy: SourceFindingStrategy): List<Beat>
 }
