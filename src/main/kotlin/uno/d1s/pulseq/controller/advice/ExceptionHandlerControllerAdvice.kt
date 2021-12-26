@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import uno.d1s.pulseq.exception.AbstractHttpStatusException
-import uno.d1s.pulseq.util.HttpServletResponseUtil
+import uno.d1s.pulseq.util.http.HttpServletResponseUtil
 import javax.servlet.http.HttpServletResponse
 
 @RestControllerAdvice

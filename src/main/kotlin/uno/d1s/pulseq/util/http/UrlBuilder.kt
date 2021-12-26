@@ -2,7 +2,9 @@
  * BSD 3-Clause License, Copyright (c) 2021, Pulseq and contributors.
  */
 
-package uno.d1s.pulseq.util
+package uno.d1s.pulseq.util.http
+
+import uno.d1s.pulseq.util.withSlash
 
 class UrlBuilder(private var initialUrl: String) {
 

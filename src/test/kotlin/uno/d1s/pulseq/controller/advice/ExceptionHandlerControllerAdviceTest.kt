@@ -18,7 +18,7 @@ import org.springframework.mock.web.MockHttpServletResponse
 import org.springframework.test.context.ContextConfiguration
 import uno.d1s.pulseq.exception.AbstractHttpStatusException
 import uno.d1s.pulseq.testUtils.VALID_STUB
-import uno.d1s.pulseq.util.HttpServletResponseUtil
+import uno.d1s.pulseq.util.http.HttpServletResponseUtil
 
 @SpringBootTest
 @ContextConfiguration(classes = [ExceptionHandlerControllerAdvice::class])
