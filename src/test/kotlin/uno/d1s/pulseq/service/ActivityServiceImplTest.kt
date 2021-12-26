@@ -66,14 +66,6 @@ internal class ActivityServiceImplTest {
         } returns Duration.ofMinutes(15)
 
         every {
-            activityConfigurationProperties.long
-        } returns Duration.ofMinutes(30)
-
-        every {
-            activityConfigurationProperties.warning
-        } returns Duration.ofMinutes(50)
-
-        every {
             beatService.findLastBeat()
         } returns this.testBeats[2]
 

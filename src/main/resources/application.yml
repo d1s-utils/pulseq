@@ -1,4 +1,5 @@
 spring:
+
   profiles:
     active: "production"
 
@@ -21,6 +22,7 @@ spring:
 
   main:
     allow-circular-references: true # don't do it at home
+    banner-mode:
 
 server:
   servlet:

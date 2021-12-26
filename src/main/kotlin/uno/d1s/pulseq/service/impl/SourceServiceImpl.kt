@@ -5,11 +5,12 @@
 package uno.d1s.pulseq.service.impl
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.cache.annotation.CacheEvict
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
+import uno.d1s.pulseq.annotation.cache.CacheEvictByListIdProvider
+import uno.d1s.pulseq.aspect.cache.idProvider.impl.SourceBeatsIdListProvider
 import uno.d1s.pulseq.constant.cache.CacheNameConstants
 import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.domain.Source
@@ -83,8 +84,8 @@ class SourceServiceImpl : SourceService {
     }
 
     @Transactional
-    @CacheEvict(cacheNames = [CacheNameConstants.BEAT, CacheNameConstants.BEATS], allEntries = true)
-    override fun deleteSource(strategy: SourceFindingStrategy) {
+    @CacheEvictByListIdProvider(cacheName = CacheNameConstants.BEATS, idListProvider = SourceBeatsIdListProvider::class)
+    override fun deleteSource(strategy: SourceFindingStrategy): Source {
         val source = this.findSource(strategy)
 
         beatService.findAllBeats().forEach {
@@ -102,6 +103,8 @@ class SourceServiceImpl : SourceService {
                 this, source
             )
         )
+
+        return source
     }
 
     @Transactional(readOnly = true)

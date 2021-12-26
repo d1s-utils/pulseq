@@ -5,12 +5,13 @@
 package uno.d1s.pulseq.service.impl
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.cache.annotation.CacheEvict
-import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uno.d1s.pulseq.annotation.cache.CachePutByIdProvider
+import uno.d1s.pulseq.annotation.cache.CacheableList
+import uno.d1s.pulseq.aspect.cache.idProvider.impl.BeatIdProvider
 import uno.d1s.pulseq.constant.cache.CacheNameConstants
 import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.event.beat.BeatDeletedEvent
@@ -45,13 +46,13 @@ class BeatServiceImpl : BeatService {
     private lateinit var beatService: BeatService
 
     @Transactional(readOnly = true)
-    @Cacheable(cacheNames = [CacheNameConstants.BEAT])
+    @CachePutByIdProvider(cacheName = CacheNameConstants.BEATS, idProvider = BeatIdProvider::class)
     override fun findBeatById(id: String): Beat = beatRepository.findById(id).orElseThrow {
         BeatNotFoundException()
     }
 
     @Transactional
-    @CacheEvict(cacheNames = [CacheNameConstants.BEAT, CacheNameConstants.BEATS], allEntries = true)
+    @CachePutByIdProvider(cacheName = CacheNameConstants.BEATS, idProvider = BeatIdProvider::class)
     override fun registerNewBeatWithSourceIdentify(identify: String): Beat =
         beatRepository.save(
             Beat(runCatching {
@@ -73,7 +74,7 @@ class BeatServiceImpl : BeatService {
         }
 
     @Transactional(readOnly = true)
-    @Cacheable(cacheNames = [CacheNameConstants.BEATS])
+    @CacheableList(cacheName = CacheNameConstants.BEATS, idProvider = BeatIdProvider::class)
     override fun findAllBeats(): List<Beat> = beatRepository.findAll().sortedBy {
         it.beatTime
     }
@@ -88,7 +89,7 @@ class BeatServiceImpl : BeatService {
         }
     }
 
-    @Cacheable(cacheNames = [CacheNameConstants.BEAT])
+    @CacheableList(cacheName = CacheNameConstants.BEATS, idProvider = BeatIdProvider::class)
     override fun findLastBeat(): Beat = beatService.findAllBeats().let { all ->
         all.firstOrNull { beat ->
             all.map {
@@ -99,7 +100,7 @@ class BeatServiceImpl : BeatService {
         } ?: throw NoBeatsReceivedException
     }
 
-    @Cacheable(cacheNames = [CacheNameConstants.BEAT])
+    @CacheableList(cacheName = CacheNameConstants.BEATS, idProvider = BeatIdProvider::class)
     override fun findFirstBeat(): Beat = beatService.findAllBeats().let { all ->
         all.firstOrNull { beat ->
             all.minOfOrNull {
@@ -108,6 +109,7 @@ class BeatServiceImpl : BeatService {
         } ?: throw NoBeatsReceivedException
     }
 
+    @Transactional
     override fun deleteBeat(id: String, sendEvent: Boolean) {
         val beatForRemoval = beatService.findBeatById(id)
 
