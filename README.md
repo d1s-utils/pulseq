@@ -9,6 +9,7 @@
 
 > Pulseq is inspired by [`technically-functional/heartbeat`](https://github.com/technically-functional/heartbeat), which is licensed under the [ISC license](https://github.com/technically-functional/heartbeat/blob/master/LICENSE.md).
 
-The main idea of pulseq is to provide data on the resource usage.
+<!-- The main idea of pulseq is to provide data on the resource usage.
 
 #### Try pulseq in action right now: [***Read the docs***](https://github.com/d1snin-dev/pulseq/wiki)
+ -->
