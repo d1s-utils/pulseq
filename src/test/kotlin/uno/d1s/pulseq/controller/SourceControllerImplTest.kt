@@ -22,7 +22,7 @@ import uno.d1s.pulseq.controller.impl.SourceControllerImpl
 import uno.d1s.pulseq.converter.DtoConverter
 import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.domain.Source
-import uno.d1s.pulseq.dto.BeatDto
+import uno.d1s.pulseq.dto.beat.BeatDto
 import uno.d1s.pulseq.dto.source.SourceDto
 import uno.d1s.pulseq.dto.source.SourcePatchDto
 import uno.d1s.pulseq.service.SourceService

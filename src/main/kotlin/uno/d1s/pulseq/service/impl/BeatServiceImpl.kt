@@ -19,11 +19,11 @@ import uno.d1s.pulseq.event.beat.BeatReceivedEvent
 import uno.d1s.pulseq.exception.impl.BeatNotFoundException
 import uno.d1s.pulseq.exception.impl.NoBeatsReceivedException
 import uno.d1s.pulseq.repository.BeatRepository
-import uno.d1s.pulseq.service.ActivityService
+import uno.d1s.pulseq.service.IntervalService
 import uno.d1s.pulseq.service.BeatService
 import uno.d1s.pulseq.service.SourceService
 import uno.d1s.pulseq.strategy.source.byAll
-import uno.d1s.pulseq.util.findClosestInstantToCurrent
+import uno.d1s.pulseq.util.time.findClosestInstantToCurrent
 
 @Service
 class BeatServiceImpl : BeatService {
@@ -35,7 +35,7 @@ class BeatServiceImpl : BeatService {
     private lateinit var sourceService: SourceService
 
     @Autowired
-    private lateinit var activityService: ActivityService
+    private lateinit var intervalService: IntervalService
 
     @Autowired
     private lateinit var eventPublisher: ApplicationEventPublisher
@@ -53,7 +53,7 @@ class BeatServiceImpl : BeatService {
 
     @Transactional
     @CachePutByIdProvider(cacheName = CacheNameConstants.BEATS, idProvider = BeatIdProvider::class)
-    override fun registerNewBeatWithSourceIdentify(identify: String): Beat =
+    override fun createBeat(identify: String): Beat =
         beatRepository.save(
             Beat(runCatching {
                 sourceService.findSource(byAll(identify))
@@ -61,7 +61,7 @@ class BeatServiceImpl : BeatService {
                 it.printStackTrace()
                 sourceService.registerNewSource(identify)
             }, runCatching {
-                activityService.getCurrentInactivityDuration()
+                intervalService.findCurrentAbsenceInterval()
             }.getOrElse {
                 null
             })
@@ -76,42 +76,42 @@ class BeatServiceImpl : BeatService {
     @Transactional(readOnly = true)
     @CacheableList(cacheName = CacheNameConstants.BEATS, idProvider = BeatIdProvider::class)
     override fun findAllBeats(): List<Beat> = beatRepository.findAll().sortedBy {
-        it.beatTime
+        it.instant
     }
 
-    override fun totalBeats(): Int = beatService.findAllBeats().size
+    override fun totalBeats(): Int = beatService.findAll().size
 
     override fun totalBeatsBySources(): Map<String, Int> = HashMap<String, Int>().apply {
         // It would be easier to use Source's beats DBRef but this will hurt the performance,
         // because this data is not cached (So, I should figure out how to cache it easier)
-        beatService.findAllBeats().forEach {
+        beatService.findAll().forEach {
             put(it.source.name, (get(it.source.name) ?: 0) + 1)
         }
     }
 
     @CacheableList(cacheName = CacheNameConstants.BEATS, idProvider = BeatIdProvider::class)
-    override fun findLastBeat(): Beat = beatService.findAllBeats().let { all ->
+    override fun findLast(): Beat = beatService.findAll().let { all ->
         all.firstOrNull { beat ->
             all.map {
-                it.beatTime
+                it.instant
             }.findClosestInstantToCurrent().orElseThrow {
                 NoBeatsReceivedException
-            } == beat.beatTime
+            } == beat.instant
         } ?: throw NoBeatsReceivedException
     }
 
     @CacheableList(cacheName = CacheNameConstants.BEATS, idProvider = BeatIdProvider::class)
-    override fun findFirstBeat(): Beat = beatService.findAllBeats().let { all ->
+    override fun findFirst(): Beat = beatService.findAll().let { all ->
         all.firstOrNull { beat ->
             all.minOfOrNull {
-                it.beatTime
-            } == beat.beatTime
+                it.instant
+            } == beat.instant
         } ?: throw NoBeatsReceivedException
     }
 
     @Transactional
-    override fun deleteBeat(id: String, sendEvent: Boolean) {
-        val beatForRemoval = beatService.findBeatById(id)
+    override fun remove(id: String, sendEvent: Boolean) {
+        val beatForRemoval = beatService.findById(id)
 
         beatRepository.delete(
             beatForRemoval

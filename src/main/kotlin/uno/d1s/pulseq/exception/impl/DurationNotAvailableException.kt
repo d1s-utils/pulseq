@@ -8,6 +8,6 @@ import org.springframework.http.HttpStatus
 import uno.d1s.pulseq.constant.error.ErrorConstants
 import uno.d1s.pulseq.exception.AbstractHttpStatusException
 
-class TimeSpansNotAvailableException(
+class DurationNotAvailableException(
     override val message: String = ErrorConstants.TIME_SPANS_NOT_AVAILABLE
 ) : AbstractHttpStatusException(HttpStatus.UNPROCESSABLE_ENTITY, message)

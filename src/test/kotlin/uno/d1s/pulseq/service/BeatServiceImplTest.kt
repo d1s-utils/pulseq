@@ -54,7 +54,7 @@ internal class BeatServiceImplTest {
     private lateinit var sourceService: SourceService
 
     @MockkBean
-    private lateinit var activityService: ActivityService
+    private lateinit var intervalService: IntervalService
 
     @BeforeEach
     fun setup() {
@@ -99,7 +99,7 @@ internal class BeatServiceImplTest {
         } returns testBeats
 
         every {
-            activityService.getCurrentInactivityDuration()
+            intervalService.findCurrentAbsenceInterval()
         } returns Duration.ZERO
 
         every {
@@ -194,7 +194,7 @@ internal class BeatServiceImplTest {
         var lastBeat: Beat by Delegates.notNull()
 
         assertDoesNotThrow {
-            lastBeat = beatService.findLastBeat()
+            lastBeat = beatService.findLast()
         }
 
         Assertions.assertEquals(testBeat, lastBeat)
@@ -205,7 +205,7 @@ internal class BeatServiceImplTest {
         this.emptyRepository()
 
         Assertions.assertThrows(NoBeatsReceivedException::class.java) {
-            beatService.findLastBeat()
+            beatService.findLast()
         }
     }
 
@@ -215,7 +215,7 @@ internal class BeatServiceImplTest {
         var firstBeat: Beat by Delegates.notNull()
 
         assertDoesNotThrow {
-            firstBeat = beatService.findFirstBeat()
+            firstBeat = beatService.findFirst()
         }
 
         Assertions.assertEquals(testBeat, firstBeat)
@@ -226,14 +226,14 @@ internal class BeatServiceImplTest {
         this.emptyRepository()
 
         Assertions.assertThrows(NoBeatsReceivedException::class.java) {
-            beatService.findFirstBeat()
+            beatService.findFirst()
         }
     }
 
     @Test
     fun `should delete the beat`() {
         assertDoesNotThrow {
-            beatService.deleteBeat(VALID_STUB)
+            beatService.remove(VALID_STUB)
         }
 
 //        verify {
@@ -256,7 +256,7 @@ internal class BeatServiceImplTest {
         var beat: Beat by Delegates.notNull()
 
         assertDoesNotThrow {
-            beat = beatService.registerNewBeatWithSourceIdentify(sourceName)
+            beat = beatService.createBeat(sourceName)
         }
 
         if (registerSource) {
@@ -270,7 +270,7 @@ internal class BeatServiceImplTest {
         }
 
         verify {
-            activityService.getCurrentInactivityDuration()
+            intervalService.findCurrentAbsenceInterval()
         }
 
         verify {
@@ -282,9 +282,9 @@ internal class BeatServiceImplTest {
         )
 
         Assertions.assertEquals(testBeat.id, beat.id)
-        Assertions.assertEquals(Instant.now().epochSecond, beat.beatTime.epochSecond)
+        Assertions.assertEquals(Instant.now().epochSecond, beat.instant.epochSecond)
         Assertions.assertEquals(sourceName, beat.source.name)
-        Assertions.assertEquals(activityService.getCurrentInactivityDuration(), beat.inactivityBeforeBeat)
+        Assertions.assertEquals(intervalService.findCurrentAbsenceInterval(), beat.inactivityBeforeBeat)
     }
 
     private fun emptyRepository() {

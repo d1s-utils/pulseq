@@ -21,9 +21,9 @@ import uno.d1s.pulseq.configuration.property.PaginationConfigurationProperties
 import uno.d1s.pulseq.constant.mapping.ActivityMappingConstants
 import uno.d1s.pulseq.controller.impl.ActivityControllerImpl
 import uno.d1s.pulseq.converter.DtoConverter
-import uno.d1s.pulseq.domain.activity.TimeSpan
-import uno.d1s.pulseq.dto.TimeSpanDto
-import uno.d1s.pulseq.service.ActivityService
+import uno.d1s.pulseq.domain.activity.impl.BeatInterval
+import uno.d1s.pulseq.dto.beat.BeatIntervalDto
+import uno.d1s.pulseq.service.IntervalService
 import uno.d1s.pulseq.testUtils.*
 
 @AutoConfigureMockMvc(addFilters = false)
@@ -38,10 +38,10 @@ internal class ActivityControllerImplTest {
     private lateinit var objectMapper: ObjectMapper
 
     @MockkBean
-    private lateinit var activityService: ActivityService
+    private lateinit var intervalService: IntervalService
 
     @MockkBean
-    private lateinit var timeSpanDtoConverter: DtoConverter<TimeSpan, TimeSpanDto>
+    private lateinit var beatBeatIntervalDtoConverter: DtoConverter<BeatInterval, BeatIntervalDto>
 
     @MockkBean
     private lateinit var paginationConfigurationProperties: PaginationConfigurationProperties
@@ -51,89 +51,89 @@ internal class ActivityControllerImplTest {
         paginationConfigurationProperties.setupTestStub()
 
         every {
-            activityService.getAllTimeSpans()
-        } returns testTimeSpans
+            intervalService.findAllIntervals()
+        } returns testDurations
 
         every {
-            activityService.getLongestTimeSpan()
-        } returns testTimeSpan
+            intervalService.findLongestInterval()
+        } returns testBeatInterval
 
         every {
-            activityService.getCurrentTimeSpan()
-        } returns testTimeSpan
+            intervalService.findCurrentInterval()
+        } returns testBeatInterval
 
         every {
-            activityService.getLastRegisteredTimeSpan()
-        } returns testTimeSpan
+            intervalService.getLastRegisteredDuration()
+        } returns testBeatInterval
 
         every {
-            timeSpanDtoConverter.convertToDto(testTimeSpan)
-        } returns testTimeSpanDto
+            beatBeatIntervalDtoConverter.convertToDto(testBeatInterval)
+        } returns testBeatIntervalDto
 
         every {
-            timeSpanDtoConverter.convertToDtoList(testTimeSpans)
-        } returns testTimeSpansDto
+            beatBeatIntervalDtoConverter.convertToDtoList(testDurations)
+        } returns testDurationsDto
     }
 
     @Test
     fun `should return 200 and all time spans`() {
-        mockMvc.get(ActivityMappingConstants.GET_TIMESPANS).andExpect {
+        mockMvc.get(ActivityMappingConstants.GET_DURATIONS).andExpect {
             status {
                 isOk()
             }
 
             content {
-                json(objectMapper.writeValueAsString(testTimeSpansDto.toPage()))
+                json(objectMapper.writeValueAsString(testDurationsDto.toPage()))
             }
 
             expectJsonContentType()
         }
 
         verify {
-            activityService.getAllTimeSpans()
+            intervalService.findAllIntervals()
         }
     }
 
     @Test
     fun `should return 200 and longest time span`() {
-        verifyCommonTimeSpanResponse(ActivityMappingConstants.GET_LONGEST_TIME_SPAN)
+        verifyCommonDurationResponse(ActivityMappingConstants.GET_LONGEST_DURATION)
 
         verify {
-            activityService.getLongestTimeSpan()
+            intervalService.findLongestInterval()
         }
     }
 
     @Test
     fun `should return 200 and current time span`() {
-        verifyCommonTimeSpanResponse(ActivityMappingConstants.GET_CURRENT_TIMESPAN)
+        verifyCommonDurationResponse(ActivityMappingConstants.GET_CURRENT_DURATION)
 
         verify {
-            activityService.getCurrentTimeSpan()
+            intervalService.findCurrentInterval()
         }
     }
 
     @Test
     fun `should return 200 and last registered time span`() {
-        verifyCommonTimeSpanResponse(ActivityMappingConstants.GET_LAST_TIMESPAN)
+        verifyCommonDurationResponse(ActivityMappingConstants.GET_LAST_DURATION)
 
         verify {
-            activityService.getLastRegisteredTimeSpan()
+            intervalService.getLastRegisteredDuration()
         }
     }
 
-    private fun MockMvcResultMatchersDsl.expectTimeSpan() {
+    private fun MockMvcResultMatchersDsl.expectDuration() {
         content {
-            json(objectMapper.writeValueAsString(testTimeSpanDto))
+            json(objectMapper.writeValueAsString(testBeatIntervalDto))
         }
     }
 
-    private fun verifyCommonTimeSpanResponse(url: String) {
+    private fun verifyCommonDurationResponse(url: String) {
         mockMvc.get(url).andExpect {
             status {
                 isOk()
             }
 
-            expectTimeSpan()
+            expectDuration()
             expectJsonContentType()
         }
     }

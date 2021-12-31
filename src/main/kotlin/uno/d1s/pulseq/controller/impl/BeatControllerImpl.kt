@@ -14,7 +14,7 @@ import uno.d1s.pulseq.configuration.property.PaginationConfigurationProperties
 import uno.d1s.pulseq.controller.BeatController
 import uno.d1s.pulseq.converter.DtoConverter
 import uno.d1s.pulseq.domain.Beat
-import uno.d1s.pulseq.dto.BeatDto
+import uno.d1s.pulseq.dto.beat.BeatDto
 import uno.d1s.pulseq.exception.impl.SourceNotFoundException
 import uno.d1s.pulseq.service.BeatService
 import uno.d1s.pulseq.util.page
@@ -35,7 +35,7 @@ class BeatControllerImpl : BeatController {
 
     override fun getBeatBtId(id: String): ResponseEntity<BeatDto> = ResponseEntity.ok(
         beatDtoConverter.convertToDto(
-            beatService.findBeatById(id)
+            beatService.findById(id)
         )
     )
 
@@ -44,7 +44,7 @@ class BeatControllerImpl : BeatController {
         sourceParam: String?, sourceHeader: String?, response: HttpServletResponse
     ): ResponseEntity<BeatDto>? {
         val createdBeat = beatDtoConverter.convertToDto(
-            beatService.registerNewBeatWithSourceIdentify(
+            beatService.create(
                 sourceParam ?: (sourceHeader ?: throw SourceNotFoundException("Source definition must be present."))
             )
         )
@@ -59,18 +59,18 @@ class BeatControllerImpl : BeatController {
         @RequestParam(required = false) pageSize: Int?
     ): ResponseEntity<Page<BeatDto>> = ResponseEntity.ok(
         beatDtoConverter.convertToDtoList(
-            beatService.findAllBeats()
+            beatService.findAll()
         ).page(page ?: 0, pageSize ?: paginationConfigurationProperties.defaultPageSize)
     )
 
     override fun getLastBeat(): ResponseEntity<BeatDto> = ResponseEntity.ok(
         beatDtoConverter.convertToDto(
-            beatService.findLastBeat()
+            beatService.findLast()
         )
     )
 
     override fun deleteBeat(id: String): ResponseEntity<Any> {
-        beatService.deleteBeat(id)
+        beatService.remove(id)
         return ResponseEntity.noContent().build()
     }
 }

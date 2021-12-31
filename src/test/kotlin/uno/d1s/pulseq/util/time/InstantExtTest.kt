@@ -8,8 +8,6 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ContextConfiguration
-import uno.d1s.pulseq.util.findClosestInstantToCurrent
-import uno.d1s.pulseq.util.pretty
 import java.time.Instant
 
 @SpringBootTest

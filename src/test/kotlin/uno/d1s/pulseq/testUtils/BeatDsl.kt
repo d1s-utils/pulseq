@@ -15,7 +15,7 @@ inline fun buildBeat(builder: BeatBuilder.() -> Unit) =
 class BeatBuilder(
     var source: Source = testBeat.source,
     var inactivityBeforeBeat: Duration? = testBeat.inactivityBeforeBeat,
-    var beatTime: Instant = testBeat.beatTime,
+    var beatTime: Instant = testBeat.instant,
     var id: String? = testBeat.id
 ) {
 

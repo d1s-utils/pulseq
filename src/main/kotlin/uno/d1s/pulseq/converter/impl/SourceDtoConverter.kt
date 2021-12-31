@@ -10,7 +10,7 @@ import uno.d1s.pulseq.converter.DtoConverter
 import uno.d1s.pulseq.converter.DtoConverterFacade
 import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.domain.Source
-import uno.d1s.pulseq.dto.BeatDto
+import uno.d1s.pulseq.dto.beat.BeatDto
 import uno.d1s.pulseq.dto.source.SourceDto
 import uno.d1s.pulseq.service.BeatService
 
@@ -40,7 +40,7 @@ class SourceDtoConverter : DtoConverterFacade<Source, SourceDto>() {
             id = dtoId
             dto.beats?.let { beatList ->
                 beats = beatList.map {
-                    beatService.findBeatById(it)
+                    beatService.findById(it)
                 }
             }
         }

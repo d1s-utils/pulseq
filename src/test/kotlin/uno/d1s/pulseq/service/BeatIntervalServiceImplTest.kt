@@ -15,22 +15,23 @@ import org.junit.jupiter.api.assertDoesNotThrow
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ContextConfiguration
 import uno.d1s.pulseq.configuration.property.ActivityConfigurationProperties
-import uno.d1s.pulseq.domain.activity.TimeSpan
-import uno.d1s.pulseq.domain.activity.TimeSpanType
+import uno.d1s.pulseq.domain.activity.IntervalType
+import uno.d1s.pulseq.domain.activity.impl.BeatInterval
+import uno.d1s.pulseq.exception.impl.DurationNotAvailableException
 import uno.d1s.pulseq.exception.impl.NoBeatsReceivedException
-import uno.d1s.pulseq.exception.impl.TimeSpansNotAvailableException
-import uno.d1s.pulseq.service.impl.ActivityServiceImpl
+import uno.d1s.pulseq.service.impl.IntervalServiceImpl
 import uno.d1s.pulseq.testUtils.buildBeat
+import uno.d1s.pulseq.util.time.betweenAbs
 import java.time.Duration
 import java.time.Instant
 import kotlin.properties.Delegates
 
 @SpringBootTest
-@ContextConfiguration(classes = [ActivityServiceImpl::class])
-internal class ActivityServiceImplTest {
+@ContextConfiguration(classes = [IntervalServiceImpl::class])
+internal class BeatIntervalServiceImplTest {
 
     @SpykBean
-    private lateinit var activityService: ActivityServiceImpl
+    private lateinit var activityService: IntervalServiceImpl
 
     @MockkBean
     private lateinit var beatService: BeatService
@@ -66,11 +67,11 @@ internal class ActivityServiceImplTest {
         } returns Duration.ofMinutes(15)
 
         every {
-            beatService.findLastBeat()
+            beatService.findLast()
         } returns this.testBeats[2]
 
         every {
-            beatService.findAllBeats()
+            beatService.findAll()
         } returns testBeats
     }
 
@@ -79,48 +80,48 @@ internal class ActivityServiceImplTest {
         var duration: Duration by Delegates.notNull()
 
         assertDoesNotThrow {
-            duration = activityService.getCurrentInactivityDuration()
+            duration = activityService.findCurrentAbsenceInterval()
         }
 
         verify {
-            beatService.findLastBeat()
+            beatService.findLast()
         }
 
         Assertions.assertEquals(
-            duration.toSeconds(), Duration.between(
-                beatService.findLastBeat().beatTime, Instant.now()
-            ).abs().toSeconds()
+            duration.toSeconds(), betweenAbs(
+                beatService.findLast().instant, Instant.now()
+            ).toSeconds()
         )
     }
 
     @Test
     fun `should return valid longest inactivity`() {
-        var inactivity: TimeSpan by Delegates.notNull()
+        var inactivity: BeatInterval by Delegates.notNull()
 
         assertDoesNotThrow {
-            inactivity = activityService.getLongestTimeSpan()
+            inactivity = activityService.getLongestInterval()
         }
 
         verify {
-            activityService.getAllTimeSpans()
+            activityService.findAllIntervals()
         }
 
-        Assertions.assertEquals(TimeSpanType.INACTIVITY, inactivity.type)
-        Assertions.assertEquals(testStartBeat, inactivity.startBeat)
-        Assertions.assertEquals(null, inactivity.endBeat)
+        Assertions.assertEquals(IntervalType.INACTIVITY, inactivity.type)
+        Assertions.assertEquals(testStartBeat, inactivity.start)
+        Assertions.assertEquals(null, inactivity.end)
         Assertions.assertEquals(
-            Duration.between(testStartBeat.beatTime, Instant.now()).toSeconds(), inactivity.duration.toSeconds()
+            betweenAbs(testStartBeat.instant, Instant.now()).toSeconds(), inactivity.duration.toSeconds()
         )
     }
 
     @Test
     fun `should throw an exception when trying to get longest inactivity from empty beats data`() {
         every {
-            beatService.findAllBeats()
+            beatService.findAll()
         } returns listOf()
 
-        Assertions.assertThrows(TimeSpansNotAvailableException::class.java) {
-            activityService.getLongestTimeSpan(processCurrent = false)
+        Assertions.assertThrows(DurationNotAvailableException::class.java) {
+            activityService.getLongestInterval(processCurrent = false)
         }
     }
 
@@ -131,7 +132,7 @@ internal class ActivityServiceImplTest {
         }
 
         verify {
-            activityService.getCurrentInactivityDuration()
+            activityService.findCurrentAbsenceInterval()
         }
 
         // Duration#pretty() extension function
@@ -140,90 +141,90 @@ internal class ActivityServiceImplTest {
 
     @Test
     fun `should return valid current time span type`() {
-        var timeSpanType: TimeSpanType by Delegates.notNull()
+        var intervalType: IntervalType by Delegates.notNull()
 
         assertDoesNotThrow {
-            timeSpanType = activityService.getCurrentTimeSpanType()
+            intervalType = activityService.findCurrentIntervalType()
         }
 
         verify {
-            activityService.getCurrentTimeSpan()
+            activityService.findCurrentInterval()
         }
 
-        Assertions.assertEquals(TimeSpanType.INACTIVITY, timeSpanType)
+        Assertions.assertEquals(IntervalType.INACTIVITY, intervalType)
     }
 
     @Test
     fun `should return valid current time span`() {
-        var timeSpan: TimeSpan by Delegates.notNull()
+        var beatInterval: BeatInterval by Delegates.notNull()
 
         assertDoesNotThrow {
-            timeSpan = activityService.getCurrentTimeSpan()
+            beatInterval = activityService.findCurrentInterval()
         }
 
-        Assertions.assertEquals(testStartBeat, timeSpan.startBeat)
+        Assertions.assertEquals(testStartBeat, beatInterval.start)
         Assertions.assertEquals(
-            Duration.between(testStartBeat.beatTime, Instant.now()).toSeconds(), timeSpan.duration.toSeconds()
+            betweenAbs(testStartBeat.instant, Instant.now()).toSeconds(), beatInterval.duration.toSeconds()
         )
-        Assertions.assertEquals(TimeSpanType.INACTIVITY, timeSpan.type)
-        Assertions.assertEquals(null, timeSpan.endBeat)
+        Assertions.assertEquals(IntervalType.INACTIVITY, beatInterval.type)
+        Assertions.assertEquals(null, beatInterval.end)
 
         verify {
-            beatService.findLastBeat()
+            beatService.findLast()
         }
     }
 
     @Test
     fun `should throw an exception on getting current time span`() {
         every {
-            beatService.findLastBeat()
+            beatService.findLast()
         } throws NoBeatsReceivedException
 
-        Assertions.assertThrows(TimeSpansNotAvailableException::class.java) {
-            activityService.getCurrentTimeSpan()
+        Assertions.assertThrows(DurationNotAvailableException::class.java) {
+            activityService.findCurrentInterval()
         }
     }
 
     @Test
     fun `should return valid time spans`() {
-        var allTimeSpans: List<TimeSpan> by Delegates.notNull()
+        var allBeatIntervals: List<BeatInterval> by Delegates.notNull()
 
         assertDoesNotThrow {
             // not including current time span. This method is being
             // tested at `should return valid current time span`()
             // and `should throw an exception on getting current time span`()
-            allTimeSpans = activityService.getAllTimeSpans(false)
+            allBeatIntervals = activityService.findAllIntervals(false)
         }
 
         Assertions.assertEquals(
             listOf(
-                TimeSpan(
+                BeatInterval(
                     testInactivities[1],
-                    TimeSpanType.ACTIVITY,
+                    IntervalType.ACTIVITY,
                     testBeats[0],
                     testBeats[2]
-                ), TimeSpan(
+                ), BeatInterval(
                     testInactivities[2],
-                    TimeSpanType.INACTIVITY,
+                    IntervalType.INACTIVITY,
                     testBeats[2],
                     testBeats[3]
                 )
-            ), allTimeSpans
+            ), allBeatIntervals
         )
     }
 
     @Test
     fun `should return valid last registered time span`() {
-        var lastRegisteredTimeSpan: TimeSpan by Delegates.notNull()
+        var lastRegisteredBeatInterval: BeatInterval by Delegates.notNull()
 
         assertDoesNotThrow {
-            lastRegisteredTimeSpan = activityService.getLastRegisteredTimeSpan()
+            lastRegisteredBeatInterval = activityService.getLastRegisteredDuration()
         }
 
         verify {
-            activityService.getAllTimeSpans(false)
+            activityService.findAllIntervals(false)
         }
 
-        Assertions.assertEquals(activityService.getAllTimeSpans(false).last(), lastRegisteredTimeSpan)
+        Assertions.assertEquals(activityService.findAllIntervals(false).last(), lastRegisteredBeatInterval)
     }
 }

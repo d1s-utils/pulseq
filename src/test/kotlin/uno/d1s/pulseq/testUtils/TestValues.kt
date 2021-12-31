@@ -8,10 +8,10 @@ import uno.d1s.pulseq.aspect.cache.idProvider.IdListProvider
 import uno.d1s.pulseq.aspect.cache.idProvider.IdProvider
 import uno.d1s.pulseq.domain.Beat
 import uno.d1s.pulseq.domain.Source
-import uno.d1s.pulseq.domain.activity.TimeSpan
-import uno.d1s.pulseq.domain.activity.TimeSpanType
-import uno.d1s.pulseq.dto.BeatDto
-import uno.d1s.pulseq.dto.TimeSpanDto
+import uno.d1s.pulseq.domain.activity.impl.BeatInterval
+import uno.d1s.pulseq.domain.activity.IntervalType
+import uno.d1s.pulseq.dto.beat.BeatDto
+import uno.d1s.pulseq.dto.beat.BeatIntervalDto
 import uno.d1s.pulseq.dto.source.SourceDto
 import uno.d1s.pulseq.dto.source.SourcePatchDto
 import java.time.Duration
@@ -57,16 +57,16 @@ internal val testBeatDto = BeatDto(VALID_STUB, Instant.EPOCH, Duration.ZERO).app
 internal val testBeatsDto = listOf(testBeatDto)
 
 // time spans
-internal val testTimeSpan =
-    TimeSpan(Duration.ZERO, TimeSpanType.ACTIVITY, testBeat, testBeat)
-internal val testTimeSpans = listOf(testTimeSpan)
-internal val testTimeSpanDto = TimeSpanDto(
-    testTimeSpan.duration,
-    testTimeSpan.type,
-    testTimeSpan.startBeat.id!!,
-    testTimeSpan.endBeat!!.id!!
+internal val testBeatInterval =
+    BeatInterval(Duration.ZERO, IntervalType.ACTIVITY, testBeat, testBeat)
+internal val testDurations = listOf(testBeatInterval)
+internal val testBeatIntervalDto = BeatIntervalDto(
+    testBeatInterval.duration,
+    testBeatInterval.type,
+    testBeatInterval.start.id!!,
+    testBeatInterval.end!!.id!!
 )
-internal val testTimeSpansDto = listOf(testTimeSpanDto)
+internal val testDurationsDto = listOf(testBeatIntervalDto)
 
 // collections
 internal val testCollection = listOf(1, 2, 3)
@@ -79,5 +79,4 @@ internal val testIdProvider = object : IdProvider {
 // id list providers
 internal val testIdListProvider = object : IdListProvider {
     override fun getIdList(any: Any) = listOf(VALID_STUB)
-
 }
