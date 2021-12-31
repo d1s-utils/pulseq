@@ -88,9 +88,9 @@ class SourceServiceImpl : SourceService {
     override fun deleteSource(strategy: SourceFindingStrategy): Source {
         val source = this.findSource(strategy)
 
-        beatService.findAllBeats().forEach {
+        beatService.findAll().forEach {
             if (it.source == source) {
-                beatService.deleteBeat(it.id!!, false)
+                beatService.remove(it.id!!, false)
             }
         }
 

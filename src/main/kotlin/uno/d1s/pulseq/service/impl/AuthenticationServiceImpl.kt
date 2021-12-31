@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import uno.d1s.pulseq.configuration.property.SecurityConfigurationProperties
 import uno.d1s.pulseq.service.AuthenticationService
-import uno.d1s.pulseq.util.currentRequest
+import uno.d1s.pulseq.util.http.currentRequest
 
 
 @Service("authenticationService")

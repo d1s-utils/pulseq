@@ -12,14 +12,13 @@ import javax.persistence.*
 @Entity
 @Table(name = "beat", schema = "public")
 class Beat(
-    @ManyToOne
-    val source: Source,
+    @ManyToOne val source: Source,
 
-    @Column
-    val inactivityBeforeBeat: Duration?, // could be null if it is a first beat.
+    @ManyToOne val holder: Holder,
 
-    @Column
-    val beatTime: Instant = Instant.now()
+    @Column val inactivityBeforeBeat: Duration?, // could be null if this is a first beat.
+
+    @Column(unique = true, nullable = false) val instant: Instant = Instant.now()
 ) {
     @Id
     @Column
@@ -35,7 +34,7 @@ class Beat(
 
         if (source != other.source) return false
         if (inactivityBeforeBeat != other.inactivityBeforeBeat) return false
-        if (beatTime != other.beatTime) return false
+        if (instant != other.instant) return false
 
         return true
     }
@@ -43,11 +42,11 @@ class Beat(
     override fun hashCode(): Int {
         var result = source.hashCode()
         result = 31 * result + (inactivityBeforeBeat?.hashCode() ?: 0)
-        result = 31 * result + beatTime.hashCode()
+        result = 31 * result + instant.hashCode()
         return result
     }
 
     override fun toString(): String {
-        return "Beat(source=$source, inactivityBeforeBeat=$inactivityBeforeBeat, beatTime=$beatTime, id=$id)"
+        return "Beat(source=$source, inactivityBeforeBeat=$inactivityBeforeBeat, beatTime=$instant, id=$id)"
     }
 }

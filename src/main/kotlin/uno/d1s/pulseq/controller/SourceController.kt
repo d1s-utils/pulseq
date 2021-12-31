@@ -19,7 +19,7 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import uno.d1s.pulseq.constant.mapping.SourceMappingConstants
-import uno.d1s.pulseq.dto.BeatDto
+import uno.d1s.pulseq.dto.beat.BeatDto
 import uno.d1s.pulseq.dto.ErrorDto
 import uno.d1s.pulseq.dto.source.SourceDto
 import uno.d1s.pulseq.dto.source.SourcePatchDto

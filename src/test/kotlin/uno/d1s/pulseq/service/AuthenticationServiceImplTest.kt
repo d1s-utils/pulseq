@@ -18,7 +18,7 @@ import uno.d1s.pulseq.configuration.property.SecurityConfigurationProperties
 import uno.d1s.pulseq.service.impl.AuthenticationServiceImpl
 import uno.d1s.pulseq.testUtils.INVALID_STUB
 import uno.d1s.pulseq.testUtils.VALID_STUB
-import uno.d1s.pulseq.util.currentRequest
+import uno.d1s.pulseq.util.http.currentRequest
 
 @SpringBootTest
 @ContextConfiguration(classes = [AuthenticationServiceImpl::class])

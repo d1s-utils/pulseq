@@ -2,7 +2,7 @@
  * BSD 3-Clause License, Copyright (c) 2021, Pulseq and contributors.
  */
 
-package uno.d1s.pulseq.dto
+package uno.d1s.pulseq.dto.beat
 
 import java.time.Duration
 import java.time.Instant

@@ -13,7 +13,6 @@ import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletRequestAttributes
-import uno.d1s.pulseq.util.currentRequest
 
 @SpringBootTest
 @ContextConfiguration(classes = [CurrentRequestUtilTest::class])

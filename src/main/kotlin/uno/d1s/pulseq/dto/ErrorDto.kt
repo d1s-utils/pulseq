@@ -5,7 +5,7 @@
 package uno.d1s.pulseq.dto
 
 import org.springframework.http.HttpStatus
-import uno.d1s.pulseq.util.currentRequest
+import uno.d1s.pulseq.util.http.currentRequest
 import java.time.Instant
 
 data class ErrorDto(

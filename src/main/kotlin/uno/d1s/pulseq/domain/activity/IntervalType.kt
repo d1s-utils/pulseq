@@ -4,6 +4,6 @@
 
 package uno.d1s.pulseq.domain.activity
 
-enum class TimeSpanType {
+enum class IntervalType {
     INACTIVITY, ACTIVITY;
 }

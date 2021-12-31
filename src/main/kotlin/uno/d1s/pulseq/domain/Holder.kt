@@ -8,11 +8,9 @@ import org.hibernate.annotations.GenericGenerator
 import javax.persistence.*
 
 @Entity
-@Table(name = "source", schema = "public")
-class Source(
-    @Column(unique = true, nullable = false) var name: String,
-
-    @ManyToOne val holder: Holder
+@Table(name = "holder", schema = "public")
+class Holder(
+    @Column(unique = true, nullable = false) val name: String
 ) {
     @Id
     @Column
@@ -20,14 +18,17 @@ class Source(
     @GenericGenerator(name = "system-uuid", strategy = "uuid")
     var id: String? = null
 
-    @OneToMany(cascade = [CascadeType.ALL], mappedBy = "source")
+    @OneToMany(cascade = [CascadeType.ALL], mappedBy = "holder")
+    var sources: List<Source>? = null
+
+    @OneToMany(cascade = [CascadeType.ALL], mappedBy = "holder")
     var beats: List<Beat>? = null
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as Source
+        other as Holder
 
         if (name != other.name) return false
 
@@ -39,6 +40,6 @@ class Source(
     }
 
     override fun toString(): String {
-        return "Source(name='$name', id=$id)"
+        return "Holder(name='$name', id=$id)"
     }
 }

@@ -2,14 +2,14 @@
  * BSD 3-Clause License, Copyright (c) 2021, Pulseq and contributors.
  */
 
-package uno.d1s.pulseq.dto
+package uno.d1s.pulseq.dto.beat
 
-import uno.d1s.pulseq.domain.activity.TimeSpanType
+import uno.d1s.pulseq.domain.activity.IntervalType
 import java.time.Duration
 
-data class TimeSpanDto(
+data class BeatIntervalDto(
     val duration: Duration,
-    val type: TimeSpanType,
+    val type: IntervalType,
     val startBeat: String,
     val endBeat: String?
 ) {
@@ -17,7 +17,7 @@ data class TimeSpanDto(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as TimeSpanDto
+        other as BeatIntervalDto
 
         if (duration != other.duration) return false
         if (type != other.type) return false
@@ -36,6 +36,6 @@ data class TimeSpanDto(
     }
 
     override fun toString(): String {
-        return "TimeSpanDto(duration=$duration, type=$type, startBeat=$startBeat, endBeat=$endBeat)"
+        return "IntervalDto(duration=$duration, type=$type, startBeat=$startBeat, endBeat=$endBeat)"
     }
 }

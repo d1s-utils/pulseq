@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import uno.d1s.pulseq.converter.DtoConverterFacade
 import uno.d1s.pulseq.domain.Beat
-import uno.d1s.pulseq.dto.BeatDto
+import uno.d1s.pulseq.dto.beat.BeatDto
 import uno.d1s.pulseq.service.SourceService
 import uno.d1s.pulseq.strategy.source.byId
 
@@ -20,7 +20,7 @@ class BeatDtoConverter : DtoConverterFacade<Beat, BeatDto>() {
 
     override fun convertToDto(domain: Beat): BeatDto = BeatDto(
         domain.source.id ?: throw IllegalArgumentException("Source id could not be null."),
-        domain.beatTime,
+        domain.instant,
         domain.inactivityBeforeBeat
     ).apply {
         domain.id?.let {

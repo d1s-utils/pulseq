@@ -12,19 +12,19 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ContextConfiguration
-import uno.d1s.pulseq.converter.impl.TimeSpanDtoConverter
+import uno.d1s.pulseq.converter.impl.BeatIntervalDtoConverter
 import uno.d1s.pulseq.service.BeatService
 import uno.d1s.pulseq.testUtils.VALID_STUB
 import uno.d1s.pulseq.testUtils.testBeat
-import uno.d1s.pulseq.testUtils.testTimeSpan
-import uno.d1s.pulseq.testUtils.testTimeSpanDto
+import uno.d1s.pulseq.testUtils.testBeatInterval
+import uno.d1s.pulseq.testUtils.testBeatIntervalDto
 
 @SpringBootTest
-@ContextConfiguration(classes = [TimeSpanDtoConverter::class])
-class TimeSpanDtoConverterTest {
+@ContextConfiguration(classes = [BeatIntervalDtoConverter::class])
+class BeatBeatIntervalDtoConverterTest {
 
     @Autowired
-    private lateinit var timeSpanDtoConverter: TimeSpanDtoConverter
+    private lateinit var beatIntervalDtoConverter: BeatIntervalDtoConverter
 
     @MockkBean
     private lateinit var beatService: BeatService
@@ -32,17 +32,17 @@ class TimeSpanDtoConverterTest {
     @BeforeEach
     fun setup() {
         every {
-            beatService.findBeatById(VALID_STUB)
+            beatService.findById(VALID_STUB)
         } returns testBeat
     }
 
     @Test
     fun `should return valid dto`() {
-        Assertions.assertEquals(testTimeSpanDto, timeSpanDtoConverter.convertToDto(testTimeSpan))
+        Assertions.assertEquals(testBeatIntervalDto, beatIntervalDtoConverter.convertToDto(testBeatInterval))
     }
 
     @Test
     fun `should return valid domain`() {
-        Assertions.assertEquals(testTimeSpan, timeSpanDtoConverter.convertToDomain(testTimeSpanDto))
+        Assertions.assertEquals(testBeatInterval, beatIntervalDtoConverter.convertToDomain(testBeatIntervalDto))
     }
 }

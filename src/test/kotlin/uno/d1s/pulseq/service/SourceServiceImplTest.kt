@@ -92,11 +92,11 @@ internal class SourceServiceImplTest {
         }
 
         every {
-            beatService.findAllBeats()
+            beatService.findAll()
         } returns testBeats
 
         justRun {
-            beatService.deleteBeat(any(), any())
+            beatService.remove(any(), any())
         }
     }
 
@@ -269,11 +269,11 @@ internal class SourceServiceImplTest {
 //        }
 
         verify {
-            beatService.findAllBeats()
+            beatService.findAll()
         }
 
         verify {
-            beatService.deleteBeat(any(), false)
+            beatService.remove(any(), false)
         }
 
         verify {

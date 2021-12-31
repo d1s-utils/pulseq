@@ -15,7 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ContextConfiguration
 import uno.d1s.pulseq.converter.impl.SourceDtoConverter
 import uno.d1s.pulseq.domain.Beat
-import uno.d1s.pulseq.dto.BeatDto
+import uno.d1s.pulseq.dto.beat.BeatDto
 import uno.d1s.pulseq.service.BeatService
 import uno.d1s.pulseq.testUtils.*
 
@@ -39,7 +39,7 @@ internal class SourceDtoConverterTest {
         } returns testBeatsDto
 
         every {
-            beatService.findBeatById(VALID_STUB)
+            beatService.findById(VALID_STUB)
         } returns testBeat
     }
 

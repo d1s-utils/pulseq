@@ -2,9 +2,11 @@
  * BSD 3-Clause License, Copyright (c) 2021, Pulseq and contributors.
  */
 
-package uno.d1s.pulseq.util
+package uno.d1s.pulseq.util.time
 
+import uno.d1s.pulseq.util.pluralGrammar
 import java.time.Duration
+import java.time.Instant
 
 fun Duration.pretty(): String = buildString {
     val days = this@pretty.toDaysPart()
@@ -23,3 +25,5 @@ fun Duration.pretty(): String = buildString {
     if (minutes != 0) append("$minutes minute${pluralGrammar(minutes)}, ")
     append("$seconds second".pluralGrammar(seconds))
 }
+
+fun betweenAbs(start: Instant, end: Instant): Duration = betweenAbs(start, end)

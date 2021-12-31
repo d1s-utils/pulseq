@@ -21,7 +21,7 @@ import uno.d1s.pulseq.constant.mapping.BeatMappingConstants
 import uno.d1s.pulseq.controller.impl.BeatControllerImpl
 import uno.d1s.pulseq.converter.DtoConverter
 import uno.d1s.pulseq.domain.Beat
-import uno.d1s.pulseq.dto.BeatDto
+import uno.d1s.pulseq.dto.beat.BeatDto
 import uno.d1s.pulseq.service.BeatService
 import uno.d1s.pulseq.testUtils.*
 import uno.d1s.pulseq.util.replacePathPlaceholder
@@ -51,23 +51,23 @@ internal class BeatControllerImplTest {
         paginationConfigurationProperties.setupTestStub()
 
         every {
-            beatService.findBeatById(VALID_STUB)
+            beatService.findById(VALID_STUB)
         } returns testBeat
 
         every {
-            beatService.registerNewBeatWithSourceIdentify(VALID_STUB)
+            beatService.create(VALID_STUB)
         } returns testBeat
 
         every {
-            beatService.findAllBeats()
+            beatService.findAll()
         } returns testBeats
 
         every {
-            beatService.findLastBeat()
+            beatService.findLast()
         } returns testBeat
 
         justRun {
-            beatService.deleteBeat(VALID_STUB)
+            beatService.remove(VALID_STUB)
         }
 
         every {
@@ -92,7 +92,7 @@ internal class BeatControllerImplTest {
         }
 
         verify {
-            beatService.findBeatById(VALID_STUB)
+            beatService.findById(VALID_STUB)
         }
 
         verifyBeatConversion()
@@ -113,7 +113,7 @@ internal class BeatControllerImplTest {
         }
 
         verify {
-            beatService.registerNewBeatWithSourceIdentify(VALID_STUB)
+            beatService.create(VALID_STUB)
         }
 
         verifyBeatConversion()
@@ -134,7 +134,7 @@ internal class BeatControllerImplTest {
         }
 
         verify {
-            beatService.findAllBeats()
+            beatService.findAll()
         }
 
         verifyBeatsConversion()
@@ -153,7 +153,7 @@ internal class BeatControllerImplTest {
         }
 
         verify {
-            beatService.findLastBeat()
+            beatService.findLast()
         }
 
         verifyBeatConversion()
@@ -172,7 +172,7 @@ internal class BeatControllerImplTest {
         }
 
         verify {
-            beatService.deleteBeat(VALID_STUB)
+            beatService.remove(VALID_STUB)
         }
     }
 

@@ -12,51 +12,51 @@ import org.springframework.web.bind.annotation.RestController
 import uno.d1s.pulseq.configuration.property.PaginationConfigurationProperties
 import uno.d1s.pulseq.controller.ActivityController
 import uno.d1s.pulseq.converter.DtoConverter
-import uno.d1s.pulseq.domain.activity.TimeSpan
-import uno.d1s.pulseq.domain.activity.TimeSpanType
-import uno.d1s.pulseq.dto.TimeSpanDto
-import uno.d1s.pulseq.service.ActivityService
+import uno.d1s.pulseq.domain.activity.impl.BeatInterval
+import uno.d1s.pulseq.domain.activity.IntervalType
+import uno.d1s.pulseq.dto.beat.BeatIntervalDto
+import uno.d1s.pulseq.service.IntervalService
 import uno.d1s.pulseq.util.page
 
 @RestController
 class ActivityControllerImpl : ActivityController {
 
     @Autowired
-    private lateinit var activityService: ActivityService
+    private lateinit var intervalService: IntervalService
 
     @Autowired
-    private lateinit var timeSpanDtoConverter: DtoConverter<TimeSpan, TimeSpanDto>
+    private lateinit var beatBeatIntervalDtoConverter: DtoConverter<BeatInterval, BeatIntervalDto>
 
     @Autowired
     private lateinit var paginationConfigurationProperties: PaginationConfigurationProperties
 
-    override fun getAllTimeSpans(
+    override fun getAllDurations(
         includeCurrent: Boolean?,
         page: Int?,
         pageSize: Int?
-    ): ResponseEntity<Page<TimeSpanDto>> = ResponseEntity.ok(
-        timeSpanDtoConverter.convertToDtoList(
-            activityService.getAllTimeSpans(includeCurrent ?: true)
+    ): ResponseEntity<Page<BeatIntervalDto>> = ResponseEntity.ok(
+        beatBeatIntervalDtoConverter.convertToDtoList(
+            intervalService.findAllIntervals(includeCurrent ?: true)
         ).page(page ?: 0, pageSize ?: paginationConfigurationProperties.defaultPageSize)
     )
 
-    override fun getLongestTimeSpan(
-        @RequestParam(required = false) type: TimeSpanType?, @RequestParam(required = false) processCurrent: Boolean?
-    ): ResponseEntity<TimeSpanDto> = ResponseEntity.ok(
-        timeSpanDtoConverter.convertToDto(
-            activityService.getLongestTimeSpan(type, processCurrent ?: true)
+    override fun getLongestDuration(
+        @RequestParam(required = false) type: IntervalType?, @RequestParam(required = false) processCurrent: Boolean?
+    ): ResponseEntity<BeatIntervalDto> = ResponseEntity.ok(
+        beatBeatIntervalDtoConverter.convertToDto(
+            intervalService.findLongestInterval(type, processCurrent ?: true)
         )
     )
 
-    override fun getCurrentTimeSpan(): ResponseEntity<TimeSpanDto> = ResponseEntity.ok(
-        timeSpanDtoConverter.convertToDto(
-            activityService.getCurrentTimeSpan()
+    override fun getCurrentDuration(): ResponseEntity<BeatIntervalDto> = ResponseEntity.ok(
+        beatBeatIntervalDtoConverter.convertToDto(
+            intervalService.findCurrentInterval()
         )
     )
 
-    override fun getLastRegisteredTimeSpan(): ResponseEntity<TimeSpanDto> = ResponseEntity.ok(
-        timeSpanDtoConverter.convertToDto(
-            activityService.getLastRegisteredTimeSpan()
+    override fun getLastRegisteredDuration(): ResponseEntity<BeatIntervalDto> = ResponseEntity.ok(
+        beatBeatIntervalDtoConverter.convertToDto(
+            intervalService.getLastRegisteredDuration()
         )
     )
 }
