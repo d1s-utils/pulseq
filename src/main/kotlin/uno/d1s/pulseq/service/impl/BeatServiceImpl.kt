@@ -9,21 +9,29 @@ import org.springframework.context.ApplicationEventPublisher
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uno.d1s.pulseq.annotation.cache.CacheEvictByIdProvider
 import uno.d1s.pulseq.annotation.cache.CachePutByIdProvider
 import uno.d1s.pulseq.annotation.cache.CacheableList
 import uno.d1s.pulseq.aspect.cache.idProvider.impl.BeatIdProvider
 import uno.d1s.pulseq.constant.cache.CacheNameConstants
 import uno.d1s.pulseq.domain.Beat
+import uno.d1s.pulseq.domain.Source
+import uno.d1s.pulseq.domain.activity.impl.InstantInterval
+import uno.d1s.pulseq.dto.SimpleTimeSpan
 import uno.d1s.pulseq.event.beat.BeatDeletedEvent
 import uno.d1s.pulseq.event.beat.BeatReceivedEvent
 import uno.d1s.pulseq.exception.impl.BeatNotFoundException
+import uno.d1s.pulseq.exception.impl.InvalidTimeSpanException
 import uno.d1s.pulseq.exception.impl.NoBeatsReceivedException
 import uno.d1s.pulseq.repository.BeatRepository
-import uno.d1s.pulseq.service.IntervalService
 import uno.d1s.pulseq.service.BeatService
+import uno.d1s.pulseq.service.HolderService
+import uno.d1s.pulseq.service.IntervalService
 import uno.d1s.pulseq.service.SourceService
+import uno.d1s.pulseq.strategy.DomainFindingStrategy
+import uno.d1s.pulseq.strategy.source.SourceFindingStrategy
 import uno.d1s.pulseq.strategy.source.byAll
-import uno.d1s.pulseq.util.time.findClosestInstantToCurrent
+import java.time.Instant
 
 @Service
 class BeatServiceImpl : BeatService {
@@ -38,6 +46,9 @@ class BeatServiceImpl : BeatService {
     private lateinit var intervalService: IntervalService
 
     @Autowired
+    private lateinit var holderService: HolderService
+
+    @Autowired
     private lateinit var eventPublisher: ApplicationEventPublisher
 
     // Here we inject ourselves to work with our methods (since we use caching and inject a proxy class)
@@ -47,61 +58,12 @@ class BeatServiceImpl : BeatService {
 
     @Transactional(readOnly = true)
     @CachePutByIdProvider(cacheName = CacheNameConstants.BEATS, idProvider = BeatIdProvider::class)
-    override fun findBeatById(id: String): Beat = beatRepository.findById(id).orElseThrow {
+    override fun findById(id: String): Beat = beatRepository.findById(id).orElseThrow {
         BeatNotFoundException()
     }
 
-    @Transactional
-    @CachePutByIdProvider(cacheName = CacheNameConstants.BEATS, idProvider = BeatIdProvider::class)
-    override fun createBeat(identify: String): Beat =
-        beatRepository.save(
-            Beat(runCatching {
-                sourceService.findSource(byAll(identify))
-            }.getOrElse {
-                it.printStackTrace()
-                sourceService.registerNewSource(identify)
-            }, runCatching {
-                intervalService.findCurrentAbsenceInterval()
-            }.getOrElse {
-                null
-            })
-        ).also {
-            eventPublisher.publishEvent(
-                BeatReceivedEvent(
-                    this, it
-                )
-            )
-        }
-
-    @Transactional(readOnly = true)
     @CacheableList(cacheName = CacheNameConstants.BEATS, idProvider = BeatIdProvider::class)
-    override fun findAllBeats(): List<Beat> = beatRepository.findAll().sortedBy {
-        it.instant
-    }
-
-    override fun totalBeats(): Int = beatService.findAll().size
-
-    override fun totalBeatsBySources(): Map<String, Int> = HashMap<String, Int>().apply {
-        // It would be easier to use Source's beats DBRef but this will hurt the performance,
-        // because this data is not cached (So, I should figure out how to cache it easier)
-        beatService.findAll().forEach {
-            put(it.source.name, (get(it.source.name) ?: 0) + 1)
-        }
-    }
-
-    @CacheableList(cacheName = CacheNameConstants.BEATS, idProvider = BeatIdProvider::class)
-    override fun findLast(): Beat = beatService.findAll().let { all ->
-        all.firstOrNull { beat ->
-            all.map {
-                it.instant
-            }.findClosestInstantToCurrent().orElseThrow {
-                NoBeatsReceivedException
-            } == beat.instant
-        } ?: throw NoBeatsReceivedException
-    }
-
-    @CacheableList(cacheName = CacheNameConstants.BEATS, idProvider = BeatIdProvider::class)
-    override fun findFirst(): Beat = beatService.findAll().let { all ->
+    override fun findFirst(strategy: DomainFindingStrategy): Beat = beatService.findAll(strategy).let { all ->
         all.firstOrNull { beat ->
             all.minOfOrNull {
                 it.instant
@@ -109,20 +71,163 @@ class BeatServiceImpl : BeatService {
         } ?: throw NoBeatsReceivedException
     }
 
-    @Transactional
-    override fun remove(id: String, sendEvent: Boolean) {
-        val beatForRemoval = beatService.findById(id)
+    @CacheableList(cacheName = CacheNameConstants.BEATS, idProvider = BeatIdProvider::class)
+    override fun findLast(strategy: DomainFindingStrategy): Beat = beatService.findAll(strategy).let { all ->
+        all.firstOrNull { beat ->
+            (all.maxOfOrNull {
+                it.instant
+            } ?: throw NoBeatsReceivedException) == beat.instant
+        } ?: throw NoBeatsReceivedException
+    }
 
+    @Transactional(readOnly = true)
+    @CacheableList(cacheName = CacheNameConstants.BEATS, idProvider = BeatIdProvider::class)
+    override fun findAll(strategy: DomainFindingStrategy): List<Beat> = beatRepository.findAll().filter {
+        when (strategy) {
+            is DomainFindingStrategy.BySource -> {
+                it.source.id!! == strategy.sourceId
+            }
+
+            is DomainFindingStrategy.ByHolder -> {
+                it.holder.id!! == strategy.holderId
+            }
+
+            is DomainFindingStrategy.ByAll -> true
+        }
+    }.sortedBy {
+        it.instant
+    }
+
+    @Transactional(readOnly = true)
+    @CacheableList(cacheName = CacheNameConstants.BEATS, idProvider = BeatIdProvider::class)
+    override fun findAll(ids: List<String>): List<Beat> = beatRepository.findBeatsByIdIn(ids).orElseThrow {
+        BeatNotFoundException()
+    }
+
+    @CacheableList(cacheName = CacheNameConstants.BEATS, idProvider = BeatIdProvider::class)
+    override fun findAllCreatedIn(timeSpan: SimpleTimeSpan, strategy: DomainFindingStrategy): List<Beat> =
+        beatService.findAllCreatedInByBeats(timeSpan, beatService.findAll(strategy))
+
+    @CacheableList(cacheName = CacheNameConstants.BEATS, idProvider = BeatIdProvider::class)
+    override fun findAllCreatedIn(timeSpan: SimpleTimeSpan, ids: List<String>): List<Beat> =
+        beatService.findAllCreatedInByBeats(timeSpan, beatService.findAll(ids))
+
+    @CacheableList(cacheName = CacheNameConstants.BEATS, idProvider = BeatIdProvider::class)
+    override fun findAllCreatedInByBeats(timeSpan: SimpleTimeSpan, beats: List<Beat>): List<Beat> =
+        if (timeSpan.start > timeSpan.end) {
+            throw InvalidTimeSpanException()
+        } else {
+            beats.filter {
+                it.instant in timeSpan.start..timeSpan.end
+            }
+        }
+
+    override fun remove(id: String): Beat = beatService.remove(beatService.findById(id))
+
+    @Transactional
+    @CacheEvictByIdProvider(cacheName = CacheNameConstants.BEATS, idProvider = BeatIdProvider::class)
+    override fun remove(beat: Beat): Beat {
         beatRepository.delete(
-            beatForRemoval
+            beat
         )
 
-        if (sendEvent) {
-            eventPublisher.publishEvent(
-                BeatDeletedEvent(
-                    this, beatForRemoval
-                )
+        eventPublisher.publishEvent(
+            BeatDeletedEvent(
+                this, beat
             )
-        }
+        )
+
+        return beat
     }
+
+    // cache is being evicted by remove() method.
+    override fun removeAll(ids: List<String>): List<Beat> {
+        val beats = mutableListOf<Beat>()
+
+        ids.forEach {
+            val removedBeat = beatService.remove(it)
+            beats.add(removedBeat)
+        }
+
+        return beats
+    }
+
+    override fun removeAllByBeats(beats: List<Beat>): List<Beat> {
+        beats.forEach {
+            beatService.remove(it)
+        }
+
+        return beats;
+    }
+
+
+    override fun removeAll(strategy: DomainFindingStrategy): List<Beat> =
+        beatService.removeAllByBeats(beatService.findAll(strategy))
+
+    override fun removeAllCreatedIn(timeSpan: SimpleTimeSpan, strategy: DomainFindingStrategy): List<Beat> =
+        beatService.removeAllByBeats(beatService.findAllCreatedIn(timeSpan, strategy))
+
+    override fun removeAllCreatedIn(timeSpan: SimpleTimeSpan, ids: List<String>): List<Beat> =
+        beatService.removeAllByBeats(beatService.findAllCreatedIn(timeSpan, ids))
+
+    @Transactional
+    @CachePutByIdProvider(cacheName = CacheNameConstants.BEATS, idProvider = BeatIdProvider::class)
+    override fun createBeat(identify: String): Beat = beatRepository.save(
+        Beat(runCatching {
+            sourceService.findSource(byAll(identify))
+        }.getOrElse {
+            it.printStackTrace()
+            sourceService.registerNewSource(identify)
+        }, runCatching {
+            intervalService.findCurrentAbsenceInterval()
+        }.getOrElse {
+            null
+        })
+    ).also {
+        eventPublisher.publishEvent(
+            BeatReceivedEvent(
+                this, it
+            )
+        )
+    }
+
+    @Transactional
+    @CachePutByIdProvider(cacheName = CacheNameConstants.BEATS, idProvider = BeatIdProvider::class)
+    override fun create(beat: Beat): Beat {
+        beatRepository.save(beat)
+
+        eventPublisher.publishEvent(
+            BeatReceivedEvent(
+                this, beat
+            )
+        )
+
+        return beat
+    }
+
+    override fun create(strategy: SourceFindingStrategy): Beat =
+        beatService.create(this.buildBeat(sourceService.findSource(strategy)))
+
+    override fun create(instant: Instant, strategy: SourceFindingStrategy) {
+        TODO("Not yet implemented")
+    }
+
+    override fun createAll(strategies: List<SourceFindingStrategy>): List<Beat> {
+        TODO("Not yet implemented")
+    }
+
+    override fun createAll(instants: List<Instant>, strategies: List<SourceFindingStrategy>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun createAll(strategy: SourceFindingStrategy, count: Long) {
+        TODO("Not yet implemented")
+    }
+
+    private fun buildBeat(
+        source: Source,
+        absence: InstantInterval = intervalService.findCurrentAbsenceInterval(
+            DomainFindingStrategy.BySource(source.id!!)
+        ),
+    ) = Beat(source, source.holder, absence.duration)
 }

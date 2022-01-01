@@ -118,7 +118,7 @@ internal class BeatServiceImplTest {
     @Test
     fun `should return valid beat`() {
         assertDoesNotThrow {
-            beatService.findBeatById(VALID_STUB)
+            beatService.findById(VALID_STUB)
         }
 
         verify {
@@ -129,7 +129,7 @@ internal class BeatServiceImplTest {
     @Test
     fun `should throw an exception on getting beat with invalid id`() {
         Assertions.assertThrows(BeatNotFoundException::class.java) {
-            beatService.findBeatById(INVALID_STUB)
+            beatService.findById(INVALID_STUB)
         }
 
         verify {
@@ -152,7 +152,7 @@ internal class BeatServiceImplTest {
         var all: List<Beat> by Delegates.notNull()
 
         assertDoesNotThrow {
-            all = beatService.findAllBeats()
+            all = beatService.findAll()
         }
 
         verify {

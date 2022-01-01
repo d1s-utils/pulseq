@@ -5,46 +5,48 @@
 package uno.d1s.pulseq.service
 
 import uno.d1s.pulseq.domain.Beat
-import uno.d1s.pulseq.dto.Count
 import uno.d1s.pulseq.dto.SimpleTimeSpan
 import uno.d1s.pulseq.strategy.DomainFindingStrategy
 import uno.d1s.pulseq.strategy.source.SourceFindingStrategy
-import java.time.Duration
 import java.time.Instant
 
 interface BeatService {
 
-    fun findById(id: String, strategy: DomainFindingStrategy): Beat
+    fun findById(id: String): Beat
 
-    fun findFirst(): Beat
+    fun findFirst(strategy: DomainFindingStrategy = DomainFindingStrategy.ByAll): Beat
 
-    fun findLast(): Beat
+    fun findLast(strategy: DomainFindingStrategy = DomainFindingStrategy.ByAll): Beat
 
-    fun findAll(strategy: DomainFindingStrategy): List<Beat>
+    fun findAll(strategy: DomainFindingStrategy = DomainFindingStrategy.ByAll): List<Beat>
 
-    fun findAllCreatedIn(timeSpan: SimpleTimeSpan): List<Beat>
+    fun findAll(ids: List<String>): List<Beat>
 
-    fun findAllCreatedIn(timeSpan: SimpleTimeSpan, strategy: DomainFindingStrategy): List<Beat>
+    fun findAllCreatedIn(
+        timeSpan: SimpleTimeSpan, strategy: DomainFindingStrategy = DomainFindingStrategy.ByAll
+    ): List<Beat>
 
     fun findAllCreatedIn(timeSpan: SimpleTimeSpan, ids: List<String>): List<Beat>
 
-    fun findAverageCountForDuration(duration: Duration): Count
+    fun findAllCreatedInByBeats(timeSpan: SimpleTimeSpan, beats: List<Beat>): List<Beat>
 
-    fun findMaxCountForDuration(duration: Duration): Count
+    fun remove(id: String): Beat
 
-    fun remove(id: String, sendEvent: Boolean = true): Beat
-
-    fun removeAll(): List<Beat>
+    fun remove(beat: Beat): Beat
 
     fun removeAll(ids: List<String>): List<Beat>
 
-    fun removeAll(strategy: DomainFindingStrategy): List<Beat>
+    fun removeAllByBeats(beats: List<Beat>): List<Beat>
 
-    fun removeAllCreatedIn(timeSpan: SimpleTimeSpan): List<Beat>
+    fun removeAll(strategy: DomainFindingStrategy = DomainFindingStrategy.ByAll): List<Beat>
 
-    fun removeAllCreatedIn(timeSpan: SimpleTimeSpan, strategy: DomainFindingStrategy): List<Beat>
+    fun removeAllCreatedIn(
+        timeSpan: SimpleTimeSpan, strategy: DomainFindingStrategy = DomainFindingStrategy.ByAll
+    ): List<Beat>
 
     fun removeAllCreatedIn(timeSpan: SimpleTimeSpan, ids: List<String>): List<Beat>
+
+    fun create(beat: Beat): Beat
 
     fun create(strategy: SourceFindingStrategy): Beat
 
@@ -54,5 +56,5 @@ interface BeatService {
 
     fun createAll(instants: List<Instant>, strategies: List<SourceFindingStrategy>)
 
-    fun createAll(strategy: DomainFindingStrategy, id: String, count: Long)
+    fun createAll(strategy: SourceFindingStrategy, count: Long)
 }

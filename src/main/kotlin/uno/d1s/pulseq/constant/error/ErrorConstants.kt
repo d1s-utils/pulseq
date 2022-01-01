@@ -11,4 +11,5 @@ object ErrorConstants {
     const val BEAT_NOT_FOUND = "Could not find any beats."
     const val SOURCE_NOT_FOUND = "Could not find any source."
     const val SOURCE_ALREADY_EXISTS = "Source already exists."
+    const val INVALID_TIME_SPAN = "The provided time span is invalid."
 }

@@ -1,3 +1,7 @@
+/*
+ * BSD 3-Clause License, Copyright (c) 2021, Pulseq and contributors.
+ */
+
 package uno.d1s.pulseq.aspect.cache
 
 import org.apache.logging.log4j.LogManager
@@ -10,12 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.CacheManager
 import org.springframework.context.ApplicationContext
 import org.springframework.stereotype.Component
-import uno.d1s.pulseq.annotation.cache.CacheEvictByListIdProvider
+import uno.d1s.pulseq.annotation.cache.CacheEvictByIdProvider
 import uno.d1s.pulseq.util.getCacheSafe
 
 @Aspect
 @Component
-internal class CacheEvictByListIdProviderAspect {
+class CacheEvictByIdProviderAspect {
 
     @Autowired
     private lateinit var cacheManager: CacheManager
@@ -25,21 +29,20 @@ internal class CacheEvictByListIdProviderAspect {
 
     private val logger = LogManager.getLogger()
 
-    @Pointcut("@annotation(uno.d1s.pulseq.annotation.cache.CacheEvictByListIdProvider)")
-    private fun cacheEvictByListIdProvider() {
+    @Pointcut("@annotation(uno.d1s.pulseq.annotation.cache.CacheEvictByIdProvider)")
+    private fun cacheEvictByIdProvider() {
     }
 
-    @AfterReturning("cacheEvictByListIdProvider()", returning = "returnValue")
+    @AfterReturning("cacheEvictByIdProvider()")
     fun doCacheEviction(joinPoint: JoinPoint, returnValue: Any?) {
         val method = (joinPoint.signature as MethodSignature).method
-        val annotation = method.getAnnotation(CacheEvictByListIdProvider::class.java)
+        val annotation = method.getAnnotation(CacheEvictByIdProvider::class.java)
 
-        applicationContext.getBean(annotation.idListProvider.java).getIdList(returnValue
-            ?: logger.warn("Method ${method.name} returned the null value, aborting the eviction process.")
-                .also {
+        cacheManager.getCacheSafe(annotation.cacheName).evict(
+            applicationContext.getBean(annotation.idProvider.java).getId(returnValue
+                ?: logger.warn("Method ${method.name} returned the null value, aborting the eviction process.").also {
                     return
-                }).forEach {
-            cacheManager.getCacheSafe(annotation.cacheName).evict(it)
-        }
+                })
+        )
     }
 }

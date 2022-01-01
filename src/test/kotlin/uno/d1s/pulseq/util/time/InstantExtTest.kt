@@ -15,20 +15,6 @@ import java.time.Instant
 internal class InstantExtTest {
 
     @Test
-    fun `should find closest instant to current`() {
-        val validAnswer = Instant.ofEpochSecond(3)
-
-        Assertions.assertEquals(
-            validAnswer,
-            listOf(
-                Instant.ofEpochSecond(1),
-                Instant.ofEpochSecond(2),
-                validAnswer
-            ).findClosestInstantToCurrent().get()
-        )
-    }
-
-    @Test
     fun `should make instant pretty`() {
         Assertions.assertEquals("January 1, 1970 at 12:00:00 AM UTC", Instant.EPOCH.pretty())
     }

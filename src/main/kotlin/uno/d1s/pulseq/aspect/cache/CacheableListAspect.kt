@@ -30,7 +30,6 @@ class CacheableListAspect {
     @Around("cacheableList()")
     fun doCaching(proceedingJoinPoint: ProceedingJoinPoint): Any {
         val method = (proceedingJoinPoint.signature as MethodSignature).method
-
         val annotation = method.getAnnotation(CacheableList::class.java)
 
         @Suppress("UNCHECKED_CAST")
